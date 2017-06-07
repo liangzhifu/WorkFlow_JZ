@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="taskOrderState">
+	<resultMap id="taskOrderStateResultMap" type="TaskOrderState">
+		<result property="orderStateId" column="order_state_id" />
+		<result property="orderStateName" column="order_state_name" />
+		<result property="orderStateCode" column="order_state_code" />
+	</resultMap>
+
+	<select id="selectTaskOrderState" resultMap="taskOrderStateResultMap">
+		select 
+			m.order_state_id, 
+			m.order_state_name, 
+			m.order_state_code
+		from task_order_state m
+	</select>
+</mapper>

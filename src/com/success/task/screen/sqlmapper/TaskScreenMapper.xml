@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="screen">
+<resultMap id="screenResultMap" type="TaskScreen">
+		<result property="orderId" column="order_id" />
+		<result property="changeDate" column="changeDate" />
+		<result property="changeTime" column="changeTime" />
+		<result property="publishCode" column="publishCode" />
+		<result property="productionLine" column="productionLine" />
+		<result property="carType" column="carType" />
+		<result property="mountingMat" column="mountingMat" />
+		<result property="tacheName" column="tacheName" />
+		<result property="confirmName" column="confirmName" />
+		<result property="contractResult" column="contractResult" />
+		<result property="colorId" column="colorId" />
+		<result property="changeContent" column="changeContent" />
+	</resultMap>
+	
+	<select id="selectPage" resultMap="screenResultMap"  parameterType="ScreenQuery">
+		<![CDATA[
+			select a.order_id as orderId,
+				g1.task_info_value as publishCode,
+				g2.task_info_value as productionLine,
+				g3.task_info_value as carType,
+				g4.task_info_value as mountingMat,
+				g10.task_info_value as changeContent,
+				g5.task_info_value as changeTime,
+				g6.contract_state_name as contractResult,
+				if((select DISTINCT(1) from task_wo_order b where b.order_id = a.order_id and STRCMP(b.wo_order_state_code, '10B') = 0) = 1, 
+					(select GROUP_CONCAT(d.TACHE_NAME) from task_wo_order c,task_tache d where c.order_id = a.order_id and c.tache_id = d.tache_id
+					and STRCMP(c.wo_order_state_code, '10B') = 0), '无') as tacheName,
+				g8.USER_NAME as confirmName
+				from task_order a
+				left join task_order_info g1 on g1.ORDER_ID = a.ORDER_ID and g1.TASK_TYPE_INFO_ID = 1
+				left join task_order_info g2 on g2.ORDER_ID = a.ORDER_ID and g2.TASK_TYPE_INFO_ID = 2 
+				left join task_order_info g3 on g3.ORDER_ID = a.ORDER_ID and g3.TASK_TYPE_INFO_ID = 3 
+				left join task_order_info g4 on g4.ORDER_ID = a.ORDER_ID and g4.TASK_TYPE_INFO_ID = 4 
+				left join task_order_info g5 on g5.ORDER_ID = a.ORDER_ID and g5.TASK_TYPE_INFO_ID = 11
+				left join task_order_info g10 on g10.ORDER_ID = a.ORDER_ID and g10.TASK_TYPE_INFO_ID = 9
+				left join order_contract_state g6 on g6.contract_state_code = a.contract_state
+				left join sys_users g8 on g8.USER_ID = a.CONTRACT_USER
+			]]>
+			<where>
+				a.order_id in
+				(select m1.order_id
+				from task_order m1, task_confirm_order m2
+				where m1.order_id = m2.order_id
+				and m1.delete_state = 0
+				and STRCMP(m2.confirm_order_state_code, '10A') &lt;&gt; 0
+				and STRCMP(m2.run_type, 'input') = 0)
+				<if test="@Ognl@isNotEmpty(publishCode)"> and g1.TASK_INFO_VALUE like CONCAT('%',#{publishCode,jdbcType=VARCHAR},'%') </if>
+				<if test="@Ognl@isNotEmpty(changeTimeBegin)"> and STRCMP(g5.TASK_INFO_VALUE,#{changeTimeBegin,jdbcType=VARCHAR}) &gt; 0 </if>
+				<if test="@Ognl@isNotEmpty(changeTimeEnd)"> and STRCMP(g5.TASK_INFO_VALUE,#{changeTimeEnd,jdbcType=VARCHAR}) &lt; 0 </if>
+				<if test="@Ognl@isNotEmpty(orderContractStateCode)"> and a.contract_state = #{orderContractStateCode,jdbcType=VARCHAR} </if>
+			</where>
+			order by g5.task_info_value desc
+	</select>
+
+	<select id="selectPageCount" resultType="long"  parameterType="ScreenQuery">
+		<![CDATA[
+			select count(1)
+				from task_order a
+				left join task_order_info g1 on g1.ORDER_ID = a.ORDER_ID and g1.TASK_TYPE_INFO_ID = 1
+				left join task_order_info g2 on g2.ORDER_ID = a.ORDER_ID and g2.TASK_TYPE_INFO_ID = 2 
+				left join task_order_info g3 on g3.ORDER_ID = a.ORDER_ID and g3.TASK_TYPE_INFO_ID = 3 
+				left join task_order_info g4 on g4.ORDER_ID = a.ORDER_ID and g4.TASK_TYPE_INFO_ID = 4 
+				left join task_order_info g5 on g5.ORDER_ID = a.ORDER_ID and g5.TASK_TYPE_INFO_ID = 11
+				left join order_contract_state g6 on g6.contract_state_code = a.contract_state
+				left join sys_users g8 on g8.USER_ID = a.CONTRACT_USER
+			]]>
+			<where>
+				a.order_id in
+				(select m1.order_id
+				from task_order m1, task_confirm_order m2
+				where m1.order_id = m2.order_id
+				and m1.delete_state = 0
+				and STRCMP(m2.confirm_order_state_code, '10A') &lt;&gt; 0
+				and STRCMP(m2.run_type, 'input') = 0)
+				<if test="@Ognl@isNotEmpty(publishCode)"> and g1.TASK_INFO_VALUE like CONCAT('%',#{publishCode,jdbcType=VARCHAR},'%') </if>
+				<if test="@Ognl@isNotEmpty(changeTimeBegin)"> and STRCMP(g5.TASK_INFO_VALUE,#{changeTimeBegin,jdbcType=VARCHAR}) &gt; 0 </if>
+				<if test="@Ognl@isNotEmpty(changeTimeEnd)"> and STRCMP(g5.TASK_INFO_VALUE,#{changeTimeEnd,jdbcType=VARCHAR}) &lt; 0 </if>
+				<if test="@Ognl@isNotEmpty(orderContractStateCode)"> and a.contract_state = #{orderContractStateCode,jdbcType=VARCHAR} </if>
+			</where>
+	</select>
+</mapper>

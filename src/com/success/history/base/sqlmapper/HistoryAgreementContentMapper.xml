@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="historyAgreementContent">
+
+	<resultMap id="historyAgreementContentResultMap" type="HistoryAgreementContent">
+		<result property="id" column="id" />
+		<result property="historyAgreementId" column="history_agreement_id" />
+		<result property="seq" column="seq" />
+		<result property="problem" column="problem" />
+		<result property="improve" column="improve" />
+		<result property="responsible" column="responsible" />
+		<result property="termStr" column="term_str" />
+		<result property="responsibleName" column="responsible_name" />
+		<result property="state" column="state" />
+		<result property="confirm" column="confirm" />
+		<result property="confirmName" column="confirm_name" />
+		<result property="contentState" column="content_state" />
+		<result property="refuseReason" column="refuse_reason" />
+	</resultMap>
+	
+	<insert id="insertHistoryAgreementContent" parameterType="HistoryAgreementContent" useGeneratedKeys="true" keyProperty="id"> 
+		<![CDATA[
+		insert into agreement_content_history(history_agreement_id, seq, problem, improve, responsible, term, state, confirm, content_state, refuse_reason)
+		values(#{historyAgreementId,jdbcType=NUMERIC},
+		#{seq,jdbcType=NUMERIC},
+		#{problem,jdbcType=VARCHAR},
+		#{improve,jdbcType=VARCHAR},
+		#{responsible,jdbcType=NUMERIC},
+		#{term,jdbcType=DATE},
+		#{state,jdbcType=VARCHAR},
+		#{confirm,jdbcType=NUMERIC},
+		#{contentState,jdbcType=NUMERIC},
+		#{refuseReason,jdbcType=VARCHAR})
+		]]>
+	</insert>
+	
+	<select id="selectHistoryAgreementContent" resultMap="historyAgreementContentResultMap" parameterType="java.lang.Integer">
+		<![CDATA[
+			SELECT a.id, a.history_agreement_id, a.problem, a.seq, a.responsible,
+				a.improve, a.state, a.content_state, a.confirm,
+				b.USER_NAME as responsible_name,
+				c.USER_NAME as confirm_name,
+				DATE_FORMAT(a.term,'%Y-%m-%d') as term_str,
+				a.refuse_reason
+				from agreement_content_history a
+				left JOIN sys_users b on b.USER_ID = a.responsible
+				left join sys_users c on c.USER_ID = a.confirm
+		]]>
+		<where>
+			a.history_agreement_id = #{historyAgreementId,jdbcType=NUMERIC}
+		</where>
+	</select>
+	
+</mapper>

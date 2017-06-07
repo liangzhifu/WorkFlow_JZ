@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dpcoiWoOrder">
+
+    <resultMap id="dpcoiWoOrderMap" type="DpcoiWoOrder" >
+        <result column="dpcoi_wo_order_id" property="dpcoiWoOrderId" jdbcType="BIGINT" />
+        <result column="dpcoi_order_id" property="dpcoiOrderId" jdbcType="BIGINT" />
+        <result column="del_flag" property="delFlag" jdbcType="VARCHAR" />
+        <result column="dpcoi_wo_order_type" property="dpcoiWoOrderType" jdbcType="BIGINT" />
+        <result column="dpcoi_wo_order_state" property="dpcoiWoOrderState" jdbcType="BIGINT" />
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+        <result column="confirm_date" property="confirmDate" jdbcType="TIMESTAMP" />
+        <result column="file_complete_date" property="fileCompleteDate" jdbcType="TIMESTAMP" />
+        <result column="manager_confirm_date" property="managerConfirmDate" jdbcType="TIMESTAMP" />
+        <result column="confirm_by" property="confirmBy" jdbcType="BIGINT" />
+        <result column="file_complete_by" property="fileCompleteBy" jdbcType="BIGINT" />
+        <result column="manager_confirm_by" property="managerConfirmBy" jdbcType="INTEGER" />
+        <result column="delay_date" property="delayDate" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+ <insert id="insertSelective" parameterType="DpcoiWoOrder" useGeneratedKeys="true" keyProperty="dpcoiWoOrderId">
+        INSERT into dpcoi_wo_order
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            dpcoi_wo_order_id,
+            <if test="dpcoiOrderId != null" >
+                dpcoi_order_id,
+            </if>
+            <if test="delFlag != null" >
+                del_flag,
+            </if>
+            <if test="dpcoiWoOrderType != null" >
+             dpcoi_wo_order_type,
+            </if>
+            <if test="dpcoiWoOrderState != null" >
+             dpcoi_wo_order_state,
+            </if>
+            <if test="createDate != null" >
+                create_date,
+            </if>
+            <if test="confirmDate != null" >
+                confirm_date,
+            </if>
+            <if test="confirmBy != null" >
+                confirm_by,
+            </if>
+            <if test="delayDate != null" >
+                delay_date,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            #{dpcoiWoOrderId,jdbcType=BIGINT},
+         <if test="dpcoiOrderId != null" >
+          #{dpcoiOrderId,jdbcType=BIGINT},
+         </if>
+         <if test="delFlag != null" >
+          #{delFlag,jdbcType=VARCHAR},
+         </if>
+         <if test="dpcoiWoOrderType != null" >
+          #{dpcoiWoOrderType,jdbcType=BIGINT},
+         </if>
+         <if test="dpcoiWoOrderState != null" >
+          #{dpcoiWoOrderState,jdbcType=BIGINT},
+         </if>
+         <if test="createDate != null" >
+          #{createDate,jdbcType=TIMESTAMP},
+         </if>
+            <if test="confirmDate != null" >
+                #{confirmDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="confirmBy != null" >
+                #{confirmBy,jdbcType=BIGINT},
+            </if>
+            <if test="delayDate != null" >
+                #{delayDate,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateSelective" parameterType="DpcoiWoOrder">
+        update dpcoi_wo_order
+        <set>
+            <if test="delFlag != null" >
+                del_flag = #{delFlag,jdbcType=VARCHAR},
+            </if>
+            <if test="dpcoiWoOrderState != null" >
+                dpcoi_wo_order_state = #{dpcoiWoOrderState,jdbcType=BIGINT},
+            </if>
+            <if test="confirmDate != null" >
+                confirm_date = #{confirmDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="fileCompleteDate != null" >
+                file_complete_date = #{fileCompleteDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="managerConfirmDate != null" >
+                manager_confirm_date = #{managerConfirmDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="confirmBy != null" >
+                confirm_by = #{confirmBy,jdbcType=BIGINT},
+            </if>
+            <if test="fileCompleteBy != null" >
+                file_complete_by = #{fileCompleteBy,jdbcType=BIGINT},
+            </if>
+            <if test="managerConfirmBy != null" >
+                manager_confirm_by = #{managerConfirmBy,jdbcType=BIGINT},
+            </if>
+            <if test="delayDate != null" >
+                delay_date = #{delayDate,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where dpcoi_wo_order_id = #{dpcoiWoOrderId,jdbcType=BIGINT}
+    </update>
+
+    <select id="selectDpcoiWoOrderListPage" parameterType="DpcoiWoOrderQuery" resultType="java.util.HashMap">
+        select dor.`DPCOI_ORDER_ID` as dpcoiOrderId,
+        dor.`ISSUED_NO` as issuedNo,
+        dor.`DESIGN_CHANGE_NO` as designChangeNo,
+        dor.`VEHICLE_NAME` as vehicleName,
+        dor.`PRODUCT_NO` as productNo,
+        dor.`HOPE_CUTTING_DATE` as hopeCuttingDate,
+        dor.`REAL_CUTTING_DATE` as realCuttingDate,
+        DATE_FORMAT(dor.`REAL_CUTTING_DATE`, '%Y-%m-%d') AS realCuttingDateStr,
+        dor.`CHANGE_CONTENT` as changeContent,
+        dor.`RELEASE_DATE` as releaseDate,
+        dor.`RETURN_DATE` as returnDate,
+        dor.`product_line` as productLine,
+        DATE_FORMAT(dor.`RELEASE_DATE`, '%Y-%m-%d') AS releaseDateStr,
+        DATE_FORMAT(dor.`RETURN_DATE`, '%Y-%m-%d') AS returnDateStr,
+        dor.`DESIGN_ACT` as designAct,
+        dor.`QUASI_ACT` as quasiAct,
+        (SELECT users.`user_name` FROM sys_users users WHERE users.`USER_ID` = dor.`QUASI_ACT`) AS quasiActName,
+        dor.`DPCOI_ORDER_STATE` as dpcoiOrderState,
+        dor.`DPCOI_ORDER_TYPE` as dpcoiOrderType,
+        dor.`TASK_ORDER_ID` AS taskOrderId,
+        (SELECT info.`task_info_value` FROM task_order_info info
+        WHERE info.`TASK_TYPE_INFO_ID` = '1'
+        AND info.`ORDER_ID` = dor.`TASK_ORDER_ID`) AS taskOrderNo,
+        dor.`REMARK` as remark,
+        wo.`DPCOI_WO_ORDER_ID` as dpcoiWoOrderId,
+        wo.`DPCOI_WO_ORDER_STATE` as dpcoiWoOrderState,
+        wo.`DPCOI_WO_ORDER_TYPE` as dpcoiWoOrderType
+        from dpcoi_order dor, dpcoi_wo_order wo, dpcoi_role_state rs, dpcoi_user_role ur, dpcoi_user du
+        <where>
+            dor.`DPCOI_ORDER_ID` = wo.`DPCOI_ORDER_ID`
+            and wo.`DPCOI_WO_ORDER_STATE` = rs.`DPCOI_WO_ORDER_STATE`
+            and wo.`DPCOI_WO_ORDER_TYPE` =  rs.`DPCOI_WO_ORDER_TYPE`
+            and rs.`DPCOI_ROLE_ID` = ur.`DPCOI_ROLE_ID`
+            and ur.`DPCOI_USER_ID` = du.`DPCOI_USER_ID`
+            and dor.`DEL_FLAG` = '0'
+            and wo.`DEL_FLAG` = '0'
+            and ur.`DEL_FLAG` = '0'
+            and du.`DEL_FLAG` = '0'
+            and du.`DPCOI_USER_STATE` = '1'
+            and rs.state_type = 1
+            <if test="vehicleName != null and vehicleName != ''" >
+                and dor.`VEHICLE_NAME` like CONCAT('%',#{vehicleName},'%')
+            </if>
+            <if test="productNo != null and productNo != ''" >
+                and dor.`PRODUCT_NO` like CONCAT('%',#{productNo},'%')
+            </if>
+            <if test="hopeCuttingDate != null and hopeCuttingDate != ''" >
+                and dor.`HOPE_CUTTING_DATE` = #{hopeCuttingDate}
+            </if>
+            <if test="realCuttingDateStart != null and realCuttingDateStart != ''" >
+                and DATE_FORMAT(dor.`REAL_CUTTING_DATE`,'%Y-%m-%d') &gt;= DATE_FORMAT(#{realCuttingDateStart,jdbcType=DATE},'%Y-%m-%d')
+            </if>
+            <if test="realCuttingDateEnd != null and realCuttingDateEnd != ''" >
+                and DATE_FORMAT(dor.`REAL_CUTTING_DATE`,'%Y-%m-%d') &lt;= DATE_FORMAT(#{realCuttingDateEnd,jdbcType=DATE},'%Y-%m-%d')
+            </if>
+            <if test="releaseDateStart != null and releaseDateStart != ''" >
+                and DATE_FORMAT(dor.`RELEASE_DATE`,'%Y-%m-%d') &gt;= DATE_FORMAT(#{releaseDateStart,jdbcType=DATE},'%Y-%m-%d')
+            </if>
+            <if test="releaseDateEnd != null and releaseDateEnd != ''" >
+                and DATE_FORMAT(dor.`RELEASE_DATE`,'%Y-%m-%d') &lt;= DATE_FORMAT(#{releaseDateEnd,jdbcType=DATE},'%Y-%m-%d')
+            </if>
+            <if test="dpcoiUserId != null and dpcoiUserId != ''" >
+                and du.`SYS_USER_ID` = #{dpcoiUserId}
+            </if>
+            <if test="productLine != null and productLine != ''" >
+                AND dor.`product_line` like CONCAT('%',#{productLine},'%')
+            </if>
+        </where>
+        order by dor.`DPCOI_ORDER_ID` desc limit #{start},#{size}
+    </select>
+
+    <select id="selectDpcoiWoOrderCount" parameterType="DpcoiWoOrderQuery" resultType="java.lang.Integer">
+        select count(1)
+        from dpcoi_order dor, dpcoi_wo_order wo, dpcoi_role_state rs, dpcoi_user_role ur, dpcoi_user du
+        <where>
+            dor.`DPCOI_ORDER_ID` = wo.`DPCOI_ORDER_ID`
+            and wo.`DPCOI_WO_ORDER_STATE` = rs.`DPCOI_WO_ORDER_STATE`
+            and wo.`DPCOI_WO_ORDER_TYPE` =  rs.`DPCOI_WO_ORDER_TYPE`
+            and rs.`DPCOI_ROLE_ID` = ur.`DPCOI_ROLE_ID`
+            and ur.`DPCOI_USER_ID` = du.`DPCOI_USER_ID`
+            and dor.`DEL_FLAG` = '0'
+            and wo.`DEL_FLAG` = '0'
+            and ur.`DEL_FLAG` = '0'
+            and du.`DEL_FLAG` = '0'
+            and du.`DPCOI_USER_STATE` = '1'
+            and rs.state_type = 1
+            <if test="vehicleName != null and vehicleName != ''" >
+                and dor.`VEHICLE_NAME` like CONCAT('%',#{vehicleName},'%')
+            </if>
+            <if test="productNo != null and productNo != ''" >
+                and dor.`PRODUCT_NO` like CONCAT('%',#{productNo},'%')
+            </if>
+            <if test="hopeCuttingDate != null and hopeCuttingDate != ''" >
+                and dor.`HOPE_CUTTING_DATE` = #{hopeCuttingDate}
+            </if>
+            <if test="realCuttingDateStart != null and realCuttingDateStart != ''" >
+                and DATE_FORMAT(dor.`REAL_CUTTING_DATE`,'%Y-%m-%d') &gt;= DATE_FORMAT(#{realCuttingDateStart,jdbcType=DATE},'%Y-%m-%d')
+            </if>
+            <if test="realCuttingDateEnd != null and realCuttingDateEnd != ''" >
+                and DATE_FORMAT(dor.`REAL_CUTTING_DATE`,'%Y-%m-%d') &lt;= DATE_FORMAT(#{realCuttingDateEnd,jdbcType=DATE},'%Y-%m-%d')
+            </if>
+            <if test="releaseDateStart != null and releaseDateStart != ''" >
+                and DATE_FORMAT(dor.`RELEASE_DATE`,'%Y-%m-%d') &gt;= DATE_FORMAT(#{releaseDateStart,jdbcType=DATE},'%Y-%m-%d')
+            </if>
+            <if test="releaseDateEnd != null and releaseDateEnd != ''" >
+                and DATE_FORMAT(dor.`RELEASE_DATE`,'%Y-%m-%d') &lt;= DATE_FORMAT(#{releaseDateEnd,jdbcType=DATE},'%Y-%m-%d')
+            </if>
+            <if test="dpcoiUserId != null and dpcoiUserId != ''" >
+                and du.`SYS_USER_ID` = #{dpcoiUserId}
+            </if>
+            <if test="productLine != null and productLine != ''" >
+                AND dor.`product_line` like CONCAT('%',#{productLine},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectBySelf" parameterType="DpcoiWoOrder" resultMap="dpcoiWoOrderMap">
+        select dpcoi_wo_order_id, dpcoi_order_id, del_flag, dpcoi_wo_order_type, dpcoi_wo_order_state,
+          create_date, confirm_date, file_complete_date, manager_confirm_date, confirm_by,
+          file_complete_by, manager_confirm_by, delay_date
+        from dpcoi_wo_order
+        where dpcoi_wo_order_id = #{dpcoiWoOrderId}
+    </select>
+
+    <select id="selectDpcoiWoOrderOfDpcoiOrder" parameterType="DpcoiWoOrderQuery" resultMap="dpcoiWoOrderMap">
+        select dpcoi_wo_order_id, dpcoi_order_id, del_flag, dpcoi_wo_order_type, dpcoi_wo_order_state,
+          create_date, confirm_date, file_complete_date, manager_confirm_date, confirm_by,
+          file_complete_by, manager_confirm_by
+        from dpcoi_wo_order
+        where dpcoi_order_id = #{dpcoiOrderId}
+    </select>
+
+    <select id="selectWoOrderEmailUsers" parameterType="DpcoiWoOrder" resultType="java.lang.String">
+        select group_concat(users.`EMAIL`) as email
+        from dpcoi_role_state state, dpcoi_user_role role, dpcoi_user du, sys_users users
+        where state.`DPCOI_ROLE_ID` = role.`DPCOI_ROLE_ID`
+        and state.`STATE_TYPE` = '1'
+        and role.`DEL_FLAG` = '0'
+        and role.`DPCOI_USER_ID` = du.`DPCOI_USER_ID`
+        and du.`DEL_FLAG` = '0'
+        and du.`DPCOI_USER_STATE` = '1'
+        and du.`SYS_USER_ID` = users.`USER_ID`
+        and users.`DELETE_STATE` = '0'
+        and state.`DPCOI_WO_ORDER_STATE` = #{dpcoiWoOrderState}
+        and state.`DPCOI_WO_ORDER_TYPE` = #{dpcoiWoOrderType}
+    </select>
+
+    <select id="selectWoOrderAllEmailUsers" parameterType="DpcoiWoOrder" resultType="java.lang.String">
+        select group_concat(users.`EMAIL`) as email
+        from dpcoi_wo_order wo, dpcoi_role_state state, dpcoi_user_role role, dpcoi_user du, sys_users users
+        where wo.`DPCOI_WO_ORDER_STATE` = state.`DPCOI_WO_ORDER_STATE`
+        and wo.`DPCOI_WO_ORDER_TYPE` = state.`DPCOI_WO_ORDER_TYPE`
+        and state.`DPCOI_ROLE_ID` = role.`DPCOI_ROLE_ID`
+        and role.`DEL_FLAG` = '0'
+        and role.`DPCOI_USER_ID` = du.`DPCOI_USER_ID`
+        and du.`DEL_FLAG` = '0'
+        and du.`DPCOI_USER_STATE` = '1'
+        and du.`SYS_USER_ID` = users.`USER_ID`
+        and users.`DELETE_STATE` = '0'
+        and wo.`DPCOI_WO_ORDER_ID` = #{dpcoiWoOrderId}
+    </select>
+
+    <select id="selectConfirmDelayWoOrderList" resultType="java.util.HashMap">
+        <![CDATA[
+        SELECT dorder.`DPCOI_ORDER_ID` AS dpcoiOrderId,
+        dorder.`ISSUED_NO` AS issuedNo,
+        dorder.`DESIGN_CHANGE_NO` AS designChangeNo,
+        dorder.`VEHICLE_NAME` AS vehicleName,
+        dorder.`PRODUCT_NO` AS productNo,
+        dorder.`HOPE_CUTTING_DATE` AS hopeCuttingDate,
+        dorder.`REAL_CUTTING_DATE` AS realCuttingDate,
+        DATE_FORMAT(dorder.`REAL_CUTTING_DATE`, '%Y-%m-%d') AS realCuttingDateStr,
+        dorder.`CHANGE_CONTENT` AS changeContent,
+        dorder.`RELEASE_DATE` AS releaseDate,
+        dorder.`RETURN_DATE` AS returnDate,
+        DATE_FORMAT(dorder.`RELEASE_DATE`, '%Y-%m-%d') AS releaseDateStr,
+        DATE_FORMAT(dorder.`RETURN_DATE`, '%Y-%m-%d') AS returnDateStr,
+        dorder.`DESIGN_ACT` AS designAct,
+        dorder.`QUASI_ACT` AS quasiAct,
+        (SELECT users.`user_name` FROM sys_users users WHERE users.`USER_ID` = dorder.`QUASI_ACT`) AS quasiActName,
+        dorder.`DPCOI_ORDER_STATE` AS dpcoiOrderState,
+        dorder.`DPCOI_ORDER_TYPE` AS dpcoiOrderType,
+        dorder.`TASK_ORDER_ID` AS taskOrderId,
+        (SELECT info.`task_info_value` FROM task_order_info info
+        WHERE info.`TASK_TYPE_INFO_ID` = '1'
+        AND info.`ORDER_ID` = dorder.`TASK_ORDER_ID`) AS taskOrderNo,
+        woorder.`DPCOI_WO_ORDER_ID` AS dpcoiWoOrderId,
+        woorder.`DPCOI_WO_ORDER_TYPE` AS dpcoiWoOrderType
+        FROM dpcoi_order dorder, dpcoi_wo_order woorder
+        WHERE dorder.`DPCOI_ORDER_ID` = woorder.`DPCOI_ORDER_ID`
+        AND woorder.`DPCOI_WO_ORDER_ID` IN
+        (SELECT woorder.`DPCOI_WO_ORDER_ID`
+        FROM dpcoi_order dorder, dpcoi_wo_order woorder
+        WHERE dorder.`DPCOI_ORDER_ID` = woorder.`DPCOI_ORDER_ID`
+        AND woorder.`DPCOI_WO_ORDER_STATE` = 1
+        AND woorder.`DPCOI_WO_ORDER_TYPE` = 1
+        AND UNIX_TIMESTAMP(DATE_ADD(dorder.`pfmea_email_date`, INTERVAL 1 DAY)) < UNIX_TIMESTAMP(SYSDATE())
+        UNION
+        SELECT woorder.`DPCOI_WO_ORDER_ID`
+        FROM dpcoi_order dorder, dpcoi_wo_order woorder
+        WHERE dorder.`DPCOI_ORDER_ID` = woorder.`DPCOI_ORDER_ID`
+        AND woorder.`DPCOI_WO_ORDER_STATE` = 1
+        AND woorder.`DPCOI_WO_ORDER_TYPE` = 2
+        AND UNIX_TIMESTAMP(DATE_ADD(dorder.`cp_email_date`, INTERVAL 1 DAY)) < UNIX_TIMESTAMP(SYSDATE())
+        UNION
+        SELECT woorder.`DPCOI_WO_ORDER_ID`
+        FROM dpcoi_order dorder, dpcoi_wo_order woorder
+        WHERE dorder.`DPCOI_ORDER_ID` = woorder.`DPCOI_ORDER_ID`
+        AND woorder.`DPCOI_WO_ORDER_STATE` = 1
+        AND woorder.`DPCOI_WO_ORDER_TYPE` = 3
+        AND UNIX_TIMESTAMP(DATE_ADD(dorder.`standard_book_email_date`, INTERVAL 1 DAY)) < UNIX_TIMESTAMP(SYSDATE()))
+        ]]>
+    </select>
+
+    <select id="selectChangeDelayWoOrderList" resultType="java.util.HashMap">
+        <![CDATA[
+        SELECT dorder.`DPCOI_ORDER_ID` AS dpcoiOrderId,
+        dorder.`ISSUED_NO` AS issuedNo,
+        dorder.`DESIGN_CHANGE_NO` AS designChangeNo,
+        dorder.`VEHICLE_NAME` AS vehicleName,
+        dorder.`PRODUCT_NO` AS productNo,
+        dorder.`HOPE_CUTTING_DATE` AS hopeCuttingDate,
+        dorder.`REAL_CUTTING_DATE` AS realCuttingDate,
+        DATE_FORMAT(dorder.`REAL_CUTTING_DATE`, '%Y-%m-%d') AS realCuttingDateStr,
+        dorder.`CHANGE_CONTENT` AS changeContent,
+        dorder.`RELEASE_DATE` AS releaseDate,
+        DATE_FORMAT(dorder.`RELEASE_DATE`, '%Y-%m-%d') AS releaseDateStr,
+        DATE_FORMAT(dorder.`RETURN_DATE`, '%Y-%m-%d') AS returnDateStr,
+        dorder.`RETURN_DATE` AS returnDate,
+        dorder.`DESIGN_ACT` AS designAct,
+        dorder.`QUASI_ACT` AS quasiAct,
+        (SELECT users.`user_name` FROM sys_users users WHERE users.`USER_ID` = dorder.`QUASI_ACT`) AS quasiActName,
+        dorder.`DPCOI_ORDER_STATE` AS dpcoiOrderState,
+        dorder.`DPCOI_ORDER_TYPE` AS dpcoiOrderType,
+        dorder.`TASK_ORDER_ID` AS taskOrderId,
+        (SELECT info.`task_info_value` FROM task_order_info info
+        WHERE info.`TASK_TYPE_INFO_ID` = '1'
+        AND info.`ORDER_ID` = dorder.`TASK_ORDER_ID`) AS taskOrderNo,
+        woorder.`DPCOI_WO_ORDER_ID` AS dpcoiWoOrderId,
+        woorder.`DPCOI_WO_ORDER_TYPE` AS dpcoiWoOrderType
+        FROM dpcoi_order dorder, dpcoi_wo_order woorder
+        WHERE dorder.`DPCOI_ORDER_ID` = woorder.`DPCOI_ORDER_ID`
+        AND woorder.`DPCOI_WO_ORDER_ID` IN
+        (SELECT woorder.`DPCOI_WO_ORDER_ID`
+        FROM dpcoi_order dorder, dpcoi_wo_order woorder
+        WHERE dorder.`DPCOI_ORDER_ID` = woorder.`DPCOI_ORDER_ID`
+        AND dorder.`pfmea_delay` = 0
+        AND woorder.`DPCOI_WO_ORDER_STATE` IN (2,3)
+        AND woorder.`DPCOI_WO_ORDER_TYPE` = 1
+        AND UNIX_TIMESTAMP(woorder.`delay_date`) < UNIX_TIMESTAMP(SYSDATE())
+        UNION
+        SELECT woorder.`DPCOI_WO_ORDER_ID`
+        FROM dpcoi_order dorder, dpcoi_wo_order woorder
+        WHERE dorder.`DPCOI_ORDER_ID` = woorder.`DPCOI_ORDER_ID`
+        AND dorder.`cp_delay` = 0
+        AND woorder.`DPCOI_WO_ORDER_STATE` IN (2,3)
+        AND woorder.`DPCOI_WO_ORDER_TYPE` = 2
+        AND UNIX_TIMESTAMP(woorder.`delay_date`) < UNIX_TIMESTAMP(SYSDATE())
+        UNION
+        SELECT woorder.`DPCOI_WO_ORDER_ID`
+        FROM dpcoi_order dorder, dpcoi_wo_order woorder
+        WHERE dorder.`DPCOI_ORDER_ID` = woorder.`DPCOI_ORDER_ID`
+        AND dorder.`standard_book_delay` = 0
+        AND woorder.`DPCOI_WO_ORDER_STATE` IN (2,3)
+        AND woorder.`DPCOI_WO_ORDER_TYPE` = 3
+        AND UNIX_TIMESTAMP(woorder.`delay_date`) < UNIX_TIMESTAMP(SYSDATE()))
+        ]]>
+    </select>
+
+    <select id="selectDpcoiWoOrder4MConfrim" resultType="java.util.HashMap" parameterType="DpcoiWoOrder">
+        SELECT two.`REPLY_USER` AS userId,
+        info.`WO_INFO_VALUE` AS confrimResult
+        FROM task_wo_order two, task_wo_order_sys_info info, dpcoi_order dor, dpcoi_wo_order dwo, sys_info sinfo
+        WHERE two.`ORDER_ID` = dor.`TASK_ORDER_ID`
+        AND two.`WO_ORDER_ID` = info.`WO_ORDER_ID`
+        AND dor.`DPCOI_ORDER_ID` = dwo.`DPCOI_ORDER_ID`
+        AND info.`SYS_INFO_ID` = sinfo.`sys_info_id`
+        AND sinfo.`dpcoi_flag` = dwo.`DPCOI_WO_ORDER_TYPE`
+        AND dwo.`DPCOI_WO_ORDER_STATE` = 1
+        AND dwo.`DPCOI_WO_ORDER_ID` = #{dpcoiWoOrderId,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectHoliday" resultType="java.lang.Integer" parameterType="java.util.Date">
+        SELECT count(1)
+        FROM sys_holiday
+        where DATE_FORMAT(holiday, '%Y-%m-%d') = DATE_FORMAT(#{date}, '%Y-%m-%d')
+    </select>
+</mapper>

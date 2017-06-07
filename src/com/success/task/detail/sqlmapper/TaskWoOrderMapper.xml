@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="taskWoOrder">
+	<resultMap id="taskWoOrderResultMap" type="TaskWoOrder" >
+		<result property="woOrderId" column="wo_order_id"/>
+		<result property="orderId" column="order_id"/>
+		<result property="tacheId" column="tache_id"/>
+		<result property="woRefuseReason" column="wo_refuse_reason"/>
+		<result property="replyUser" column="replay_user"/>
+		<result property="isDelay" column="is_delay"/>
+		<result property="requireCompleteTime" column="require_complete_time"/>
+		<result property="woOrderStateCode" column="wo_order_state_code"/>
+	</resultMap>
+	
+	<resultMap id="woOrderEmailUserResultMap" type="WoOrderEmailUser" >
+		<result property="woOrderId" column="wo_order_id"/>
+		<result property="userId" column="user_id"/>
+		<result property="userName" column="user_name"/>
+		<result property="userEmail" column="user_email"/>
+	</resultMap>
+	
+	<select id="selectWoOrderEmailUsers" resultMap="woOrderEmailUserResultMap" parameterType="TaskWoOrderQuery">
+		select a.WO_ORDER_ID,
+		c.USER_ID,
+		c.USER_NAME,
+		c.EMAIL as user_email
+		from task_wo_order a, task_type_tache_user b, sys_users c
+		<where>
+			a.TACHE_ID = b.tache_id
+			and b.user_id = c.user_id
+			and a.delete_state = 0
+			and b.delete_state = 0
+			and c.delete_state = 0
+			<if test="@Ognl@isNotEmpty(woOrderStateCode)"> and a.WO_ORDER_STATE_CODE = #{woOrderStateCode,jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(orderId)"> and a.order_id = #{orderId,jdbcType=NUMERIC} </if>
+			<if test="@Ognl@isNotEmpty(woOrderId)"> and a.wo_order_id = #{woOrderId,jdbcType=NUMERIC} </if>
+		</where>
+	</select>
+	
+	<select id="selectTaskWoOrder" resultMap="taskWoOrderResultMap" parameterType="TaskWoOrderQuery">
+		select a.wo_order_id,
+			a.order_id,
+			a.tache_id,
+			a.wo_refuse_reason,
+			a.reply_user as replay_user,
+			a.is_delay,
+			a.wo_order_state_code
+		from task_wo_order a
+		<where>
+			a.delete_state = 0
+			<if test="@Ognl@isNotEmpty(orderId)"> and a.order_id = #{orderId,jdbcType=NUMERIC} </if>
+		</where>
+	</select>
+	
+	<select id="selectTaskWoOrderCount" resultType="long" parameterType="TaskWoOrderQuery">
+
+	</select>
+	
+	<insert id="insertTaskWoOrder" parameterType="TaskWoOrder" useGeneratedKeys="true" keyProperty="woOrderId"> 
+		<![CDATA[
+		insert into task_wo_order(order_id,
+						tache_id,
+						delete_state,
+						reply_user,
+						is_delay,
+						wo_order_state_code)
+  					 values (#{orderId,jdbcType=NUMERIC},
+  					 		 #{tacheId,jdbcType=NUMERIC},
+  					 		 0,
+  					 		 #{replyUser,jdbcType=NUMERIC},
+  					 		 0,
+  					 		 #{woOrderStateCode,jdbcType=VARCHAR})
+		]]>
+	</insert>
+	
+	<update id="updateTaskWoOrder" parameterType="TaskWoOrder">
+		update task_wo_order
+		<set>
+			<if test="woOrderStateCode != null">wo_order_state_code = #{woOrderStateCode,jdbcType=VARCHAR},</if>
+			<if test="createTime != null">create_time = sysdate(),</if>
+			<if test="replyUser != null">reply_user = #{replyUser,jdbcType=NUMERIC},</if>
+			<if test="replyTime != null">reply_time = sysdate(),</if>
+			<if test="completeTime != null">complete_time = sysdate(),</if>
+			<if test="isDelay != null">is_delay = #{isDelay,jdbcType=VARCHAR},</if>
+			<if test="requireCompleteTimeStr != null">require_complete_time = #{requireCompleteTimeStr,jdbcType=VARCHAR},</if>
+			<if test="woRefuseReason != null">wo_refuse_reason = #{woRefuseReason,jdbcType=VARCHAR},</if>
+		</set>
+		where wo_order_id=#{woOrderId, jdbcType=NUMERIC}
+	</update>
+	
+	<delete id="deleteTaskWoOrder" parameterType="TaskWoOrder">
+		<![CDATA[
+			update task_wo_order set delete_state = 1 where wo_order_id = #{woOrderId,jdbcType=NUMERIC}
+		]]>
+	</delete>
+
+	<select id="selectByIdQuery" resultMap="taskWoOrderResultMap" parameterType="TaskWoOrderQuery">
+		select a.wo_order_id,
+			a.order_id,
+			a.tache_id,
+			a.wo_refuse_reason,
+			a.reply_user as replay_user,
+			a.is_delay,
+			a.require_complete_time
+		from task_wo_order a
+		where a.wo_order_id = #{woOrderId,jdbcType=NUMERIC}
+	</select>
+
+	<select id="selectDelayManagerEmails" resultType="java.lang.String" parameterType="TaskWoOrderQuery">
+		SELECT GROUP_CONCAT(users.`EMAIL`)
+		FROM task_wo_order two, task_tache_manager manager, sys_users users
+		<where> two.`TACHE_ID` = manager.`tache_id`
+			AND manager.`user_id` = users.`USER_ID`
+			AND users.`DELETE_STATE` = '0'
+			<if test="@Ognl@isNotEmpty(woOrderStateCode)"> and two.WO_ORDER_STATE_CODE = #{woOrderStateCode,jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(orderId)"> and two.order_id = #{orderId,jdbcType=NUMERIC} </if>
+			<if test="@Ognl@isNotEmpty(woOrderId)"> and two.wo_order_id = #{woOrderId,jdbcType=NUMERIC} </if>
+		</where>
+	</select>
+</mapper>

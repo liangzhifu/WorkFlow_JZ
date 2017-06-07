@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sysConfig">
+	<resultMap id="sysConfigResultMap" type="SysConfig">
+		<result property="id" column="id" />
+		<result property="configCode" column="config_code" />
+		<result property="configCommit" column="config_commit" />
+		<result property="configValue" column="config_value" />
+	</resultMap>
+	
+	<select id="selectSysConfig" resultMap="sysConfigResultMap"
+		parameterType="java.lang.String">
+		<![CDATA[
+			select 
+				m.id, 
+				m.config_code, 
+				m.config_commit, 
+				m.config_value
+			from sys_config m
+  			where m.config_code = #{orgId,jdbcType=NUMERIC}
+		]]>
+	</select>
+	
+	<select id="selectByQuery" resultMap="sysConfigResultMap"
+		parameterType="SysConfigQuery">
+		<![CDATA[
+			select 
+				m.id, 
+				m.config_code, 
+				m.config_commit, 
+				m.config_value
+			from sys_config m
+  			where m.config_code = #{configCode,jdbcType=NUMERIC}
+  			order by m.config_value asc
+		]]>
+	</select>
+</mapper>

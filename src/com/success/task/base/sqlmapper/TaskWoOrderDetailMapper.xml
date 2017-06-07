@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="taskWoOrderDetail">
+	<resultMap id="taskWoOrderDetailResultMap" type="TaskWoOrderDetail" >
+		<result property="woOrderId" column="wo_order_id"/>
+		<result property="orderId" column="order_id"/>
+		<result property="tacheId" column="tache_id"/>
+		<result property="woRefuseReason" column="wo_refuse_reason"/>
+		<result property="requireCompleteTime" column="require_complete_time"/>
+		<result property="replyUser" column="replay_user"/>
+		<result property="replyUserName" column="replay_user_name"/>
+		<result property="isDelay" column="is_delay"/>
+		<result property="woOrderStateCode" column="wo_order_state_code"/>
+		<result property="id" column="id"/>
+		<result property="taskTacheInfoId" column="task_tache_info_id"/>
+		<result property="woInfoValue" column="wo_info_value"/>
+	</resultMap>
+	
+	<select id="selectTaskWoOrderDetail" resultMap="taskWoOrderDetailResultMap" parameterType="TaskWoOrderDetailQuery">
+		select a.wo_order_id,
+			a.order_id,
+			a.tache_id,
+			a.wo_refuse_reason,
+			a.reply_user as reply_user,
+			a.is_delay,
+			a.wo_order_state_code,
+			b.task_tache_info_id,
+			b.id,
+			b.wo_info_value,
+			c.user_name as replay_user_name,
+			a.require_complete_time
+		from task_wo_order a
+		left join task_wo_order_info b on b.wo_order_id = a.wo_order_id and b.delete_state = 0
+		left join sys_users c on c.user_id = a.reply_user
+		<where>
+			a.delete_state = 0
+			<if test="@Ognl@isNotEmpty(orderId)"> and a.order_id = #{orderId,jdbcType=NUMERIC} </if>
+			<if test="@Ognl@isNotEmpty(userId)"> 
+				and a.tache_id in (select tache_id from task_type_tache_user where user_id = #{userId,jdbcType=NUMERIC} and delete_state = 0)
+			</if>
+		</where>
+	</select>
+</mapper>

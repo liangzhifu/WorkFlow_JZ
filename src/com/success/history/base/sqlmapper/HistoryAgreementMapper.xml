@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="historyAgreement">
+
+	<resultMap id="userResultMap" type="User">
+		<result property="userId" column="user_id" />
+		<result property="userName" column="user_name" />
+	</resultMap>
+	
+	<select id="selectAgreementEditUser" resultMap="userResultMap">
+		select c.USER_ID, c.USER_NAME
+			from (select DISTINCT(a.edit_user) as user_id
+			from agreement_manage_history a) b, sys_users c
+			where b.user_id = c.USER_ID
+	</select>
+	
+	<resultMap id="historyAgreementResultMap" type="HistoryAgreement">		
+		<result property="agreementState" column="agreement_state" />
+		<result property="createUser" column="user_name" />
+		<result property="trackId" column="track_id" />
+		<result property="trackName" column="track_name" />
+		<result property="project" column="project" />
+		<result property="cutLOT" column="cut_lot" />
+		<result property="num" column="num" />
+		<result property="createTime" column="create_time" />
+		<result property="conclusionState" column="conclusion_state" />
+		<result property="conclusionMessage" column="conclusion_message" />
+		<result property="invalidateText" column="invalidate_text" />
+		
+		<result property="id" column="id" />
+		<result property="editUser" column="edit_user" />
+		<result property="editUserName" column="edit_user_name" />
+		<result property="editTimeStr" column="edit_time_str" />
+		<result property="editType" column="edit_type" />
+		<result property="agreementId" column="agreement_id" />
+		<result property="orderId" column="order_id" />
+		<result property="agreementName" column="agreement_name" />
+		<result property="publishCode" column="public_code" />	
+	</resultMap>
+	
+	<select id="selectPageHistoryAgreement" resultMap="historyAgreementResultMap" parameterType="HistoryAgreementQuery">
+		<![CDATA[
+			select c.task_info_value as public_code,
+			a.id,
+			a.edit_user,
+			d.user_name as edit_user_name,
+			DATE_FORMAT(a.edit_time,'%Y-%m-%d %H:%m:%s') as edit_time_str,
+			a.agreement_name,
+			a.edit_type
+			from agreement_manage_history a 
+			left join task_order b on a.order_id = b.ORDER_ID
+			left join task_order_info c on b.ORDER_ID = c.ORDER_ID and c.TASK_TYPE_INFO_ID = 1
+			left join sys_users d on a.edit_user = d.USER_ID 
+			left join sys_users f on a.track_id = f.user_id
+		]]>
+		<where>
+			1 = 1
+			<if test="@Ognl@isNotEmpty(publishCode)"> and c.TASK_INFO_VALUE like CONCAT('%',#{publishCode,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(agreementName)"> and a.agreement_name like CONCAT('%',#{agreementName,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(editUser)"> and a.edit_user = #{editUser,jdbcType=NUMERIC} </if>
+		</where>
+		order by a.id asc
+	</select>
+	
+	<select id="selectPageHistoryAgreementCount" resultType="long" parameterType="HistoryAgreementQuery">
+		<![CDATA[
+			select count(1)
+			from agreement_manage_history a 
+			left join task_order b on a.order_id = b.ORDER_ID
+			left join task_order_info c on b.ORDER_ID = c.ORDER_ID and c.TASK_TYPE_INFO_ID = 1
+			left join sys_users d on a.edit_user = d.USER_ID
+			left join sys_users f on a.track_id = f.user_id
+		]]>
+		<where>
+			1 = 1
+			<if test="@Ognl@isNotEmpty(publishCode)"> and c.TASK_INFO_VALUE like CONCAT('%',#{publishCode,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(agreementName)"> and a.agreement_name like CONCAT('%',#{agreementName,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(editUser)"> and a.edit_user = #{editUser,jdbcType=NUMERIC} </if>
+		</where>
+	</select>
+	
+	<select id="selectHistoryAgreementById" resultType="HistoryAgreement" parameterType="java.lang.Integer">
+		<![CDATA[
+			select c.task_info_value as publishCode,a.id,
+			a.agreement_id as agreementId,a.order_id as orderId,
+			a.project,a.num,a.cut_lot as cutLOT,a.conclusion_state as conclusionState,
+			a.conclusion_message as conclusionMessage,a.invalidate_text as invalidateText,
+			a.agreement_state as agreementState,d.user_name as createUser,
+			DATE_FORMAT(a.create_time,'%Y-%m-%d') as createTimeStr,a.agreement_name as agreementName,
+			a.create_user as createUserId, a.track_id as trackId, f.user_name as trackName
+			from agreement_manage_history a
+			left join task_order b on a.order_id = b.ORDER_ID
+			left join task_order_info c on b.ORDER_ID = c.ORDER_ID and c.TASK_TYPE_INFO_ID = 1
+			left join sys_users d on a.edit_user = d.USER_ID 
+			left join sys_users f on a.track_id = f.user_id
+			where a.id =  #{historyAgreementId,jdbcType=NUMERIC}
+		]]>
+	</select>
+	
+	<insert id="insertHistoryAgreement" parameterType="HistoryAgreement" useGeneratedKeys="true" keyProperty="id"> 
+		<![CDATA[
+		insert into agreement_manage_history(agreement_id, order_id, agreement_state, agreement_name, 
+			edit_time, edit_user, project, cut_lot, num, conclusion_state, conclusion_message,
+			invalidate_text, edit_type, create_time, create_user, track_id)
+			values(#{agreementId,jdbcType=NUMERIC},
+			#{orderId,jdbcType=NUMERIC},
+			#{agreementState,jdbcType=VARCHAR},
+			#{agreementName,jdbcType=VARCHAR},
+			sysdate(),
+			#{editUser,jdbcType=NUMERIC},
+			#{project,jdbcType=VARCHAR},
+			#{cutLOT,jdbcType=VARCHAR},
+			#{num,jdbcType=NUMERIC},
+			#{conclusionState,jdbcType=VARCHAR},
+			#{conclusionMessage,jdbcType=VARCHAR},
+			#{invalidateText,jdbcType=VARCHAR},
+			#{editType,jdbcType=VARCHAR},
+			#{createTime,jdbcType=DATE},
+			#{createUserId,jdbcType=NUMERIC},
+			#{trackId,jdbcType=NUMERIC}
+			)
+		]]>
+	</insert>
+	
+</mapper>

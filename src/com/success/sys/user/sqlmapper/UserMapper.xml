@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="user">
+
+	<resultMap id="userResultMap" type="User">
+		<result property="userId" column="user_id" />
+		<result property="userName" column="user_name" />
+		<result property="password" column="password" />
+		<result property="userCode" column="user_code" />
+		<result property="email" column="email" />
+		<result property="orgId" column="org_id" />
+		<result property="orgName" column="orgName" />
+		<result property="mobileTel" column="mobile_tel" />
+		<result property="userWorkId" column="user_work_id" />
+		<result property="userSex" column="user_sex" />
+		<result property="userMark" column="user_mark" />
+		<result property="deleteState" column="delete_state" />
+		<result property="isHeader" column="isHeader" />
+
+	</resultMap>
+
+	<select id="selectUserByCode" resultMap="userResultMap"
+		parameterType="UserQuery">
+		<![CDATA[
+		select
+			s.user_id,
+			s.user_name,
+			s.user_code,
+			s.password,
+			s.org_id,
+			s.email,
+			s.mobile_tel,
+			s.user_work_id,
+			s.user_sex,
+			s.user_mark,
+			s.delete_state,
+			s.isHeader	
+		from sys_users s
+		]]>
+		<where>
+			<if test="@Ognl@isNotEmpty(userCode)"> and s.user_code = #{userCode,jdbcType=VARCHAR} </if>
+		</where>
+	</select>
+
+	<select id="selectPassword" resultMap="userResultMap"
+		parameterType="UserQuery">
+		<![CDATA[
+		select s.password
+  			from sys_users s
+  			where s.user_code = #{userCode,jdbcType=VARCHAR}
+		]]>
+	</select>
+
+	<select id="selectByQuery" resultMap="userResultMap"
+		parameterType="UserQuery">
+		<![CDATA[
+		select
+			s.user_id,
+			s.user_name,
+			s.user_code,
+			s.password,
+			s.org_id,
+			s.email,
+			s.mobile_tel,
+			s.user_work_id,
+			s.user_sex,
+			s.user_mark,
+			(select org_name from sys_org org where org.org_id = s.org_id) as orgName,
+			case s.isHeader when '1' then '是' when '0' then '否' else s.isHeader end as isHeader
+		from sys_users s
+		]]>
+		<where>
+			s.delete_state = 0
+			<if test="@Ognl@isNotEmpty(userId)"> and s.user_id = #{userId,jdbcType=NUMERIC} </if>
+			<if test="@Ognl@isNotEmpty(userCode)"> and s.user_code = #{userCode,jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(isHeader)"> and s.isHeader = #{isHeader,jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(userWorkId)"> and s.user_work_id like
+				CONCAT('%',#{userWorkId,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(userName)"> and s.user_name like
+				CONCAT('%',#{userName,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(mobileTel)"> and s.mobile_tel like
+				CONCAT('%',#{mobileTel,jdbcType=VARCHAR},'%') </if>
+			<choose>
+				<when test="isCheckAll==1">
+					<if test="@Ognl@isNotEmpty(orgId)">
+						and s.org_id = #{orgId,jdbcType=VARCHAR}
+					</if>
+				</when>
+				<when test="isCheckAll==2">
+					<if test="@Ognl@isNotEmpty(orgId)"> and s.org_id in (
+						select b.org_id from sys_org b
+						where
+						b.org_path_code like CONCAT('%',#{orgId,jdbcType=VARCHAR},'%'))
+					</if>
+				</when>
+				<otherwise>
+					<if test="@Ognl@isNotEmpty(orgId)"> and s.org_id in (
+						select b.org_id from sys_org b
+						where
+						b.org_path_code like CONCAT('%',#{orgId,jdbcType=VARCHAR},'%'))
+					</if>
+				</otherwise>
+			</choose>
+			<![CDATA[
+			and s.user_id <> 1003 
+			]]>
+		</where>
+	</select>
+	<select id="selectByQueryCount" resultType="long" parameterType="UserQuery">
+		<![CDATA[
+		select count(1)
+		from sys_users s
+		]]>
+		<where>
+			s.delete_state = 0
+			<if test="@Ognl@isNotEmpty(userId)"> and s.user_id = #{userId,jdbcType=NUMERIC} </if>
+			<if test="@Ognl@isNotEmpty(userCode)"> and s.user_code = #{userCode,jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(isHeader)"> and s.isHeader = #{isHeader,jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(userWorkId)"> and s.user_work_id like
+				CONCAT('%',#{userWorkId,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(userName)"> and s.user_name like
+				CONCAT('%',#{userName,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(mobileTel)"> and s.mobile_tel like
+				CONCAT('%',#{mobileTel,jdbcType=VARCHAR},'%') </if>
+			<choose>
+				<when test="isCheckAll==1">
+					<if test="@Ognl@isNotEmpty(orgId)">
+						and s.org_id = #{orgId,jdbcType=VARCHAR}
+					</if>
+				</when>
+				<when test="isCheckAll==2">
+					<if test="@Ognl@isNotEmpty(orgId)"> and s.org_id in (
+						select b.org_id from sys_org b
+						where
+						b.org_path_code like CONCAT('%',#{orgId,jdbcType=VARCHAR},'%'))
+					</if>
+				</when>
+				<otherwise>
+					<if test="@Ognl@isNotEmpty(orgId)"> and s.org_id in (
+						select b.org_id from sys_org b
+						where
+						b.org_path_code like CONCAT('%',#{orgId,jdbcType=VARCHAR},'%'))
+					</if>
+				</otherwise>
+			</choose>
+			<![CDATA[
+			and s.user_id <> 1003 
+			]]>
+		</where>
+	</select>
+	<!-- 添加人员操作 -->
+	<insert id="insertUser" parameterType="User" useGeneratedKeys="true"
+		keyProperty="UserId"> 
+		<![CDATA[
+		insert into sys_users(
+			USER_WORK_ID,
+			USER_NAME,
+			USER_SEX,
+			USER_CODE,
+			PASSWORD,
+			ORG_ID,
+			EMAIL,
+			MOBILE_TEL,
+			USER_MARK,
+			DELETE_STATE,
+			ISHEADER)
+  					 values (#{userWorkId,jdbcType=VARCHAR},
+  					 		 #{userName,jdbcType=VARCHAR},
+							 #{userSex,jdbcType=VARCHAR},
+							 #{userCode,jdbcType=VARCHAR},
+							 '111111',
+							 #{orgId,jdbcType=VARCHAR},
+							 #{email,jdbcType=VARCHAR},
+							 #{mobileTel,jdbcType=VARCHAR},
+							 #{userMark,jdbcType=VARCHAR},
+							 0,
+							 #{isHeader,jdbcType=VARCHAR})
+		]]>
+	</insert>
+	<!-- 更新人员操作 -->
+	<update id="updateUser" parameterType="User">
+		update sys_users
+		<set>
+			<if test="userWorkId != null">USER_WORK_ID = #{userWorkId,jdbcType=VARCHAR},</if>
+			<if test="userName != null">USER_NAME = #{userName,jdbcType=VARCHAR},</if>
+			<if test="userSex != null">USER_SEX = #{userSex,jdbcType=VARCHAR},</if>
+			<if test="userCode != null">USER_CODE = #{userCode,jdbcType=VARCHAR},</if>
+			<if test="password != null">PASSWORD = #{password,jdbcType=VARCHAR},</if>
+			<if test="orgId != null">ORG_ID = #{orgId,jdbcType=VARCHAR},</if>
+			<if test="email != null">EMAIL = #{email,jdbcType=VARCHAR},</if>
+			<if test="mobileTel != null">MOBILE_TEL = #{mobileTel,jdbcType=VARCHAR},</if>
+			<if test="userMark != null">USER_MARK = #{userMark,jdbcType=VARCHAR},</if>
+			<if test="deleteState != null">DELETE_STATE = #{deleteState,jdbcType=VARCHAR},</if>
+			<if test="isHeader != null">ISHEADER = #{isHeader,jdbcType=VARCHAR},</if>
+
+		</set>
+		where user_id=#{userId, jdbcType=NUMERIC}
+	</update>
+	<!-- 删除人员操作 -->
+	<delete id="deleteUser" parameterType="User">
+		<![CDATA[
+			update sys_users set delete_state = 1 where user_id = #{userId,jdbcType=NUMERIC}
+		]]>
+	</delete>
+
+	<select id="selectVerifyUser" resultMap="userResultMap">
+		<![CDATA[
+		select
+			s.user_id,
+			s.user_name,
+			s.user_code,
+			s.password,
+			s.org_id,
+			s.email,
+			s.mobile_tel,
+			s.user_work_id,
+			s.user_sex,
+			s.user_mark,
+			s.isHeader
+		from sys_users s
+		where s.delete_state = 0
+		and s.org_id = 237
+		]]>
+	</select>
+	
+	<select id="selectOrderContractUser" resultMap="userResultMap">
+		<![CDATA[
+		select
+			s.user_id,
+			s.user_name,
+			s.user_code,
+			s.password,
+			s.org_id,
+			s.email,
+			s.mobile_tel,
+			s.user_work_id,
+			s.user_sex,
+			s.user_mark,
+			s.isHeader
+		from sys_users s
+		where s.delete_state = 0
+		and s.org_id = 231
+		]]>
+	</select>
+</mapper>

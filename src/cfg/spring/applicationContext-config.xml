@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.springframework.org/schema/beans" xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:cache="http://www.springframework.org/schema/cache" xmlns:p="http://www.springframework.org/schema/p"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-4.0.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+       http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-4.0.xsd">
+
+	<!-- 读取properties配置文件 -->
+    <!--  
+    <context:property-placeholder location="/WEB-INF/application.properties"/>
+	-->
+	
+	<context:annotation-config />
+	
+	<!-- 注解实现Spring的依赖注入 -->
+    <context:component-scan base-package="com.dpcoi,com.other,com.success">
+      <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />   
+ 	</context:component-scan>  
+    
+	<!-- 引入其他的Spring配置文件 -->
+    
+    <bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath*:cfg/jdbc.properties</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+
+		<!--initialSize: 初始化连接 -->
+		<property name="initialSize" value="1" />
+		<!--maxIdle: 最大空闲连接 -->
+		<property name="maxIdle" value="50" />
+		<!--minIdle: 最小空闲连接 -->
+		<property name="minIdle" value="1" />
+		<!--maxActive: 最大连接数量 -->
+		<property name="maxActive" value="50" />
+		
+		<!--removeAbandoned: 是否自动回收超时连接 -->
+		<property name="removeAbandoned" value="true" />
+		<!--removeAbandonedTimeout: 超时时间(以秒数为单位) -->
+		<property name="removeAbandonedTimeout" value="360" />
+		<!--maxWait: 超时等待时间以毫秒为单位 6000毫秒/1000等于60秒 -->
+		<property name="maxWait" value="3000" />
+	</bean>
+    
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation">
+			<value>classpath:cfg/mybatis/mybatis-config.xml</value>
+		</property>		
+		<property name="mapperLocations" value="classpath:com/**/sqlmapper/*Mapper.xml"/>
+	</bean>
+
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+	  <constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>
+
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    	<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<aop:config>  
+		<aop:pointcut id="fooServiceMethods"   
+			expression="execution(* com.*.*.*.service.serviceImpl.*.*(..)) || execution(* com.*.*.service.serviceImpl.*.*(..)) "/>
+ 		<aop:advisor advice-ref="txAdvice" pointcut-ref="fooServiceMethods"/>   
+	</aop:config>  
+	<tx:advice id="txAdvice" transaction-manager="txManager">  
+    	<tx:attributes>  
+    	<tx:method name="*" read-only="true"/>
+        <tx:method name="add*" propagation="REQUIRED" rollback-for="Exception"/> 
+        <tx:method name="edit*" propagation="REQUIRED" rollback-for="Exception"/> 
+        <tx:method name="delete*" propagation="REQUIRED" rollback-for="Exception"/> 
+        <tx:method name="insert*" propagation="REQUIRED" rollback-for="Exception"/> 
+        <tx:method name="update*" propagation="REQUIRED" rollback-for="Exception"/> 
+        <tx:method name="delete*" propagation="REQUIRED" rollback-for="Exception"/> 
+    	</tx:attributes>  
+	</tx:advice>  
+	
+</beans>       

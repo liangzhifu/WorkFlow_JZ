@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dpcoiUser">
+    <select id="selectDpcoiUserListPage" parameterType="DpcoiUserQuery" resultType="java.util.HashMap">
+        select du.dpcoi_user_id as dpcoiUserId, us.user_id as userId,
+          us.user_name as userName, us.user_code as userCode, us.email,
+          us.mobile_tel as mobileTel, du.dpcoi_user_state as dpcoiUserState
+        from dpcoi_user du, sys_users us
+        <where>
+            du.sys_user_id = us.user_id
+            and du.del_flag = 0
+            and us.delete_state = 0
+            <if test="userName != null and userName != ''" >
+                and us.user_name like CONCAT('%',#{userName},'%')
+            </if>
+            <if test="userCode != null and userCode != ''" >
+                and us.user_code like CONCAT('%',#{userCode},'%')
+            </if>
+        </where>
+        order by du.dpcoi_user_id desc limit #{start},#{size}
+    </select>
+
+    <select id="selectDpcoiUserCount" parameterType="DpcoiUserQuery" resultType="java.lang.Integer">
+        select count(1)
+        from dpcoi_user du, sys_users us
+        <where>
+            du.sys_user_id = us.user_id
+            and du.del_flag = 0
+            and us.delete_state = 0
+            <if test="userName != null and userName != ''" >
+                and us.user_name like CONCAT('%',#{userName},'%')
+            </if>
+            <if test="userCode != null and userCode != ''" >
+                and us.user_code like CONCAT('%',#{userCode},'%')
+            </if>
+        </where>
+    </select>
+
+    <insert id="insertSelective" parameterType="DpcoiUser" useGeneratedKeys="true" keyProperty="dpcoiUserId">
+        INSERT into dpcoi_user
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            dpcoi_user_id,
+            <if test="sysUserId != null" >
+                sys_user_id,
+            </if>
+            <if test="delFlag != null" >
+                del_flag,
+            </if>
+            <if test="createDate != null" >
+                create_date,
+            </if>
+            <if test="createBy != null" >
+                create_by,
+            </if>
+            <if test="updateDate != null" >
+                update_date,
+            </if>
+            <if test="updateBy != null" >
+                update_by,
+            </if>
+            <if test="dpcoiUserState != null" >
+                dpcoi_user_state,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            #{dpcoiUserId,jdbcType=BIGINT},
+            <if test="sysUserId != null" >
+                #{sysUserId,jdbcType=BIGINT},
+            </if>
+            <if test="delFlag != null" >
+                #{delFlag,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null" >
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null" >
+                #{createBy,jdbcType=BIGINT},
+            </if>
+            <if test="updateDate != null" >
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null" >
+                #{updateBy,jdbcType=BIGINT},
+            </if>
+            <if test="dpcoiUserState != null" >
+                #{dpcoiUserState,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateSelective" parameterType="DpcoiUser">
+        update dpcoi_user
+        <set>
+            <if test="delFlag != null" >
+                del_flag = #{delFlag,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDate != null" >
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null" >
+                update_by = #{updateBy,jdbcType=BIGINT},
+            </if>
+            <if test="dpcoiUserState != null" >
+                dpcoi_user_state = #{dpcoiUserState,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where dpcoi_user_id = #{dpcoiUserId,jdbcType=BIGINT}
+    </update>
+
+    <select id="selectNoDpcoiUserList" resultType="java.util.HashMap" parameterType="DpcoiUserQuery">
+        select users.`USER_ID` as userId, users.`USER_NAME` as userName, users.`USER_CODE` as userCode
+        from sys_users users
+        <where>
+            users.`DELETE_STATE` = '0'
+            and users.`USER_ID` not in
+            (select du.`SYS_USER_ID`
+            from dpcoi_user du
+            where du.`DEL_FLAG` = '0')
+            <if test="userName != null and userName != ''" >
+                and users.user_name like CONCAT('%',#{userName},'%')
+            </if>
+            <if test="userCode != null and userCode != ''" >
+                and users.user_code like CONCAT('%',#{userCode},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectDpcoiUserList" parameterType="DpcoiUserQuery" resultType="java.util.HashMap">
+        select du.dpcoi_user_id as dpcoiUserId, us.user_id as userId,
+        us.user_name as userName, us.user_code as userCode, us.email,
+        us.mobile_tel as mobileTel, du.dpcoi_user_state as dpcoiUserState
+        from dpcoi_user du, sys_users us
+        <where>
+            du.sys_user_id = us.user_id
+            and du.del_flag = 0
+            and us.delete_state = 0
+            <if test="userName != null and userName != ''" >
+                and us.user_name like CONCAT('%',#{userName},'%')
+            </if>
+            <if test="userCode != null and userCode != ''" >
+                and us.user_code like CONCAT('%',#{userCode},'%')
+            </if>
+        </where>
+        order by du.dpcoi_user_id desc
+    </select>
+
+    <select id="selectAutocompleteDpcoiUserList" parameterType="DpcoiUserQuery" resultType="java.util.HashMap">
+        select du.dpcoi_user_id as dpcoiUserId, us.user_id as value,
+        us.user_name as label, us.user_code as userCode, us.email,
+        us.mobile_tel as mobileTel, du.dpcoi_user_state as dpcoiUserState
+        from dpcoi_user du, sys_users us, sys_org org
+        <where>
+            du.sys_user_id = us.user_id
+            and us.`ORG_ID` = org.`ORG_ID`
+            and du.del_flag = 0
+            and us.delete_state = 0
+            and org.`dpcoi_quais_act` = 1
+            <if test="userName != null and userName != ''" >
+                and us.user_name like CONCAT('%',#{userName},'%')
+            </if>
+            <if test="userCode != null and userCode != ''" >
+                and us.user_code like CONCAT('%',#{userCode},'%')
+            </if>
+        </where>
+        order by du.dpcoi_user_id desc
+    </select>
+</mapper>

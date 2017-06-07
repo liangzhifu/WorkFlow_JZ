@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="permission">
+	<resultMap id="orgResultMap" type="Org">
+		<result property="orgId" column="org_id" />
+		<result property="parentId" column="parent_id" />
+		<result property="orgName" column="org_name" />
+		<result property="orgPathCode" column="org_path_code" />
+		<result property="orgCreateDate" column="org_create_date" />
+		<result property="orgMark" column="org_mark" />
+	</resultMap>
+	
+	<resultMap id="userResultMap" type="User">
+		<result property="userId" column="user_id" />
+		<result property="userName" column="user_name" />
+		<result property="password" column="password" />
+		<result property="userCode" column="user_code" />
+		<result property="email" column="email" />
+		<result property="orgId" column="org_id" />
+		<result property="mobileTel" column="mobile_tel" />
+		<result property="userWorkId" column="user_work_id" />
+		<result property="userSex" column="user_sex" />
+		<result property="userMark" column="user_mark" />
+	</resultMap>
+	
+	<select id="selectPermissionOrgsByUser" resultMap="orgResultMap" parameterType="java.lang.Integer">
+		<![CDATA[
+			select b.org_id, c.org_path_code
+			from sys_user_fun a, sys_org_fun b, sys_org c
+			where a.ORG_FUN_ID = b.sys_org_fun_id
+			and b.org_id = c.org_id
+			and a.DELETE_STATE = 0
+			and a.USER_ID = #{userId,jdbcType=NUMERIC}
+		]]>
+	</select>
+	
+	<select id="selectPermissionUsersByOrg" resultMap="userResultMap" parameterType="List">
+		select a.USER_ID, b.ORG_PATH_CODE
+		from sys_users a, sys_org b
+		where a.ORG_ID = b.ORG_ID
+		and a.DELETE_STATE = 0
+		and 
+		<foreach collection="list" item="orgPathCode" index="index"  open="(" separator="or" close=")">  
+			POSITION(#{orgPathCode} IN b.ORG_PATH_CODE) > 0
+	    </foreach> 
+	</select>
+</mapper>

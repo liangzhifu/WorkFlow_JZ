@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="statisticsManifest">
+
+	<resultMap id="detail2ResultMap" type="Detail">
+		<result property="orderId" column="order_id" />
+		<result property="taskTypeName" column="task_type_name" />
+		<result property="publishCode" column="publish_code" />
+		<result property="changeTime" column="change_time" />
+		<result property="orderStateCode" column="order_state_code" />
+		<result property="createUser" column="create_user" />
+		<result property="createOrg" column="create_org" />
+		<result property="createTime" column="create_time" />
+		<result property="isDelay" column="is_delay" />
+		<result property="completeTime" column="complete_time" />
+		<result property="requireCompleteTime" column="require_complete_time" />
+		<result property="cycleId" column="cycle_id" />
+		<result property="isNotice" column="is_notice" />
+		<result property="isAlarm" column="is_alarm" />
+		<result property="cycleIsDelay" column="cycle_is_delay" />
+		<result property="noticeCycle" column="notice_cycle" />
+		<result property="alarmTime" column="alarm_time" />
+		<result property="delayCycle" column="delay_cycle" />
+		<result property="agentId" column="agent_id" />
+		<result property="agentType" column="agent_type" />
+		<result property="issueDate" column="issue_date" />
+		<result property="changeContent" column="change_content" />
+		<result property="productionLine" column="production_line" />
+		<result property="carType" column="car_type" />
+		<result property="mountingMat" column="mounting_mat" />
+		<result property="invalidateText" column="invalidate_text" />
+	</resultMap>
+	
+	<select id="selectManifestCount" resultType="long" parameterType="java.lang.String">
+		<![CDATA[
+			select count(1)
+			from task_wo_order_info a, task_wo_order b, task_order c
+			where a.wo_order_id = b.wo_order_id
+			and b.order_id = c.order_id
+			and c.delete_state = 0
+			and locate(#{param,jdbcType=VARCHAR}, CONCAT(',', left(a.WO_INFO_VALUE, locate('<<?><?>>', a.WO_INFO_VALUE) -1), ',')) > 0
+		]]>
+	</select>
+	
+	<select id="selectDetailForAll" resultMap="detail2ResultMap" parameterType="java.lang.String">
+		<![CDATA[
+			select a.ORDER_ID,
+				g9.task_info_value as change_content,
+				g10.task_info_value as issue_date,
+				g1.task_info_value as publish_code,
+				g2.task_info_value as production_line,
+				g3.task_info_value as car_type,
+				g4.task_info_value as mounting_mat,
+				g11.task_info_value as change_time,
+				a.order_state_code as order_state_code
+			from task_order a 
+			left join task_order_info g1 on g1.ORDER_ID = a.ORDER_ID and g1.TASK_TYPE_INFO_ID = 1
+			left join task_order_info g2 on g2.ORDER_ID = a.ORDER_ID and g2.TASK_TYPE_INFO_ID = 2
+			left join task_order_info g3 on g3.ORDER_ID = a.ORDER_ID and g3.TASK_TYPE_INFO_ID = 3
+			left join task_order_info g4 on g4.ORDER_ID = a.ORDER_ID and g4.TASK_TYPE_INFO_ID = 4
+			left join task_order_info g9 on g9.ORDER_ID = a.ORDER_ID and g9.TASK_TYPE_INFO_ID = 9
+			left join task_order_info g10 on g10.ORDER_ID = a.ORDER_ID and g10.TASK_TYPE_INFO_ID = 10
+			left join task_order_info g11 on g11.ORDER_ID = a.ORDER_ID and g11.TASK_TYPE_INFO_ID = 11
+			LEFT JOIN sys_users e on a.CREATE_USER_ID = e.USER_ID
+			left join sys_org h on e.org_id = h.org_id
+			where a.delete_state = 0
+			and a.order_id in
+			(select c.order_id from task_wo_order_info d, task_wo_order b, task_order c
+			where d.wo_order_id = b.wo_order_id
+			and b.order_id = c.order_id
+			and c.delete_state = 0
+			and locate(#{param,jdbcType=VARCHAR}, CONCAT(',', left(d.WO_INFO_VALUE, locate('<<?><?>>', d.WO_INFO_VALUE) -1), ',')) > 0)
+		]]>
+	</select>
+</mapper>

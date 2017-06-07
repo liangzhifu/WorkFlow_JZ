@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org">
+	<resultMap id="orgResultMap" type="Org">
+		<result property="orgId" column="org_id" />
+		<result property="parentId" column="parent_id" />
+		<result property="orgName" column="org_name" />
+		<result property="orgPathCode" column="org_path_code" />
+		<result property="orgCreateDate" column="org_create_date" />
+		<result property="orgMark" column="org_mark" />
+		<result property="dpcoiAddJurisdiction" column="dpcoi_add_jurisdiction" />
+		<result property="agreementTrack" column="agreement_track" />
+		<result property="taskEditJurisdiction" column="task_edit_jurisdiction" />
+		<result property="dpcoiQuaisAct" column="dpcoi_quais_act" />
+		<result property="gradeId" column="grade_id" />
+	</resultMap>
+
+	<select id="selectOrg" resultMap="orgResultMap" parameterType="OrgQuery">
+		<![CDATA[
+			select 
+				m.org_id, 
+				m.parent_id, 
+				m.org_name, 
+				m.org_path_code,
+				m.org_create_date,
+				m.org_mark,
+				m.dpcoi_add_jurisdiction,
+				m.agreement_track,
+				m.dpcoi_quais_act,
+				m.task_edit_jurisdiction,
+				m.grade_id
+			from sys_org m
+		]]>
+		<where>
+			m.delete_state = 0
+			<if test="@Ognl@isNotEmpty(orgId)"> and m.org_id = #{orgId,jdbcType=NUMERIC} </if>
+			<if test="@Ognl@isNotEmpty(parentId)"> and m.parent_id = #{parentId,jdbcType=NUMERIC} </if>
+			<if test="@Ognl@isNotEmpty(orgName)"> and m.org_name like CONCAT(CONCAT('%',
+				#{orgName,jdbcType=VARCHAR}),'%')  </if>
+			<if test="@Ognl@isNotEmpty(orgPathCode)"> and m.org_path_code
+				CONCAT(#{orgPathCode,jdbcType=VARCHAR},'%') </if>
+		</where>
+	</select>
+
+	<select id="selectOrgCount" resultType="long" parameterType="OrgQuery">
+		<![CDATA[
+			select count(1)
+			from sys_org m
+		]]>
+		<where>
+			m.delete_state = 0
+			<if test="@Ognl@isNotEmpty(orgId)"> and m.org_id = #{orgId,jdbcType=NUMERIC} </if>
+			<if test="@Ognl@isNotEmpty(parentId)"> and m.parent_id = #{parentId,jdbcType=NUMERIC} </if>
+			<if test="@Ognl@isNotEmpty(orgName)"> and m.org_name like CONCAT(CONCAT('%',
+				#{orgName,jdbcType=VARCHAR}),'%')  </if>
+			<if test="@Ognl@isNotEmpty(orgPathCode)"> and m.org_path_code
+				CONCAT(#{orgPathCode,jdbcType=VARCHAR},'%') </if>
+		</where>
+	</select>
+
+	<!-- 添加组织操作 -->
+	<insert id="insertOrg" parameterType="Org" useGeneratedKeys="true"
+		keyProperty="orgId"> 
+		<![CDATA[
+		insert into sys_org(org_name,
+						parent_id,
+						org_path_code,
+						org_create_date,
+						org_mark,
+						dpcoi_add_jurisdiction,
+						agreement_track,
+						dpcoi_quais_act,
+						task_edit_jurisdiction,
+						delete_state)
+  					 values (#{orgName,jdbcType=VARCHAR},
+  					 		 #{parentId,jdbcType=NUMERIC},
+							 #{orgPathCode,jdbcType=VARCHAR},
+							 sysdate(),
+							 #{orgMark,jdbcType=VARCHAR},
+							 #{dpcoiAddJurisdiction,jdbcType=NUMERIC},
+							 #{agreementTrack,jdbcType=NUMERIC},
+							 #{dpcoiQuaisAct,jdbcType=NUMERIC},
+							 #{taskEditJurisdiction,jdbcType=NUMERIC},
+							 0)
+		]]>
+	</insert>
+
+	<!-- 更新组织操作 -->
+	<update id="updateOrg" parameterType="Org">
+		update sys_org
+		<set>
+			<if test="orgName != null">org_name = #{orgName,jdbcType=VARCHAR},</if>
+			<if test="orgMark != null">org_mark = #{orgMark,jdbcType=VARCHAR},</if>
+			<if test="gradeId != null">grade_id = #{gradeId,jdbcType=NUMERIC},</if>
+			<if test="dpcoiAddJurisdiction != null">dpcoi_add_jurisdiction = #{dpcoiAddJurisdiction,jdbcType=NUMERIC},</if>
+			<if test="agreementTrack != null">agreement_track = #{agreementTrack,jdbcType=NUMERIC},</if>
+			<if test="dpcoiQuaisAct != null">dpcoi_quais_act = #{dpcoiQuaisAct,jdbcType=NUMERIC},</if>
+			<if test="taskEditJurisdiction != null">task_edit_jurisdiction = #{taskEditJurisdiction,jdbcType=NUMERIC},</if>
+		</set>
+		where org_id=#{orgId, jdbcType=NUMERIC}
+	</update>
+	<!-- 更新组织路径操作 -->
+	<update id="updateOrgPath">
+		<![CDATA[
+		UPDATE sys_org a SET
+		a.ORG_PATH_CODE =
+		(SELECT CONCAT(b.org_path_code,'.',a.org_id) FROM
+		(select org_path_code ,org_id from sys_org c ) b WHERE a.PARENT_ID = b.org_id)
+		WHERE a.ORG_ID <>50
+		]]>
+	</update>
+	<!-- 删除组织操作 -->
+	<delete id="deleteOrg" parameterType="Org">
+		<![CDATA[
+			update sys_org set delete_state = 1 where org_id = #{orgId,jdbcType=NUMERIC}
+		]]>
+	</delete>
+
+	<select id="selectByIdQuery" resultMap="orgResultMap"
+		parameterType="OrgQuery">
+		<![CDATA[
+			select 
+				m.org_id, 
+				m.parent_id, 
+				m.org_name, 
+				m.org_path_code,
+				m.org_create_date,
+				m.org_mark,
+				m.grade_id,
+				m.dpcoi_add_jurisdiction,
+				m.dpcoi_quais_act,
+				m.task_edit_jurisdiction,
+				m.agreement_track
+			from sys_org m
+  			where m.org_id = #{orgId,jdbcType=NUMERIC}
+		]]>
+	</select>
+</mapper>

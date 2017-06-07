@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="taskConfirmOrder">
+	<resultMap id="taskConfirmResultMap" type="TaskConfirmOrder">
+		<result property="confirmOrderId" column="confirm_order_id" />
+		<result property="orderId" column="order_id" />
+		<result property="confirmOrderStateCode" column="confirm_order_state_code" />
+		<result property="confirmUserId" column="confirm_user_id" />
+		<result property="confirmUserName" column="confirm_user_name" />
+		<result property="confirmUserSeq" column="confirm_user_seq" />
+		<result property="runType" column="run_type" />
+		<result property="runCode" column="run_code" />
+		<result property="confirmTime" column="confirm_time" />
+	</resultMap>
+	
+	<select id="selectTaskConfirmOrder" resultMap="taskConfirmResultMap" parameterType="TaskConfirmOrderQuery">
+		<![CDATA[
+			select 
+				m.confirm_order_id, 
+				m.order_id, 
+				m.confirm_order_state_code, 
+				m.confirm_user_id,
+				m.confirm_user_seq,
+				m.run_type,
+				m.run_code,
+				a.user_name as confirm_user_name
+			from task_confirm_order m
+			left join sys_users a on a.user_id = m.confirm_user_id
+		]]>
+		<where>
+			m.delete_state = 0
+			<if test="@Ognl@isNotEmpty(orderId)"> and m.order_id = #{orderId,jdbcType=NUMERIC} </if>
+			<if test="@Ognl@isNotEmpty(confirmUserSeq)"> and m.confirm_user_seq = #{confirmUserSeq,jdbcType=NUMERIC} </if>
+		</where>
+	</select>
+	
+	<insert id="insertTaskConfirmOrder" parameterType="TaskConfirmOrder" useGeneratedKeys="true" keyProperty="confirmOrderId"> 
+		<![CDATA[
+		insert into task_confirm_order(order_id,
+						confirm_order_state_code,
+						confirm_user_id,
+						confirm_user_seq,
+						run_type,
+						run_code,
+						create_time,
+						delete_state)
+  					 values (#{orderId,jdbcType=NUMERIC},
+  					 		#{confirmOrderStateCode,jdbcType=VARCHAR},
+  					 		 #{confirmUserId,jdbcType=NUMERIC},
+							 #{confirmUserSeq,jdbcType=NUMERIC},
+							 #{runType,jdbcType=VARCHAR},
+							 #{runCode,jdbcType=VARCHAR},
+							 sysdate(),
+							 0)
+		]]>
+	</insert>
+
+	<update id="updateTaskConfirmOrder" parameterType="TaskConfirmOrder">
+		update task_confirm_order
+		<set>
+			<if test="confirmUserId != null">confirm_user_id = #{confirmUserId,jdbcType=NUMERIC},</if>
+			<if test="confirmOrderStateCode != null">confirm_order_state_code = #{confirmOrderStateCode,jdbcType=VARCHAR},</if>
+			<if test="confirmTime != null">confirm_time = sysdate(),</if>
+			<if test="confirmUserId != null">confirm_user_id = #{confirmUserId,jdbcType=NUMERIC},</if>
+		</set>
+		where confirm_order_id=#{confirmOrderId, jdbcType=NUMERIC}
+	</update>
+
+	<delete id="deleteTaskConfirmOrder" parameterType="TaskConfirmOrder">
+		<![CDATA[
+			update task_confirm_order set delete_state = 1 where confirm_order_id = #{confirmOrderId,jdbcType=NUMERIC}
+		]]>
+	</delete>
+
+	<select id="selectByIdQuery" resultMap="taskConfirmResultMap"
+		parameterType="TaskConfirmOrderQuery">
+		<![CDATA[
+			select 
+				m.confirm_order_id, 
+				m.order_id, 
+				m.confirm_order_state_code, 
+				m.confirm_user_id,
+				m.confirm_user_seq,
+				m.run_type,
+				m.run_code
+			from task_confirm_order m
+  			where m.confirm_order_id = #{confirmOrderId,jdbcType=NUMERIC}
+		]]>
+	</select>
+	
+	<select id="selectByUserSeq" resultMap="taskConfirmResultMap"
+		parameterType="TaskConfirmOrderQuery">
+		<![CDATA[
+			select 
+				m.confirm_order_id, 
+				m.order_id, 
+				m.confirm_order_state_code, 
+				m.confirm_user_id,
+				m.confirm_user_seq,
+				m.run_type
+			from task_confirm_order m
+  			where m.order_id = #{orderId,jdbcType=NUMERIC}
+  			 and m.confirm_user_seq = #{confirmUserSeq,jdbcType=NUMERIC}
+		]]>
+	</select>
+</mapper>

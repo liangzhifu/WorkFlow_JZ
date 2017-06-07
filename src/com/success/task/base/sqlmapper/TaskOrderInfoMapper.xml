@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="taskOrderInfo">
+	<resultMap id="taskOrderInfoResultMap" type="TaskOrderInfo" >
+		<result property="id" column="id"/>
+		<result property="orderId" column="order_id"/>
+		<result property="taskTypeInfoId" column="task_type_info_id"/>
+		<result property="taskInfoValue" column="task_info_value"/>
+	</resultMap>
+	
+	<select id="selectTaskOrderInfo" resultMap="taskOrderInfoResultMap" parameterType="TaskOrderInfoQuery">
+		<![CDATA[
+			select 
+				m.id, 
+				m.order_id, 
+				m.task_type_info_id, 
+				m.task_info_value
+			from task_order_info m
+		]]>
+		<where>
+			m.delete_state = 0
+			<if test="@Ognl@isNotEmpty(orderId)"> and order_id = #{orderId,jdbcType=NUMERIC} </if>
+		</where>
+	</select>
+	
+	<insert id="insertTaskOrderInfo" parameterType="TaskOrderInfo" useGeneratedKeys="true" keyProperty="id"> 
+		<![CDATA[
+		insert into task_order_info(order_id,
+						task_type_info_id,
+						task_info_value,
+						delete_state)
+  					 values (#{orderId,jdbcType=NUMERIC},
+  					 		 #{taskTypeInfoId,jdbcType=NUMERIC},
+							 #{taskInfoValue,jdbcType=VARCHAR},
+							 0)
+		]]>
+	</insert>
+	
+	<select id="selectTaskPublishCode" resultType="java.lang.String" parameterType="TaskOrderQuery">
+		select c.task_info_value
+		from task_order a, task_order_info c 
+		where c.ORDER_ID = a.ORDER_ID and c.TASK_TYPE_INFO_ID in 
+				(select d.TASK_TYPE_INFO_ID from task_type_info d where d.task_type_id = a.TASK_TYPE_ID and d.info_seq = 2 and d.delete_state = 0)
+		and a.order_id = #{orderId,jdbcType=NUMERIC}
+	</select>
+	
+	<select id="selectTaskChangeTime" resultType="java.lang.String" parameterType="TaskOrderQuery">
+		select c.task_info_value
+		from task_order a, task_order_info c 
+		where c.ORDER_ID = a.ORDER_ID and c.TASK_TYPE_INFO_ID in 
+				(select d.TASK_TYPE_INFO_ID from task_type_info d where d.task_type_id = a.TASK_TYPE_ID and d.info_seq = 7 and d.delete_state = 0)
+		and a.order_id = #{orderId,jdbcType=NUMERIC}
+	</select>
+	
+	<update id="updateOrderChangeTime" parameterType="TaskOrderInfo">
+		update task_order_info set task_info_value = #{taskInfoValue,jdbcType=VARCHAR} where order_id=#{orderId, jdbcType=NUMERIC}
+		and task_type_info_id = 11 and delete_state = 0
+	</update>
+	
+	<update id="updateOrderPublishCode" parameterType="TaskOrderInfo">
+		update task_order_info set task_info_value = #{taskInfoValue,jdbcType=VARCHAR} where order_id=#{orderId, jdbcType=NUMERIC}
+		and task_type_info_id = 1 and delete_state = 0
+	</update>
+	
+	<update id="updateTaskOrderInfo" parameterType="TaskOrderInfo">
+		update task_order_info set task_info_value = #{taskInfoValue,jdbcType=VARCHAR} where order_id=#{orderId, jdbcType=NUMERIC}
+		and task_type_info_id = #{taskTypeInfoId,jdbcType=NUMERIC} and delete_state = 0
+	</update>
+	
+	<select id="selectCountPublishCode" resultType="Integer" parameterType="TaskOrderInfo">
+		<![CDATA[
+			select count(1)
+				from task_order_info a
+				where a.ORDER_ID <> #{orderId, jdbcType=NUMERIC}
+				and a.TASK_INFO_VALUE = #{taskInfoValue,jdbcType=VARCHAR}
+		]]>
+	</select>
+</mapper>

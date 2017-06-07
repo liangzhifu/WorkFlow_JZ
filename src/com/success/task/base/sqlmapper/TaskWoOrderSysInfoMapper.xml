@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="taskWoOrderSysInfo">
+
+    <insert id="insertTaskWoOrderSysInfo" parameterType="TaskWoOrderSysInfo">
+        insert into task_wo_order_sys_info(wo_order_id, sys_info_id, WO_INFO_VALUE)
+        values(#{woOrderId,jdbcType=BIGINT}, #{sysInfoId,jdbcType=BIGINT}, #{woInfoValue,jdbcType=BIGINT})
+    </insert>
+
+    <delete id="deleteTaskWoOrderSysInfo" parameterType="TaskWoOrder">
+        delete from task_wo_order_sys_info where wo_order_id = #{woOrderId,jdbcType=BIGINT}
+    </delete>
+
+    <select id="selectDpcoiWoOrder" resultType="java.util.HashMap" parameterType="TaskWoOrder">
+        SELECT sinfo.`sys_info_id` AS sysInfoId,
+        dwo.`DPCOI_WO_ORDER_ID` AS dpcoiWoOrderId
+        FROM task_wo_order two, task_wo_order_sys_info info, dpcoi_order dor, dpcoi_wo_order dwo, sys_info sinfo
+        WHERE two.`ORDER_ID` = dor.`TASK_ORDER_ID`
+        AND two.`WO_ORDER_ID` = info.`WO_ORDER_ID`
+        AND dor.`DPCOI_ORDER_ID` = dwo.`DPCOI_ORDER_ID`
+        AND info.`SYS_INFO_ID` = sinfo.`sys_info_id`
+        AND sinfo.`dpcoi_flag` = dwo.`DPCOI_WO_ORDER_TYPE`
+        AND dwo.`DPCOI_WO_ORDER_STATE` = 1
+        AND two.`WO_ORDER_ID` = #{woOrderId,jdbcType=BIGINT}
+    </select>
+</mapper>

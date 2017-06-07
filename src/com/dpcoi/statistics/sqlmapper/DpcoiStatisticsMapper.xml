@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dpcoiStatics">
+
+    <sql id="WHERE_ORDER_SQL">
+        <where>
+        dor.dpcoi_order_state IN (1,2)
+        AND dor.del_flag = '0'
+        <if test="vehicleName != null and vehicleName != ''" >
+            and dor.`VEHICLE_NAME` like CONCAT('%',#{vehicleName},'%')
+        </if>
+        <if test="productNo != null and productNo != ''" >
+            and dor.`PRODUCT_NO` like CONCAT('%',#{productNo},'%')
+        </if>
+        <if test="realCuttingDateStart != null and realCuttingDateStart != ''" >
+            and DATE_FORMAT(dor.`REAL_CUTTING_DATE`,'%Y-%m-%d') &gt;= DATE_FORMAT(#{realCuttingDateStart,jdbcType=DATE},'%Y-%m-%d')
+        </if>
+        <if test="realCuttingDateEnd != null and realCuttingDateEnd != ''" >
+            and DATE_FORMAT(dor.`REAL_CUTTING_DATE`,'%Y-%m-%d') &lt;= DATE_FORMAT(#{realCuttingDateEnd,jdbcType=DATE},'%Y-%m-%d')
+        </if>
+        <if test="releaseDateStart != null and releaseDateStart != ''" >
+            and DATE_FORMAT(dor.`RELEASE_DATE`,'%Y-%m-%d') &gt;= DATE_FORMAT(#{releaseDateStart,jdbcType=DATE},'%Y-%m-%d')
+        </if>
+        <if test="releaseDateEnd != null and releaseDateEnd != ''" >
+            and DATE_FORMAT(dor.`RELEASE_DATE`,'%Y-%m-%d') &lt;= DATE_FORMAT(#{releaseDateEnd,jdbcType=DATE},'%Y-%m-%d')
+        </if>
+        <if test="taskOrderNo != null and taskOrderNo != ''" >
+            and EXISTS (SELECT 1 FROM task_order_info info
+            WHERE info.`TASK_TYPE_INFO_ID` = '1'
+            AND info.`ORDER_ID` = dor.`TASK_ORDER_ID`
+            AND info.`task_info_value` like CONCAT('%',#{taskOrderNo},'%'))
+        </if>
+            <if test="productLine != null and productLine != ''" >
+                AND dor.`product_line` like CONCAT('%',#{productLine},'%')
+            </if>
+        </where>
+    </sql>
+
+    <sql id="WHERE_WO_ORDER_SQL">
+        <where>
+            dor.`DPCOI_ORDER_ID` = dwo.`DPCOI_ORDER_ID`
+            and dor.dpcoi_order_state IN (1,2)
+            AND dor.del_flag = '0'
+            <if test="vehicleName != null and vehicleName != ''" >
+                and dor.`VEHICLE_NAME` like CONCAT('%',#{vehicleName},'%')
+            </if>
+            <if test="productNo != null and productNo != ''" >
+                and dor.`PRODUCT_NO` like CONCAT('%',#{productNo},'%')
+            </if>
+            <if test="realCuttingDateStart != null and realCuttingDateStart != ''" >
+                and DATE_FORMAT(dor.`REAL_CUTTING_DATE`,'%Y-%m-%d') &gt;= DATE_FORMAT(#{realCuttingDateStart,jdbcType=DATE},'%Y-%m-%d')
+            </if>
+            <if test="realCuttingDateEnd != null and realCuttingDateEnd != ''" >
+                and DATE_FORMAT(dor.`REAL_CUTTING_DATE`,'%Y-%m-%d') &lt;= DATE_FORMAT(#{realCuttingDateEnd,jdbcType=DATE},'%Y-%m-%d')
+            </if>
+            <if test="releaseDateStart != null and releaseDateStart != ''" >
+                and DATE_FORMAT(dor.`RELEASE_DATE`,'%Y-%m-%d') &gt;= DATE_FORMAT(#{releaseDateStart,jdbcType=DATE},'%Y-%m-%d')
+            </if>
+            <if test="releaseDateEnd != null and releaseDateEnd != ''" >
+                and DATE_FORMAT(dor.`RELEASE_DATE`,'%Y-%m-%d') &lt;= DATE_FORMAT(#{releaseDateEnd,jdbcType=DATE},'%Y-%m-%d')
+            </if>
+            <if test="taskOrderNo != null and taskOrderNo != ''" >
+                and EXISTS (SELECT 1 FROM task_order_info info
+                WHERE info.`TASK_TYPE_INFO_ID` = '1'
+                AND info.`ORDER_ID` = dor.`TASK_ORDER_ID`
+                AND info.`task_info_value` like CONCAT('%',#{taskOrderNo},'%'))
+            </if>
+            <if test="productLine != null and productLine != ''" >
+                AND dor.`product_line` like CONCAT('%',#{productLine},'%')
+            </if>
+        </where>
+    </sql>
+
+    <select id="selectDpcoiOrderCount" resultType="java.lang.Integer" parameterType="DpcoiStatisticsQuery">
+      SELECT COUNT(1) FROM dpcoi_order dor
+      <include refid="WHERE_ORDER_SQL"></include>
+    </select>
+
+    <select id="selectDpcoiWoOrderCount" resultType="java.util.HashMap" parameterType="DpcoiStatisticsQuery">
+        select a.`DPCOI_WO_ORDER_TYPE` as dpcoiWoOrderType,
+        sum(case dwo.`DPCOI_WO_ORDER_STATE` when 2 THEN 1
+        when 3 then 1
+        when 4 then 1
+        else 0 end) as dpcoiWoOrderCount,
+        sum(case dwo.`DPCOI_WO_ORDER_STATE` when 4 then 1
+        else 0 end) as dpcoiWoOrderComplete,
+        sum(case when a.`DPCOI_WO_ORDER_TYPE` = 1 and dor.`pfmea_delay` = 1 and dwo.`DPCOI_WO_ORDER_STATE` = 4 then 1
+        when a.`DPCOI_WO_ORDER_TYPE` = 2 and dor.`cp_delay` = 1 and dwo.`DPCOI_WO_ORDER_STATE` = 4 then 1
+        when a.`DPCOI_WO_ORDER_TYPE` = 3 and dor.`standard_book_delay` = 1 and dwo.`DPCOI_WO_ORDER_STATE` = 4 then 1
+        else 0 end) as dpcoiWoOrderCompleteDelay,
+        sum(case dwo.`DPCOI_WO_ORDER_STATE`
+        when 2 then 1
+        when 3 then 1
+        else 0 end) as dpcoiWoOrderNoComplete
+        from (SELECT dor.`DPCOI_ORDER_ID`, dwo.`DPCOI_WO_ORDER_TYPE`,max(dwo.`DPCOI_WO_ORDER_ID`) as DPCOI_WO_ORDER_ID
+        FROM dpcoi_order dor, dpcoi_wo_order dwo
+        <include refid="WHERE_WO_ORDER_SQL"></include>
+        group by dor.`DPCOI_ORDER_ID`, dwo.`DPCOI_WO_ORDER_TYPE`) a, dpcoi_order dor, dpcoi_wo_order dwo
+        where a.`DPCOI_ORDER_ID` = dor.`DPCOI_ORDER_ID`
+        and a.`DPCOI_WO_ORDER_ID` = dwo.`DPCOI_WO_ORDER_ID`
+        group by a.`DPCOI_WO_ORDER_TYPE`
+    </select>
+
+    <select id="selectWoOrderCompleteDelayList" resultType="java.util.HashMap" parameterType="DpcoiStatisticsQuery">
+        select dor.`DPCOI_ORDER_ID` as dpcoiOrderId,
+        dor.`ISSUED_NO` as issuedNo,
+        dor.`DESIGN_CHANGE_NO` as designChangeNo,
+        dor.`VEHICLE_NAME` as vehicleName,
+        dor.`PRODUCT_NO` as productNo,
+        dor.`HOPE_CUTTING_DATE` as hopeCuttingDate,
+        dor.`REAL_CUTTING_DATE` as realCuttingDate,
+        DATE_FORMAT(dor.`REAL_CUTTING_DATE`, '%Y-%m-%d') AS realCuttingDateStr,
+        dor.`CHANGE_CONTENT` as changeContent,
+        dor.`RELEASE_DATE` as releaseDate,
+        dor.`RETURN_DATE` as returnDate,
+        dor.`product_line` as productLine,
+        DATE_FORMAT(dor.`RELEASE_DATE`, '%Y-%m-%d') AS releaseDateStr,
+        DATE_FORMAT(dor.`RETURN_DATE`, '%Y-%m-%d') AS returnDateStr,
+        dor.`DESIGN_ACT` as designAct,
+        dor.`QUASI_ACT` as quasiAct,
+        (SELECT users.`user_name` FROM sys_users users WHERE users.`USER_ID` = dor.`QUASI_ACT`) AS quasiActName,
+        dor.`DPCOI_ORDER_STATE` as dpcoiOrderState,
+        dor.`DPCOI_ORDER_TYPE` as dpcoiOrderType,
+        dor.`TASK_ORDER_ID` AS taskOrderId,
+        (SELECT info.`task_info_value` FROM task_order_info info
+        WHERE info.`TASK_TYPE_INFO_ID` = '1'
+        AND info.`ORDER_ID` = dor.`TASK_ORDER_ID`) AS taskOrderNo,
+        dor.`REMARK` as remark,
+        dor.`CREATE_BY` AS createBy,
+        (select dwo.`DPCOI_WO_ORDER_TYPE` from dpcoi_wo_order dwo
+        where dwo.`DPCOI_ORDER_ID` = dor.`DPCOI_ORDER_ID`
+        and dwo.`DPCOI_WO_ORDER_STATE` in (1, 2, 3)) as dpcoiWoOrderType
+        from dpcoi_order dor
+        <where>
+            dor.dpcoi_order_state IN (1,2)
+            AND dor.del_flag = '0'
+            and dor.`DPCOI_ORDER_ID` IN
+            (SELECT dwo.`DPCOI_ORDER_ID`
+            FROM dpcoi_wo_order dwo
+            WHERE dwo.`DPCOI_WO_ORDER_STATE` = 4
+            AND dwo.`DPCOI_WO_ORDER_TYPE` = #{dpcoiWoOrderType})
+            <if test="dpcoiWoOrderType == 1">
+                and dor.`pfmea_delay` = 1
+            </if>
+            <if test="dpcoiWoOrderType == 2">
+                and dor.`cp_delay` = 1
+            </if>
+            <if test="dpcoiWoOrderType == 3">
+                and dor.`standard_book_delay` = 1
+            </if>
+            <if test="vehicleName != null and vehicleName != ''" >
+                and dor.`VEHICLE_NAME` like CONCAT('%',#{vehicleName},'%')
+            </if>
+            <if test="productNo != null and productNo != ''" >
+                and dor.`PRODUCT_NO` like CONCAT('%',#{productNo},'%')
+            </if>
+            <if test="realCuttingDateStart != null and realCuttingDateStart != ''" >
+                and DATE_FORMAT(dor.`REAL_CUTTING_DATE`,'%Y-%m-%d') &gt;= DATE_FORMAT(#{realCuttingDateStart,jdbcType=DATE},'%Y-%m-%d')
+            </if>
+            <if test="realCuttingDateEnd != null and realCuttingDateEnd != ''" >
+                and DATE_FORMAT(dor.`REAL_CUTTING_DATE`,'%Y-%m-%d') &lt;= DATE_FORMAT(#{realCuttingDateEnd,jdbcType=DATE},'%Y-%m-%d')
+            </if>
+            <if test="releaseDateStart != null and releaseDateStart != ''" >
+                and DATE_FORMAT(dor.`RELEASE_DATE`,'%Y-%m-%d') &gt;= DATE_FORMAT(#{releaseDateStart,jdbcType=DATE},'%Y-%m-%d')
+            </if>
+            <if test="releaseDateEnd != null and releaseDateEnd != ''" >
+                and DATE_FORMAT(dor.`RELEASE_DATE`,'%Y-%m-%d') &lt;= DATE_FORMAT(#{releaseDateEnd,jdbcType=DATE},'%Y-%m-%d')
+            </if>
+            <if test="taskOrderNo != null and taskOrderNo != ''" >
+                and EXISTS (SELECT 1 FROM task_order_info info
+                WHERE info.`TASK_TYPE_INFO_ID` = '1'
+                AND info.`ORDER_ID` = dor.`TASK_ORDER_ID`
+                AND info.`task_info_value` like CONCAT('%',#{taskOrderNo},'%'))
+            </if>
+            <if test="productLine != null and productLine != ''" >
+                AND dor.`product_line` like CONCAT('%',#{productLine},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectWoOrderNoCompleteList" resultType="java.util.HashMap" parameterType="DpcoiStatisticsQuery">
+    select dor.`DPCOI_ORDER_ID` as dpcoiOrderId,
+            dor.`ISSUED_NO` as issuedNo,
+            dor.`DESIGN_CHANGE_NO` as designChangeNo,
+            dor.`VEHICLE_NAME` as vehicleName,
+            dor.`PRODUCT_NO` as productNo,
+            dor.`HOPE_CUTTING_DATE` as hopeCuttingDate,
+            dor.`REAL_CUTTING_DATE` as realCuttingDate,
+            DATE_FORMAT(dor.`REAL_CUTTING_DATE`, '%Y-%m-%d') AS realCuttingDateStr,
+            dor.`CHANGE_CONTENT` as changeContent,
+            dor.`RELEASE_DATE` as releaseDate,
+            dor.`RETURN_DATE` as returnDate,
+            dor.`product_line` as productLine,
+            DATE_FORMAT(dor.`RELEASE_DATE`, '%Y-%m-%d') AS releaseDateStr,
+            DATE_FORMAT(dor.`RETURN_DATE`, '%Y-%m-%d') AS returnDateStr,
+            dor.`DESIGN_ACT` as designAct,
+            dor.`QUASI_ACT` as quasiAct,
+            (SELECT users.`user_name` FROM sys_users users WHERE users.`USER_ID` = dor.`QUASI_ACT`) AS quasiActName,
+            dor.`DPCOI_ORDER_STATE` as dpcoiOrderState,
+            dor.`DPCOI_ORDER_TYPE` as dpcoiOrderType,
+            dor.`TASK_ORDER_ID` AS taskOrderId,
+            (SELECT info.`task_info_value` FROM task_order_info info
+            WHERE info.`TASK_TYPE_INFO_ID` = '1'
+            AND info.`ORDER_ID` = dor.`TASK_ORDER_ID`) AS taskOrderNo,
+            dor.`REMARK` as remark,
+            dor.`CREATE_BY` AS createBy,
+            (select dwo.`DPCOI_WO_ORDER_TYPE` from dpcoi_wo_order dwo
+            where dwo.`DPCOI_ORDER_ID` = dor.`DPCOI_ORDER_ID`
+            and dwo.`DPCOI_WO_ORDER_STATE` in (2, 3)) as dpcoiWoOrderType
+            from dpcoi_order dor
+            <where>
+                dor.dpcoi_order_state IN (1,2)
+                AND dor.del_flag = '0'
+                and dor.`DPCOI_ORDER_ID` IN
+                (SELECT dwo.`DPCOI_ORDER_ID`
+                FROM dpcoi_wo_order dwo
+                WHERE dwo.`DPCOI_WO_ORDER_STATE` IN (2,3)
+                AND dwo.`DPCOI_WO_ORDER_TYPE` = #{dpcoiWoOrderType})
+                <if test="vehicleName != null and vehicleName != ''" >
+                    and dor.`VEHICLE_NAME` like CONCAT('%',#{vehicleName},'%')
+                </if>
+                <if test="productNo != null and productNo != ''" >
+                    and dor.`PRODUCT_NO` like CONCAT('%',#{productNo},'%')
+                </if>
+                <if test="realCuttingDateStart != null and realCuttingDateStart != ''" >
+                    and DATE_FORMAT(dor.`REAL_CUTTING_DATE`,'%Y-%m-%d') &gt;= DATE_FORMAT(#{realCuttingDateStart,jdbcType=DATE},'%Y-%m-%d')
+                </if>
+                <if test="realCuttingDateEnd != null and realCuttingDateEnd != ''" >
+                    and DATE_FORMAT(dor.`REAL_CUTTING_DATE`,'%Y-%m-%d') &lt;= DATE_FORMAT(#{realCuttingDateEnd,jdbcType=DATE},'%Y-%m-%d')
+                </if>
+                <if test="releaseDateStart != null and releaseDateStart != ''" >
+                    and DATE_FORMAT(dor.`RELEASE_DATE`,'%Y-%m-%d') &gt;= DATE_FORMAT(#{releaseDateStart,jdbcType=DATE},'%Y-%m-%d')
+                </if>
+                <if test="releaseDateEnd != null and releaseDateEnd != ''" >
+                    and DATE_FORMAT(dor.`RELEASE_DATE`,'%Y-%m-%d') &lt;= DATE_FORMAT(#{releaseDateEnd,jdbcType=DATE},'%Y-%m-%d')
+                </if>
+                <if test="taskOrderNo != null and taskOrderNo != ''" >
+                    and EXISTS (SELECT 1 FROM task_order_info info
+                    WHERE info.`TASK_TYPE_INFO_ID` = '1'
+                    AND info.`ORDER_ID` = dor.`TASK_ORDER_ID`
+                    AND info.`task_info_value` like CONCAT('%',#{taskOrderNo},'%'))
+                </if>
+                <if test="productLine != null and productLine != ''" >
+                    AND dor.`product_line` like CONCAT('%',#{productLine},'%')
+                </if>
+            </where>
+    </select>
+</mapper>

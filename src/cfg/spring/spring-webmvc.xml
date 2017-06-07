@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/tx    
+    	http://www.springframework.org/schema/tx/spring-tx-4.0.xsd   
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/aop
+    	http://www.springframework.org/schema/aop/spring-aop-4.0.xs
+		http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+		http://www.springframework.org/schema/task
+    	http://www.springframework.org/schema/task/spring-task-4.0.xsd">
+
+    <description>Spring MVC配置文件</description>
+
+	<mvc:annotation-driven />
+    <!-- 静态资源映射 -->
+    <!-- 
+    <mvc:resources mapping="assets/**" location="/WEB-INF/static/assets/**"/>
+    <mvc:resources mapping="/js/**" location="/WEB-INF/static/js/**"/> 	
+    <mvc:resources mapping="images/**" location="/WEB-INF/static/images/**"/> 
+    <mvc:resources mapping="/css/**" location="/WEB-INF/static/css/**"/>
+	-->
+	
+    <context:component-scan base-package="com.dpcoi,com.other,com.success">
+        <!-- controller包下所有的以Controller为后缀的类都扫描 -->
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service" />   
+    </context:component-scan>
+    
+	<task:annotation-driven scheduler="qbScheduler" mode="proxy"/>  
+	<task:scheduler id="qbScheduler" pool-size="10"/> 
+	
+	<!-- InternalResourceViewResolver默认的就是JstlView所以这里就不用配置viewClass了 -->
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/jsp/"></property>
+		<property name="suffix" value=".jsp"></property>
+	</bean>
+
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	<property name="defaultEncoding" value="utf-8" />
+	<property name="maxUploadSize" value="10485760" />
+	<property name="maxInMemorySize" value="4096" />
+	<property name="resolveLazily" value="true" />
+</bean>
+</beans>

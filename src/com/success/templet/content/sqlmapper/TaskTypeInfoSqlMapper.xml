@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="taskTypeInfo">
+	<resultMap id="taskTypeInfoValueResultMap" type="TaskTypeInfoValue" >
+		<result property="taskTypeInfoId" column="task_type_info_id"/>
+		<result property="infoSeq" column="info_seq"/>
+		<result property="infoCode" column="info_code"/>
+		<result property="infoName" column="info_name"/>
+		<result property="infoLength" column="info_length"/>
+		<result property="infoTypeId" column="info_type_id"/>
+		<result property="sysInfoId" column="sys_info_id"/>
+		<result property="sysInfoName" column="sys_info_name"/>
+		<result property="infoKey" column="info_key"/>
+		<result property="infoKeyName" column="info_key_name"/>
+		<result property="agreementFlag" column="agreement_flag"/>
+	</resultMap>
+	
+	<select id="selectTaskTypeInfoValueByIdQuery" resultMap="taskTypeInfoValueResultMap" parameterType="TaskTypeInfoQuery">
+		select a.INFO_SEQ,a.TASK_TYPE_INFO_ID,a.INFO_CODE,a.INFO_NAME,a.INFO_TYPE_ID,a.INFO_LENGTH,
+			b.sys_info_id,b.sys_info_name,b.info_key,b.info_key_name,b.agreement_flag
+			from task_type_info a 
+			LEFT JOIN sys_info b on a.TASK_TYPE_INFO_ID = b.pri_mes_id and b.info_mes_id = 1 and b.delete_state = 0 
+			where a.TASK_TYPE_ID = #{taskTypeId,jdbcType=NUMERIC} 
+			and a.DELETE_STATE = 0 
+			ORDER BY a.INFO_SEQ ASC, b.sys_info_id ASC
+	</select>
+	
+</mapper>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="staff">
+	<resultMap id="staffResultMap" type="User">
+		<result property="userId" column="user_id" />
+		<result property="userName" column="user_name" />
+		<result property="password" column="password" />
+		<result property="userCode" column="user_code" />
+		<result property="email" column="email" />
+		<result property="orgId" column="org_id" />
+		<result property="mobileTel" column="mobile_tel" />
+	</resultMap>
+	
+	<select id="selectOrg" resultMap="staffResultMap" parameterType="OrgQuery">
+		<![CDATA[
+			select 
+				m.org_id, 
+				m.parnt_id, 
+				m.org_name, 
+				m.org_path_code
+			from sys_org m
+		]]>
+		<where>
+			m.delete_state = 0
+			<if test="@Ognl@isNotEmpty(orgId)">  and m.org_id = #{orgId,jdbcType=NUMERIC} </if>
+			<if test="@Ognl@isNotEmpty(parentId)">  and m.parent_id = #{parentId,jdbcType=NUMERIC} </if>
+			<if test="@Ognl@isNotEmpty(orgName)">  and m.org_name like '%' || #{orgName,jdbcType=VARCHAR} || '%' </if>
+			<if test="@Ognl@isNotEmpty(orgPathCode)">  and m.org_path_code like #{orgPathCode,jdbcType=VARCHAR} || '%' </if>
+		</where>
+	</select>
+	
+	<select id="selectOrgCount" resultType="long" parameterType="OrgQuery">
+		<![CDATA[
+			select count(1)
+			from sys_org m
+		]]>
+		<where>
+			m.delete_state = 0
+			<if test="@Ognl@isNotEmpty(orgId)">  and m.org_id = #{orgId,jdbcType=NUMERIC} </if>
+			<if test="@Ognl@isNotEmpty(parentId)">  and m.parent_id = #{parentId,jdbcType=NUMERIC} </if>
+			<if test="@Ognl@isNotEmpty(orgName)">  and m.org_name like '%' || #{orgName,jdbcType=VARCHAR} || '%' </if>
+			<if test="@Ognl@isNotEmpty(orgPathCode)">  and m.org_path_code like #{orgPathCode,jdbcType=VARCHAR} || '%' </if>
+		</where>
+	</select>
+	
+	<!-- 添加组织操作 -->
+	<insert id="insertOrg" parameterType="Org" useGeneratedKeys="true" keyProperty="OrgId"> 
+		<![CDATA[
+		insert into sys_org(org_name,
+						parent_id,
+						org_path_code,
+						delete_state)
+  					 values (#{orgName,jdbcType=VARCHAR},
+  					 		 #{parentId,jdbcType=NUMERIC},
+							 #{orgPathCode,jdbcType=VARCHAR},
+							 0)
+		]]>
+	</insert>
+	
+	<!-- 更新组织操作 -->
+	<update id="updateOrg" parameterType="Org">
+		update sys_org
+		<set>
+			<if test="orgName != null">org_name = #{orgName,jdbcType=VARCHAR},</if>
+		</set>
+		where org_id=#{orgId, jdbcType=NUMERIC}
+	</update>
+	
+	<!-- 删除组织操作 -->
+	<delete id="deleteOrg" parameterType="Org">
+		<![CDATA[
+			update sys_org set delete_state = 1 where org_id = #{orgId,jdbcType=NUMERIC}
+		]]>
+	</delete>
+	
+	<select id="selectByIdQuery" resultMap="staffResultMap" parameterType="staffQuery">
+		<![CDATA[
+			select
+			s.user_id,
+			s.user_name,
+			s.user_code,
+			s.password,
+			s.org_id,
+			s.email,
+			s.mobile_tel
+		from sys_users s
+  			where s.user_id = #{id,jdbcType=NUMERIC}
+		]]>
+	</select>
+</mapper>

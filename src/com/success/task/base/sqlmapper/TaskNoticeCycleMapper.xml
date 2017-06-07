@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="taskNoticeCycle">
+	<resultMap id="taskNoticeCycleResultMap" type="TaskNoticeCycle" >
+		<result property="cycleId" column="cycle_id"/>
+		<result property="isNotice" column="is_notice"/>
+		<result property="isAlarm" column="is_alarm"/>
+		<result property="isDelay" column="is_delay"/>
+		<result property="noticeCycle" column="notice_cycle"/>
+		<result property="delayCycle" column="delay_cycle"/>
+		<result property="alarmTime" column="alarm_time"/>
+	</resultMap>	
+
+	<insert id="insertTaskNoticeCycle" parameterType="TaskNoticeCycle" useGeneratedKeys="true" keyProperty="cycleId"> 
+		<![CDATA[
+		insert into task_notice_cycle(is_notice,
+						is_alarm,
+						is_delay,
+						notice_cycle,
+						delay_cycle,
+						alarm_time,
+						delete_state)
+  					 values (#{isNotice,jdbcType=NUMERIC},
+  					 		 #{isAlarm,jdbcType=NUMERIC},
+							 #{isDelay,jdbcType=NUMERIC},
+							 #{noticeCycle,jdbcType=NUMERIC},
+							 #{delayCycle,jdbcType=NUMERIC},
+							 #{alarmTime,jdbcType=NUMERIC},
+							 0)
+		]]>
+	</insert>
+	
+	<update id="updateTaskNoticeCycle" parameterType="TaskNoticeCycle">
+		update task_notice_cycle
+		<set>
+			<if test="isNotice != null">is_notice = #{isNotice,jdbcType=NUMERIC},</if>
+			<if test="isAlarm != null">is_alarm = #{isAlarm,jdbcType=NUMERIC},</if>
+			<if test="isDelay != null">is_delay = #{isDelay,jdbcType=NUMERIC},</if>
+			<if test="noticeCycle != null">notice_cycle = #{noticeCycle,jdbcType=NUMERIC},</if>
+			<if test="delayCycle != null">delay_cycle = #{delayCycle,jdbcType=NUMERIC},</if>
+			<if test="alarmTime != null">alarm_time = #{alarmTime,jdbcType=NUMERIC},</if>
+		</set>
+		where cycle_id=#{cycleId, jdbcType=NUMERIC}
+	</update>
+	
+	<delete id="deleteTaskNoticeCycle" parameterType="TaskNoticeCycle">
+		<![CDATA[
+			update task_notice_cycle set delete_state = 1 where cycle_id = #{cycleId,jdbcType=NUMERIC}
+		]]>
+	</delete>
+	
+	<select id="selectByIdQuery" resultMap="taskNoticeCycleResultMap" parameterType="TaskNoticeCycleQuery">
+		<![CDATA[
+			select 
+				m.cycle_id, 
+				m.is_notice, 
+				m.is_alarm, 
+				m.is_delay,
+				m.notice_cycle,
+				m.delay_cycle,
+				m.alarm_time
+			from task_notice_cycle m
+  			where m.cycle_id = #{cycleId,jdbcType=NUMERIC}
+		]]>
+	</select>
+</mapper>

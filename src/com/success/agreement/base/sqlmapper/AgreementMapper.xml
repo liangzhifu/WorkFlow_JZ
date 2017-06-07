@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="agreement">
+
+	<resultMap id="userResultMap" type="User">
+		<result property="userId" column="user_id" />
+		<result property="userName" column="user_name" />
+	</resultMap>
+	
+	<resultMap id="agreementStateResultMap" type="AgreementState">
+		<result property="agreementStateCode" column="state_code" />
+		<result property="agreementStateName" column="state_name" />
+	</resultMap>
+	
+	<resultMap id="agreementMailUserResultMap" type="AgreementEmailUser">
+		<result property="agreementId" column="agreement_id" />
+		<result property="userName" column="user_name" />
+		<result property="userId" column="user_id" />
+		<result property="userEmail" column="user_email" />
+	</resultMap>
+	
+	<resultMap id="agreementResultMap" type="Agreement">
+		<result property="agreementId" column="agreement_id" />
+		<result property="orderId" column="order_id" />
+		<result property="agreementName" column="agreement_name" />
+		<result property="agreementState" column="agreement_state" />
+		<result property="createUser" column="user_name" />
+		<result property="trackId" column="track_id" />
+		<result property="trackName" column="track_name" />
+		<result property="publishCode" column="public_code" />
+		<result property="project" column="project" />
+		<result property="cutLOT" column="cut_lot" />
+		<result property="num" column="num" />
+		<result property="createTime" column="create_time" />
+		<result property="conclusionState" column="conclusion_state" />
+		<result property="conclusionMessage" column="conclusion_message" />
+		<result property="invalidateText" column="invalidate_text" />
+		<result property="isClose" column="is_close" />
+	</resultMap>
+	
+	<select id="selectPageAgreement" resultMap="agreementResultMap" parameterType="AgreementQuery">
+		<![CDATA[
+			select c.task_info_value as public_code,
+			a.agreement_id,a.order_id,a.project,a.num,a.cut_lot,a.conclusion_state,
+			a.conclusion_message,a.invalidate_text,a.agreement_state,d.user_name,
+			DATE_FORMAT(a.create_time,'%Y-%m-%d') as create_time,a.agreement_name,
+			a.track_id, g.user_name as track_name,
+			a.is_close
+			from agreement_manage a
+			left join task_order b on a.order_id = b.ORDER_ID  
+			left join task_order_info c on b.ORDER_ID = c.ORDER_ID and c.TASK_TYPE_INFO_ID = 1
+			left join sys_users d on a.create_user = d.USER_ID
+			left join sys_users g on a.track_id = g.user_id
+		]]>
+		<where>
+			1 = 1
+			<if test="@Ognl@isNotEmpty(publishCode)"> and c.TASK_INFO_VALUE like CONCAT('%',#{publishCode,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(project)"> and a.project like CONCAT('%',#{project,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(cutLOT)"> and a.cut_lot like CONCAT('%',#{cutLOT,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(createUser)"> and d.user_name like CONCAT('%',#{createUser,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(createTime)"> and DATE_FORMAT(a.create_time,'%Y-%m-%d') = #{createTime,jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(agreementState)"> and a.agreement_state = #{agreementState,jdbcType=VARCHAR} </if>
+		</where>
+		order by a.order_id desc
+	</select>
+	
+	<select id="selectPageAgreementCount" resultType="long" parameterType="AgreementQuery">
+		<![CDATA[
+			select count(1)
+			from agreement_manage a
+			left join task_order b on a.order_id = b.ORDER_ID  
+			left join task_order_info c on b.ORDER_ID = c.ORDER_ID and c.TASK_TYPE_INFO_ID = 1
+			left join sys_users d on a.create_user = d.USER_ID
+			left join sys_users g on a.track_id = g.user_id
+		]]>
+		<where>
+			1 = 1
+			<if test="@Ognl@isNotEmpty(publishCode)"> and c.TASK_INFO_VALUE like CONCAT('%',#{publishCode,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(project)"> and a.project like CONCAT('%',#{project,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(cutLOT)"> and a.cut_lot like CONCAT('%',#{cutLOT,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(createUser)"> and d.user_name like CONCAT('%',#{createUser,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(createTime)"> and DATE_FORMAT(a.create_time,'%Y-%m-%d') = #{createTime,jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(agreementState)"> and a.agreement_state = #{agreementState,jdbcType=VARCHAR} </if>
+		</where>
+	</select>
+	
+	<select id="selectAgreementState" resultMap="agreementStateResultMap">
+		select state_code, state_name
+		from agreement_state
+	</select>
+	
+	<select id="selectTacheUser" resultMap="userResultMap"
+		parameterType="java.lang.Integer">
+		select b.USER_ID, b.USER_NAME
+			from task_type_tache_user a, sys_users b
+			where a.user_id = b.USER_ID
+			and a.delete_state = 0
+			and a.tache_id = #{tacheId,jdbcType=NUMERIC}
+	</select>
+
+	<select id="selectTrackUserList" resultMap="userResultMap">
+		SELECT users.`USER_ID`, users.`USER_NAME`
+		FROM sys_org org, sys_users users
+		WHERE org.`ORG_ID` = users.`ORG_ID`
+		AND org.`DELETE_STATE` = 0
+		AND users.`DELETE_STATE` = 0
+		AND org.`agreement_track` = 1
+	</select>
+
+	<select id="selectUser" resultMap="userResultMap">
+		select b.USER_ID, b.USER_NAME
+			from sys_users b
+			where b.delete_state = 0
+			order by b.user_name
+	</select>
+	
+	<insert id="insertAgreement" parameterType="Agreement" useGeneratedKeys="true" keyProperty="agreementId"> 
+		<![CDATA[
+		insert into agreement_manage(order_id, agreement_state, delete_state, agreement_name, 
+			create_time, create_user, track_id, project, cut_lot, num, conclusion_state, conclusion_message, is_close)
+			values(#{orderId,jdbcType=NUMERIC},
+			#{agreementState,jdbcType=VARCHAR},
+			0,
+			#{agreementName,jdbcType=VARCHAR},
+			sysdate(),
+			#{createUserId,jdbcType=NUMERIC},
+			#{trackId,jdbcType=NUMERIC},
+			#{project,jdbcType=VARCHAR},
+			#{cutLOT,jdbcType=VARCHAR},
+			#{num,jdbcType=NUMERIC},
+			#{conclusionState,jdbcType=VARCHAR},
+			#{conclusionMessage,jdbcType=VARCHAR},
+			#{isClose,jdbcType=NUMERIC}
+			)
+		]]>
+	</insert>
+	
+	<update id="updateAgreement" parameterType="Agreement">
+		update agreement_manage
+		<set>
+			<if test="isClose != null">is_close = #{isClose,jdbcType=NUMERIC},</if>
+			<if test="trackId != null">track_id = #{trackId,jdbcType=NUMERIC},</if>
+			<if test="num != null">num = #{num,jdbcType=NUMERIC},</if>
+			<if test="project != null">project = #{project,jdbcType=VARCHAR},</if>
+			<if test="cutLOT != null">cut_lot = #{cutLOT,jdbcType=VARCHAR},</if>
+			<if test="agreementState != null">agreement_state = #{agreementState,jdbcType=VARCHAR},</if>
+			<if test="conclusionState != null">conclusion_state = #{conclusionState,jdbcType=VARCHAR},</if>
+			<if test="conclusionMessage != null">conclusion_message = #{conclusionMessage,jdbcType=VARCHAR},</if>
+			<if test="invalidateText != null">invalidate_text = #{invalidateText,jdbcType=VARCHAR},</if>
+		</set>
+		where agreement_id = #{agreementId, jdbcType=NUMERIC}
+	</update>
+	
+	<select id="selectAgreementCount" resultType="java.lang.Integer"
+		parameterType="java.lang.Integer">
+		select count(1)
+			from agreement_manage a
+			where a.order_id = #{orderId,jdbcType=NUMERIC}
+	</select>
+	
+	<select id="selectAgrementPublishCode" resultType="java.lang.String"
+		parameterType="java.lang.Integer">
+		select task_info_value
+			from task_order_info a
+			where a.order_id = #{orderId,jdbcType=NUMERIC}
+			and a.task_type_info_id = 1
+	</select>
+	
+	<select id="selectAgreementMailUser" resultMap="agreementMailUserResultMap"
+		parameterType="java.lang.Integer">
+		select a.agreement_id, c.USER_ID, c.USER_NAME, c.EMAIL as user_email
+			from agreement_manage a, agreement_content b, sys_users c
+			where a.agreement_id = b.agreement_id
+			and b.responsible = c.USER_ID
+			and a.agreement_id = #{agreementId,jdbcType=NUMERIC}
+	</select>
+	
+	<select id="selectAgreementAllMailUser" resultMap="agreementMailUserResultMap"
+		parameterType="java.lang.Integer">
+		select f.USER_ID,f.USER_NAME,f.EMAIL as user_email
+			from(select DISTINCT(d.user_id) as user_id
+			from(select a.create_user as user_id
+			from agreement_manage a
+			where a.agreement_id = #{agreementId,jdbcType=NUMERIC}
+			UNION
+			select c.USER_ID
+			from agreement_manage a, agreement_content b, sys_users c
+			where a.agreement_id = b.agreement_id
+			and b.responsible = c.USER_ID
+			and a.agreement_id = #{agreementId,jdbcType=NUMERIC}
+			UNION
+			select c.USER_ID
+			from agreement_manage a, agreement_content b, sys_users c
+			where a.agreement_id = b.agreement_id
+			and b.confirm = c.USER_ID
+			and a.agreement_id = #{agreementId,jdbcType=NUMERIC}) d) e,sys_users f
+			where e.user_id = f.USER_ID
+			
+	</select>
+	
+	<select id="selectOrderTacheKey" resultType="java.lang.Integer"
+		parameterType="java.util.Map">
+		<![CDATA[
+			SELECT COUNT(1)
+			FROM task_wo_order two, task_wo_order_sys_info twosi, task_tache_sys_info ttsi
+			WHERE two.`WO_ORDER_ID` = twosi.`WO_ORDER_ID`
+			AND two.`TACHE_ID` = ttsi.`tache_id`
+			AND twosi.`SYS_INFO_ID` = ttsi.`sys_info_id`
+			AND twosi.`WO_INFO_VALUE` = 1
+			AND two.`ORDER_ID` = #{orderId,jdbcType=NUMERIC}
+			AND two.`TACHE_ID` = #{tacheId,jdbcType=NUMERIC}
+		]]>
+	</select>
+
+	<select id="selectAgreementById" resultType="Agreement" parameterType="java.lang.Integer">
+		<![CDATA[
+			select c.task_info_value as publishCode,
+			a.agreement_id as agreementId,a.order_id as orderId,
+			a.project,a.num,a.cut_lot as cutLOT,a.conclusion_state as conclusionState,
+			a.conclusion_message as conclusionMessage,a.invalidate_text as invalidateText,
+			a.agreement_state as agreementState,d.user_name as createUser,
+			DATE_FORMAT(a.create_time,'%Y-%m-%d') as createTime,a.agreement_name as agreementName,
+			a.create_user as createUserId, a.track_id as trackId, g.user_name as trackName, a.is_close as isClose
+			from agreement_manage a
+			left join task_order b on a.order_id = b.ORDER_ID  
+			left join task_order_info c on b.ORDER_ID = c.ORDER_ID and c.TASK_TYPE_INFO_ID = 1
+			left join sys_users d on a.create_user = d.USER_ID
+			left join sys_users g on a.track_id = g.user_id
+			where a.agreement_id =  #{agreementId,jdbcType=NUMERIC}
+		]]>
+	</select>
+	
+	<select id="selectAgreementIdByOrderId" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		<![CDATA[
+		select a.agreement_id
+		from agreement_manage a
+		where (STRCMP(a.agreement_state, '10B') = 0 or STRCMP(a.agreement_state, '10C') = 0)
+		and a.order_id = #{orderId,jdbcType=NUMERIC}
+		]]>
+	</select>
+
+</mapper>

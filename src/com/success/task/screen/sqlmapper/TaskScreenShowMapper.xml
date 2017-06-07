@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="screenShow">
+	<resultMap id="screenShowResultMap" type="TaskScreen">
+		<result property="orderId" column="order_id" />
+		<result property="changeDate" column="changeDate" />
+		<result property="changeTime" column="changeTime" />
+		<result property="publishCode" column="publishCode" />
+		<result property="productionLine" column="productionLine" />
+		<result property="carType" column="carType" />
+		<result property="mountingMat" column="mountingMat" />
+		<result property="tacheName" column="tacheName" />
+		<result property="confirmName" column="confirmName" />
+		<result property="contractResult" column="contractResult" />
+		<result property="colorId" column="colorId" />
+		<result property="changeContent" column="changeContent" />
+	</resultMap>
+	
+	<select id="selectPage" resultMap="screenShowResultMap">
+		<![CDATA[
+			select a.order_id as orderId,
+				g1.task_info_value as publishCode,
+				g2.task_info_value as productionLine,
+				g3.task_info_value as carType,
+				g4.task_info_value as mountingMat,
+				g10.task_info_value as changeContent,
+				SUBSTRING(g5.task_info_value, 1, 10) as changeDate,
+				SUBSTRING(g5.task_info_value, 11, 6) as changeTime,
+				(case when m3.agreement_id is not null
+				then m3.conclusion_state
+				else g6.contract_state_name end) as contractResult,
+				if((select DISTINCT(1) from task_wo_order b where b.order_id = a.order_id and STRCMP(b.wo_order_state_code, '10B') = 0) = 1, 
+					(select GROUP_CONCAT(d.TACHE_NAME) from task_wo_order c,task_tache d where c.order_id = a.order_id and c.tache_id = d.tache_id
+					and STRCMP(c.wo_order_state_code, '10B') = 0), '无') as tacheName,
+				(case when m3.agreement_id is not null
+				then m4.user_name
+				else g8.USER_NAME end) as confirmName,
+				(case when ceil((unix_timestamp(SYSDATE()) - unix_timestamp(g5.task_info_value)) / 60 / 60) > 7 * 24 then 4
+					when (unix_timestamp(g5.task_info_value) - unix_timestamp(SYSDATE())) < 0 then 5
+					when ceil((unix_timestamp(g5.task_info_value) - unix_timestamp(SYSDATE())) / 60 / 60) < 24 then 2
+					when ceil((unix_timestamp(g5.task_info_value) - unix_timestamp(SYSDATE())) / 60 / 60) < 48 then 3
+					else 0 end) as colorId
+				from task_order a
+				left join task_order_info g1 on g1.ORDER_ID = a.ORDER_ID and g1.TASK_TYPE_INFO_ID = 1
+				left join task_order_info g2 on g2.ORDER_ID = a.ORDER_ID and g2.TASK_TYPE_INFO_ID = 2 
+				left join task_order_info g3 on g3.ORDER_ID = a.ORDER_ID and g3.TASK_TYPE_INFO_ID = 3 
+				left join task_order_info g4 on g4.ORDER_ID = a.ORDER_ID and g4.TASK_TYPE_INFO_ID = 4 
+				left join task_order_info g5 on g5.ORDER_ID = a.ORDER_ID and g5.TASK_TYPE_INFO_ID = 11
+				left join task_order_info g10 on g10.ORDER_ID = a.ORDER_ID and g10.TASK_TYPE_INFO_ID = 9
+				left join order_contract_state g6 on g6.contract_state_code = a.contract_state
+				left join sys_users g8 on g8.USER_ID = a.CONTRACT_USER
+				left join agreement_manage m3 on m3.order_id = a.order_id and STRCMP(m3.agreement_state, '10X') <> 0
+				left join sys_users m4 on m4.USER_ID = m3.create_user
+				where  a.order_id in
+				(select m1.order_id
+				from task_order m1, task_confirm_order m2
+		        where m1.order_id = m2.order_id
+		        and m1.delete_state = 0
+		        and STRCMP(m1.order_state_code, '10B') = 0
+		        and STRCMP(m2.confirm_order_state_code, '10A') <> 0
+				and STRCMP(m2.run_type, 'input') = 0
+		        UNION
+		        select m1.order_id
+				from task_order m1
+				where m1.delete_state = 0
+				and STRCMP(m1.order_state_code, '10C') = 0
+		        and exists(SELECT 1
+					FROM task_wo_order two, task_wo_order_sys_info twosi, sys_info info
+					WHERE two.`WO_ORDER_ID` = twosi.`WO_ORDER_ID`
+					AND twosi.`SYS_INFO_ID` = info.`sys_info_id`
+					AND twosi.`WO_INFO_VALUE` = 1
+					AND info.`agreement_flag` = 1
+					AND two.`ORDER_ID` = m1.order_id)
+		        and (
+		        	(((STRCMP(m1.contract_state, '10B') = 0) or (m1.contract_user is null)) and 
+		        	not exists(select 1 from agreement_manage m3 where m3.order_id = m1.order_id and STRCMP(m3.agreement_state, '10X') <> 0))
+						or exists (select 1 from task_wo_order m2 where m2.order_id = m1.order_id and STRCMP(m2.wo_order_state_code, '10B') = 0)))
+				order by g5.task_info_value asc
+		]]>
+	</select>
+
+	<select id="selectPageCount" resultType="long">
+		<![CDATA[
+			select count(1) from
+			(select m1.order_id
+	        from task_order m1, task_confirm_order m2
+	        where m1.order_id = m2.order_id
+	        and m1.delete_state = 0
+	        and STRCMP(m1.order_state_code, '10B') = 0
+	        and STRCMP(m2.confirm_order_state_code, '10A') <> 0
+			and STRCMP(m2.run_type, 'input') = 0
+	        UNION
+	        select m1.order_id
+			from task_order m1
+			where m1.delete_state = 0
+			and STRCMP(m1.order_state_code, '10C') = 0
+	        and exists(SELECT 1
+				FROM task_wo_order two, task_wo_order_sys_info twosi, sys_info info
+				WHERE two.`WO_ORDER_ID` = twosi.`WO_ORDER_ID`
+				AND twosi.`SYS_INFO_ID` = info.`sys_info_id`
+				AND twosi.`WO_INFO_VALUE` = 1
+				AND info.`agreement_flag` = 1
+				AND two.`ORDER_ID` = m1.order_id)
+	        and (
+	        	(((STRCMP(m1.contract_state, '10B') = 0) or (m1.contract_user is null)) and 
+	        	not exists(select 1 from agreement_manage m3 where m3.order_id = m1.order_id and STRCMP(m3.agreement_state, '10X') <> 0))
+					or exists (select 1 from task_wo_order m2 where m2.order_id = m1.order_id and STRCMP(m2.wo_order_state_code, '10B') = 0))) b
+		]]>
+	</select>
+	
+	<select id="selectOverTimeCount" resultType="long">
+		<![CDATA[
+			select count(1) from
+			(select m1.order_id
+	        from task_order m1, task_confirm_order m2
+	        where m1.order_id = m2.order_id
+	        and m1.delete_state = 0
+	        and STRCMP(m1.order_state_code, '10B') = 0
+	        and STRCMP(m2.confirm_order_state_code, '10A') <> 0
+			and STRCMP(m2.run_type, 'input') = 0
+	        UNION
+	        select m1.order_id
+			from task_order m1
+			where m1.delete_state = 0
+			and STRCMP(m1.order_state_code, '10C') = 0
+	        and exists(SELECT 1
+				FROM task_wo_order two, task_wo_order_sys_info twosi, sys_info info
+				WHERE two.`WO_ORDER_ID` = twosi.`WO_ORDER_ID`
+				AND twosi.`SYS_INFO_ID` = info.`sys_info_id`
+				AND twosi.`WO_INFO_VALUE` = 1
+				AND info.`agreement_flag` = 1
+				AND two.`ORDER_ID` = m1.order_id)
+	        and (
+	        	(((STRCMP(m1.contract_state, '10B') = 0) or (m1.contract_user is null)) and 
+	        	not exists(select 1 from agreement_manage m3 where m3.order_id = m1.order_id and STRCMP(m3.agreement_state, '10X') <> 0))
+					or exists (select 1 from task_wo_order m2 where m2.order_id = m1.order_id and STRCMP(m2.wo_order_state_code, '10B') = 0))) b
+		]]>
+	</select>
+	
+	<select id="selectTaskScreen" resultMap="screenShowResultMap" parameterType="ScreenQuery">
+		<![CDATA[
+			select a.order_id as orderId,
+				g1.task_info_value as publishCode,
+				g2.task_info_value as productionLine,
+				g3.task_info_value as carType,
+				g4.task_info_value as mountingMat,
+				g9.task_info_value as changeContent,
+				SUBSTRING(g5.task_info_value, 1, 10) as changeDate,
+				SUBSTRING(g5.task_info_value, 11, 6) as changeTime,
+				(case when m3.agreement_id is not null
+				then m3.conclusion_state
+				else stateCode.contract_state_name end) as contractResult,
+				if((select DISTINCT(1) from task_wo_order b where b.order_id = a.order_id and STRCMP(b.wo_order_state_code, '10B') = 0) = 1, 
+					(select GROUP_CONCAT(d.TACHE_NAME) from task_wo_order c,task_tache d where c.order_id = a.order_id and c.tache_id = d.tache_id
+					and STRCMP(c.wo_order_state_code, '10B') = 0), '无') as tacheName,
+				(case when m3.agreement_id is not null
+				then m4.user_name
+				else g8.USER_NAME end) as confirmName,
+				(case when ceil((unix_timestamp(SYSDATE()) - unix_timestamp(g5.task_info_value)) / 60 / 60) > 7 * 24 then 4
+					when (unix_timestamp(g5.task_info_value) - unix_timestamp(SYSDATE())) < 0 then 5
+					when ceil((unix_timestamp(g5.task_info_value) - unix_timestamp(SYSDATE())) / 60 / 60) < 24 then 2
+					when ceil((unix_timestamp(g5.task_info_value) - unix_timestamp(SYSDATE())) / 60 / 60) < 48 then 3
+					else 0 end) as colorId
+				from task_order a
+				left join task_order_info g1 on g1.ORDER_ID = a.ORDER_ID and g1.TASK_TYPE_INFO_ID = 1
+				left join task_order_info g2 on g2.ORDER_ID = a.ORDER_ID and g2.TASK_TYPE_INFO_ID = 2 
+				left join task_order_info g3 on g3.ORDER_ID = a.ORDER_ID and g3.TASK_TYPE_INFO_ID = 3 
+				left join task_order_info g4 on g4.ORDER_ID = a.ORDER_ID and g4.TASK_TYPE_INFO_ID = 4 
+				left join task_order_info g6 on g6.ORDER_ID = a.ORDER_ID and g6.TASK_TYPE_INFO_ID = 6 
+				left join task_order_info g5 on g5.ORDER_ID = a.ORDER_ID and g5.TASK_TYPE_INFO_ID = 11
+				left join task_order_info g9 on g9.ORDER_ID = a.ORDER_ID and g9.TASK_TYPE_INFO_ID = 9
+				left join task_order_info g10 on g10.ORDER_ID = a.ORDER_ID and g10.TASK_TYPE_INFO_ID = 10
+				left join order_contract_state stateCode on stateCode.contract_state_code = a.contract_state
+				left join sys_users g8 on g8.USER_ID = a.CONTRACT_USER
+				left join agreement_manage m3 on m3.order_id = a.order_id and STRCMP(m3.agreement_state, '10X') <> 0
+				left join sys_users m4 on m4.USER_ID = m3.create_user
+		]]>
+		<where>
+			a.order_id in
+				(select m1.order_id
+				from task_order m1, task_confirm_order m2
+		        where m1.order_id = m2.order_id
+		        and m1.delete_state = 0
+		        and STRCMP(m1.order_state_code, '10B') = 0
+		        and STRCMP(m2.confirm_order_state_code, '10A') &lt;&gt; 0
+				and STRCMP(m2.run_type, 'input') = 0
+		        UNION
+		        select m1.order_id
+				from task_order m1
+				where m1.delete_state = 0
+				and STRCMP(m1.order_state_code, '10C') = 0
+		        <![CDATA[and exists(SELECT 1
+					FROM task_wo_order two, task_wo_order_sys_info twosi, sys_info info
+					WHERE two.`WO_ORDER_ID` = twosi.`WO_ORDER_ID`
+					AND twosi.`SYS_INFO_ID` = info.`sys_info_id`
+					AND twosi.`WO_INFO_VALUE` = 1
+					AND info.`agreement_flag` = 1
+					AND two.`ORDER_ID` = m1.order_id)]]>
+		        <![CDATA[and (
+	        	(((STRCMP(m1.contract_state, '10B') = 0) or (m1.contract_user is null)) and 
+	        	not exists(select 1 from agreement_manage m3 where m3.order_id = m1.order_id and STRCMP(m3.agreement_state, '10X') <> 0))
+					or exists (select 1 from task_wo_order m2 where m2.order_id = m1.order_id and STRCMP(m2.wo_order_state_code, '10B') = 0)))]]>
+			<if test="@Ognl@isNotEmpty(publishCode)"> and g1.TASK_INFO_VALUE like CONCAT('%',#{publishCode,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(changeTimeBegin)"> and STRCMP(g6.TASK_INFO_VALUE,#{changeTimeBegin,jdbcType=VARCHAR}) &gt; 0 </if>
+			<if test="@Ognl@isNotEmpty(changeTimeEnd)"> and STRCMP(g6.TASK_INFO_VALUE,#{changeTimeEnd,jdbcType=VARCHAR}) &lt; 0 </if>
+			<if test="@Ognl@isNotEmpty(issueDate)"> and g10.TASK_INFO_VALUE like CONCAT(#{issueDate,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(changeContent)"> and g9.TASK_INFO_VALUE like CONCAT('%',#{changeContent,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(productionLine)"> and g2.TASK_INFO_VALUE like CONCAT('%',#{productionLine,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(carType)"> and g3.TASK_INFO_VALUE like CONCAT('%',#{carType,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(mountingMat)"> and g4.TASK_INFO_VALUE like CONCAT('%',#{mountingMat,jdbcType=VARCHAR},'%') </if>
+		</where>
+				order by g5.task_info_value asc
+	</select>
+
+	<select id="selectTaskScreenCount" resultType="long" parameterType="ScreenQuery">
+		<![CDATA[
+			select count(1)
+	        from task_order a
+				left join task_order_info g1 on g1.ORDER_ID = a.ORDER_ID and g1.TASK_TYPE_INFO_ID = 1
+				left join task_order_info g2 on g2.ORDER_ID = a.ORDER_ID and g2.TASK_TYPE_INFO_ID = 2 
+				left join task_order_info g3 on g3.ORDER_ID = a.ORDER_ID and g3.TASK_TYPE_INFO_ID = 3 
+				left join task_order_info g4 on g4.ORDER_ID = a.ORDER_ID and g4.TASK_TYPE_INFO_ID = 4 
+				left join task_order_info g5 on g5.ORDER_ID = a.ORDER_ID and g5.TASK_TYPE_INFO_ID = 11
+				left join task_order_info g6 on g6.ORDER_ID = a.ORDER_ID and g6.TASK_TYPE_INFO_ID = 6 
+				left join task_order_info g9 on g9.ORDER_ID = a.ORDER_ID and g9.TASK_TYPE_INFO_ID = 9
+				left join task_order_info g10 on g10.ORDER_ID = a.ORDER_ID and g10.TASK_TYPE_INFO_ID = 10
+				left join order_contract_state stateCode on stateCode.contract_state_code = a.contract_state
+				left join sys_users g8 on g8.USER_ID = a.CONTRACT_USER
+				left join agreement_manage m3 on m3.order_id = a.order_id and STRCMP(m3.agreement_state, '10X') <> 0
+				left join sys_users m4 on m4.USER_ID = m3.create_user
+		]]>
+		<where>
+			a.order_id in
+				(select m1.order_id
+				from task_order m1, task_confirm_order m2
+		        where m1.order_id = m2.order_id
+		        and m1.delete_state = 0
+		        and STRCMP(m1.order_state_code, '10B') = 0
+		        and STRCMP(m2.confirm_order_state_code, '10A') &lt;&gt; 0
+				and STRCMP(m2.run_type, 'input') = 0
+		        UNION
+		        select m1.order_id
+				from task_order m1
+				where m1.delete_state = 0
+				and STRCMP(m1.order_state_code, '10C') = 0
+				<![CDATA[and exists(SELECT 1
+						FROM task_wo_order two, task_wo_order_sys_info twosi, sys_info info
+						WHERE two.`WO_ORDER_ID` = twosi.`WO_ORDER_ID`
+						AND twosi.`SYS_INFO_ID` = info.`sys_info_id`
+						AND twosi.`WO_INFO_VALUE` = 1
+						AND info.`agreement_flag` = 1
+						AND two.`ORDER_ID` = m1.order_id)]]>
+		        <![CDATA[and (
+	        	(((STRCMP(m1.contract_state, '10B') = 0) or (m1.contract_user is null)) and 
+	        	not exists(select 1 from agreement_manage m3 where m3.order_id = m1.order_id and STRCMP(m3.agreement_state, '10X') <> 0))
+					or exists (select 1 from task_wo_order m2 where m2.order_id = m1.order_id and STRCMP(m2.wo_order_state_code, '10B') = 0)))]]>
+			<if test="@Ognl@isNotEmpty(publishCode)"> and g1.TASK_INFO_VALUE like CONCAT('%',#{publishCode,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(changeTimeBegin)"> and STRCMP(g6.TASK_INFO_VALUE,#{changeTimeBegin,jdbcType=VARCHAR}) &gt; 0 </if>
+			<if test="@Ognl@isNotEmpty(changeTimeEnd)"> and STRCMP(g6.TASK_INFO_VALUE,#{changeTimeEnd,jdbcType=VARCHAR}) &lt; 0 </if>
+			<if test="@Ognl@isNotEmpty(issueDate)"> and g10.TASK_INFO_VALUE like CONCAT(#{issueDate,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(changeContent)"> and g9.TASK_INFO_VALUE like CONCAT('%',#{changeContent,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(productionLine)"> and g2.TASK_INFO_VALUE like CONCAT('%',#{productionLine,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(carType)"> and g3.TASK_INFO_VALUE like CONCAT('%',#{carType,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(mountingMat)"> and g4.TASK_INFO_VALUE like CONCAT('%',#{mountingMat,jdbcType=VARCHAR},'%') </if>
+		</where>
+	</select>
+	
+</mapper>

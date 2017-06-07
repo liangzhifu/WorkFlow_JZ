@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="HolidayMapper" >
+    <resultMap id="BaseResultMap" type="Holiday" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="holiday" property="holiday" jdbcType="DATE" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        id, holiday
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select
+        <include refid="Base_Column_List" />
+        from sys_holiday
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteHoliday" parameterType="Holiday" >
+        delete from sys_holiday
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="Holiday" >
+        insert into sys_holiday (id, holiday)
+        values (#{id,jdbcType=INTEGER}, #{holiday,jdbcType=DATE})
+    </insert>
+    <insert id="insertSelective" parameterType="Holiday" >
+        insert into sys_holiday
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="holiday != null" >
+                holiday,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="holiday != null" >
+                #{holiday,jdbcType=DATE},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="Holiday" >
+        update sys_holiday
+        <set >
+            <if test="holiday != null" >
+                holiday = #{holiday,jdbcType=DATE},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="Holiday" >
+        update sys_holiday
+        set holiday = #{holiday,jdbcType=DATE}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <select id="selectHolidayListPage" parameterType="HolidayQuery" resultType="java.util.HashMap">
+        SELECT holiday.`id`,
+        holiday.`holiday`
+        FROM sys_holiday holiday
+        <where>
+            <if test="holidayStart != null and holidayStart != ''" >
+                and DATE_FORMAT(holiday.`holiday`,'%y-%M-%d') &gt;= DATE_FORMAT(#{holidayStart},'%y-%M-%d')
+            </if>
+            <if test="holidayEnd != null and holidayEnd != ''" >
+                and DATE_FORMAT(holiday.`holiday`,'%y-%M-%d') &lt;= DATE_FORMAT(#{holidayEnd},'%y-%M-%d')
+            </if>
+        </where>
+        order by holiday.`holiday` limit #{start},#{size}
+    </select>
+
+    <select id="selectHolidayCount" parameterType="HolidayQuery" resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM sys_holiday holiday
+        <where>
+            <if test="holidayStart != null and holidayStart != ''" >
+                and DATE_FORMAT(holiday.`holiday`,'%y-%M-%d') &gt;= DATE_FORMAT(#{holidayStart},'%y-%M-%d')
+            </if>
+            <if test="holidayEnd != null and holidayEnd != ''" >
+                and DATE_FORMAT(holiday.`holiday`,'%y-%M-%d') &lt;= DATE_FORMAT(#{holidayEnd},'%y-%M-%d')
+            </if>
+        </where>
+    </select>
+</mapper>

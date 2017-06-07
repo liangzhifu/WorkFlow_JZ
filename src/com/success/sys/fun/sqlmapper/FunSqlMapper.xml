@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="fun">
+	<resultMap id="userFunResultMap" type="UserFun">
+		<result property="userFunId" column="user_fun_id" />
+		<result property="userId" column="user_id" />
+		<result property="userName" column="user_name" />
+		<result property="funId" column="fun_id" />
+		<result property="funName" column="fun_name" />
+	</resultMap>
+	<select id="selectUserFun" resultMap="userFunResultMap" parameterType="UserFunQuery">
+		<![CDATA[
+			SELECT
+			a.USER_FUN_ID as user_fun_id,
+			a.ORG_FUN_ID as fun_id,
+			a.USER_ID as user_id,
+			b.ORG_FUN as fun_name
+		FROM
+			sys_user_fun a
+		LEFT JOIN sys_org_fun b ON a.ORG_FUN_ID = b.SYS_ORG_FUN_ID
+			AND b.DELETE_STATE = 0
+		]]>
+		<where>
+					a.DELETE_STATE = 0
+					AND a.USER_ID = #{userId,jdbcType=NUMERIC}
+		</where>
+	</select>
+	<select id="selectFunByUserId" resultMap="userFunResultMap" parameterType="UserFunQuery">
+		<![CDATA[
+			SELECT
+				a.SYS_ORG_FUN_ID as fun_id,
+				a.ORG_FUN as fun_name
+			FROM
+				sys_org_fun a
+		]]>
+		<where>
+				a.DELETE_STATE = 0
+				<choose>
+					<when test="@Ognl@isNotEmpty(checkHaveAccess)">
+						AND a.SYS_ORG_FUN_ID NOT	IN (
+					SELECT
+						e.ORG_FUN_ID
+					FROM
+						sys_user_fun e
+					WHERE
+						e.delete_state = 0
+					<if test="@Ognl@isNotEmpty(userId)"> AND e.user_id = #{userId,jdbcType=NUMERIC} </if>	
+					)
+					</when>
+					<otherwise>
+							AND a.SYS_ORG_FUN_ID IN (
+					SELECT
+						e.ORG_FUN_ID
+					FROM
+						sys_user_fun e
+					WHERE
+						e.delete_state = 0
+					<if test="@Ognl@isNotEmpty(userId)"> AND e.user_id = #{userId,jdbcType=NUMERIC} </if>	
+					)
+					</otherwise>
+				</choose>
+				
+		</where>
+	</select>
+	
+	<!-- 添加功能权限操作 -->
+	<insert id="insertUserFun" parameterType="UserFun" useGeneratedKeys="true"
+		keyProperty="UserFunId"> 
+		<![CDATA[
+		insert into sys_user_fun(user_id,
+						org_fun_id,
+						delete_state)
+  					 values (#{userId,jdbcType=NUMERIC},
+  					 		 #{funId,jdbcType=NUMERIC},
+							 0)
+		]]>
+	</insert>
+	<!-- 删除功能权限操作 -->
+	<delete id="deleteUserFun" parameterType="UserFun">
+		<![CDATA[
+			update sys_user_fun set delete_state = 1 where user_id = #{userId,jdbcType=NUMERIC}
+			and org_fun_id = #{funId,jdbcType=NUMERIC}
+		]]>
+	</delete>
+</mapper>

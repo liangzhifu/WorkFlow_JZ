@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="menu">
+	<resultMap id="userMenuResultMap" type="UserMenu">
+		<result property="userMenuId" column="user_menu_id" />
+		<result property="userId" column="user_id" />
+		<result property="userName" column="user_name" />
+		<result property="menuId" column="menu_id" />
+		<result property="menuName" column="menu_name" />
+		<result property="menuModule" column="menu_module" />
+		<result property="menuUrl" column="menu_url" />
+	</resultMap>
+	<select id="selectUserMenu" resultMap="userMenuResultMap" parameterType="UserMenuQuery">
+		<![CDATA[
+			SELECT
+			a.USER_MENU_ID as user_menu_id,
+			a.MENU_ID as menu_id,
+			a.USER_ID as user_id,
+			b.MENU_NAME as menu_name,
+			b.menu_url
+		FROM
+			sys_user_menu a, sys_menu b
+		]]>
+		<where>
+			a.MENU_ID = b.MENU_ID
+			and b.systerm_flag = '1'
+			AND b.DELETE_STATE = 0
+			and a.DELETE_STATE = 0
+			AND a.USER_ID = #{userId,jdbcType=NUMERIC}
+			<if test="@Ognl@isNotEmpty(moduleId)"> and b.module_id = #{moduleId,jdbcType=NUMERIC} </if>
+		</where>
+		UNION
+		<![CDATA[
+			SELECT
+			a.USER_MENU_ID as user_menu_id,
+			a.MENU_ID as menu_id,
+			a.USER_ID as user_id,
+			b.MENU_NAME as menu_name,
+			b.menu_url
+		FROM
+			sys_user_menu a, sys_menu b, dpcoi_user du
+		]]>
+		<where>
+			a.MENU_ID = b.MENU_ID
+			and b.systerm_flag = '2'
+			AND b.DELETE_STATE = 0
+			and a.DELETE_STATE = 0
+			and du.sys_user_id = a.user_id
+			and du.del_flag = '0'
+			and du.dpcoi_user_state = '1'
+			AND a.USER_ID = #{userId,jdbcType=NUMERIC}
+			<if test="@Ognl@isNotEmpty(moduleId)"> and b.module_id = #{moduleId,jdbcType=NUMERIC} </if>
+		</where>
+	</select>
+	<select id="selectMenuByUserId" resultMap="userMenuResultMap" parameterType="UserMenuQuery">
+		<![CDATA[
+			SELECT
+				a.MENU_ID as menu_id,
+				a.MENU_NAME as menu_name,
+				b.MODULE_NAME as menu_module
+			FROM
+				sys_menu a
+				LEFT JOIN sys_module b ON a.MODULE_ID = b.MODULE_ID
+				AND b.DELETE_STATE = 0
+		]]>
+		<where>
+				a.DELETE_STATE = 0
+				<choose>
+					<when test="@Ognl@isNotEmpty(checkHaveAccess)">
+						AND a.MENU_ID NOT	IN (
+					SELECT
+						e.MENU_ID
+					FROM
+						sys_user_menu e
+					WHERE
+						e.delete_state = 0
+					<if test="@Ognl@isNotEmpty(userId)"> AND e.user_id = #{userId,jdbcType=NUMERIC} </if>	
+					)
+					</when>
+					<otherwise>
+							AND a.MENU_ID IN (
+					SELECT
+						e.MENU_ID
+					FROM
+						sys_user_menu e
+					WHERE
+						e.delete_state = 0
+					<if test="@Ognl@isNotEmpty(userId)"> AND e.user_id = #{userId,jdbcType=NUMERIC} </if>	
+					)
+					</otherwise>
+				</choose>
+				
+		</where>
+	</select>
+	
+	<!-- 添加菜单权限操作 -->
+	<insert id="insertUserMenu" parameterType="UserMenu" useGeneratedKeys="true"
+		keyProperty="UserMenuId"> 
+		<![CDATA[
+		insert into sys_user_menu(user_id,
+						menu_id,
+						delete_state)
+  					 values (#{userId,jdbcType=NUMERIC},
+  					 		 #{menuId,jdbcType=NUMERIC},
+							 0)
+		]]>
+	</insert>
+	<!-- 删除菜单权限操作 -->
+	<delete id="deleteUserMenu" parameterType="UserMenu">
+		<![CDATA[
+			update sys_user_menu set delete_state = 1 where user_id = #{userId,jdbcType=NUMERIC}
+			and menu_id = #{menuId,jdbcType=NUMERIC}
+		]]>
+	</delete>
+</mapper>

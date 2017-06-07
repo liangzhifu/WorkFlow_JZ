@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="taskOrder">
+	<resultMap id="taskOrderResultMap" type="TaskOrder" >
+		<result property="orderId" column="order_id"/>
+		<result property="taskTypeId" column="task_type_id"/>
+		<result property="cycleId" column="cycle_id"/>
+		<result property="createTime" column="create_time"/>
+		<result property="createUserId" column="create_user_id"/>
+		<result property="realCompleteTime" column="real_complete_time"/>
+		<result property="requireCompleteTime" column="require_complete_time"/>
+		<result property="orderStateCode" column="order_state_code"/>
+		<result property="orderContractState" column="contract_state"/>
+		<result property="confirmOrderStateCode" column="confirm_order_state_code"/>
+		<result property="isDelay" column="is_delay"/>
+		<result property="version" column="version"/>
+		<result property="agreementState" column="agreement_state"/>
+	</resultMap>
+	
+	<select id="selectTaskOrder" resultMap="taskOrderResultMap" parameterType="TaskOrderQuery">
+		
+	</select>
+	
+	<select id="selectTaskOrderCount" resultType="long" parameterType="TaskOrderQuery">
+
+	</select>
+	
+	<!-- 添加定单操作 -->
+	<insert id="insertTaskOrder" parameterType="TaskOrder" useGeneratedKeys="true" keyProperty="orderId"> 
+		<![CDATA[
+		insert into task_order(task_type_id,
+						cycle_id,
+						delete_state,
+						create_time,
+						create_user_id,
+						require_complete_time,
+						is_delay,
+						order_state_code,
+						confirm_order_state_code,
+						alarm_time,
+						version)
+  					 values (#{taskTypeId,jdbcType=VARCHAR},
+  					 		 #{cycleId,jdbcType=NUMERIC},
+  					 		 0,
+  					 		 sysdate(),
+  					 		 #{createUserId,jdbcType=VARCHAR},
+  					 		 #{requireCompleteTime,jdbcType=VARCHAR},
+  					 		 0,
+  					 		 #{orderStateCode,jdbcType=VARCHAR},
+  					 		 #{confirmOrderStateCode,jdbcType=VARCHAR},
+  					 		 #{alarmTime,jdbcType=TIMESTAMP},
+  					 		 #{version,jdbcType=NUMERIC})
+		]]>
+	</insert>
+	
+	<!-- 更新定单操作 -->
+	<update id="updateTaskOrder" parameterType="TaskOrder">
+		update task_order
+		<set>
+			<if test="isDelay != null">is_delay = #{isDelay,jdbcType=VARCHAR},</if>
+			<if test="orderStateCode != null">order_state_code = #{orderStateCode,jdbcType=VARCHAR},</if>
+			<if test="confirmOrderStateCode != null">confirm_order_state_code = #{confirmOrderStateCode,jdbcType=VARCHAR},</if>
+			<if test="realCompleteTime != null">real_complete_time = #{realCompleteTime,jdbcType=VARCHAR},</if>
+			<if test="noticeTime != null">notice_time = sysdate(),</if>
+			<if test="alarmTime != null">alarm_time = #{alarmTime,jdbcType=TIMESTAMP},</if>
+			<if test="delayNoticeTime != null">delay_notice_time = #{delayNoticeTime,jdbcType=VARCHAR},</if>
+			<if test="agreementState != null">agreement_state = #{agreementState,jdbcType=VARCHAR},</if>
+		</set>
+		where order_id=#{orderId, jdbcType=NUMERIC}
+	</update>
+	
+	<update id="updateTaskOrderContract" parameterType="TaskOrder">
+		update task_order
+		set	contract_state = #{orderContractState,jdbcType=VARCHAR},
+			contract_user = #{contractUser,jdbcType=NUMERIC}
+		where order_id=#{orderId, jdbcType=NUMERIC}
+	</update>
+	
+	<!-- 删除定单操作 -->
+	<delete id="deleteTaskOrder" parameterType="TaskOrder">
+		<![CDATA[
+			update task_order set delete_state = 1, order_state_code = '10X', invalidate_text = #{invalidateText,jdbcType=VARCHAR}  where order_id = #{orderId,jdbcType=NUMERIC}
+		]]>
+	</delete>
+
+	<select id="selectByIdQuery" resultMap="taskOrderResultMap"
+		parameterType="TaskOrderQuery">
+		<![CDATA[
+			select 
+				m.order_id, 
+				m.task_type_id, 
+				m.cycle_id, 
+				m.create_time,
+				m.create_user_id,
+				m.real_complete_time, 
+				m.require_complete_time, 
+				m.order_state_code, 
+				m.contract_state,
+				m.is_delay, 
+				m.confirm_order_state_code,
+				m.version,
+				m.agreement_state
+			from task_order m
+  			where m.order_id = #{orderId,jdbcType=NUMERIC}
+		]]>
+	</select>
+	
+	<select id="selectDelayTaskOrder" resultMap="taskOrderResultMap">
+		<![CDATA[
+			select m.order_id, 
+					m.task_type_id, 
+					m.cycle_id, 
+					m.create_time,
+					m.create_user_id,
+					m.real_complete_time, 
+					m.require_complete_time, 
+					m.order_state_code, 
+					m.is_delay, 
+					m.confirm_order_state_code,
+					m.version
+				from task_order m
+		where m.order_id in 
+			(select a.order_id
+				from task_order a, task_confirm_order b
+				where a.ORDER_ID = b.ORDER_ID
+				and b.RUN_TYPE = 'input'
+				and b.CONFIRM_ORDER_STATE_CODE != '10C'
+				and a.IS_DELAY = 0
+				and DATE_FORMAT(SYSDATE(),'%Y-%m-%d %H:%m:%s') > DATE_FORMAT(a.REQUIRE_COMPLETE_TIME,'%Y-%m-%d %H:%m:%s')
+				and a.DELETE_STATE = 0)
+			]]>
+	</select>
+	
+	<select id="selectNoticeTaskOrder" resultMap="taskOrderResultMap">
+		<![CDATA[
+		select 	m.order_id, 
+					m.task_type_id, 
+					m.cycle_id, 
+					m.create_time,
+					m.create_user_id,
+					m.real_complete_time, 
+					m.require_complete_time, 
+					m.order_state_code, 
+					m.is_delay, 
+					m.confirm_order_state_code,
+					m.version
+				from task_order m
+		where m.order_id in 
+			(select a.order_id
+				from task_order a, task_confirm_order b, task_notice_cycle c
+				where a.ORDER_ID = b.ORDER_ID
+				and a.CYCLE_ID = c.CYCLE_ID
+				and b.RUN_TYPE = 'input'
+				and b.CONFIRM_ORDER_STATE_CODE = '10B'
+				and a.DELETE_STATE = 0
+				and unix_timestamp(date_add(a.notice_time, interval c.NOTICE_CYCLE hour)) < unix_timestamp(SYSDATE()))		
+			]]>
+	</select>
+	
+	<select id="selectAlarmTaskOrder" resultMap="taskOrderResultMap">
+		<![CDATA[
+		select 	m.order_id, 
+					m.task_type_id, 
+					m.cycle_id, 
+					m.create_time,
+					m.create_user_id,
+					m.real_complete_time, 
+					m.require_complete_time, 
+					m.order_state_code, 
+					m.is_delay, 
+					m.confirm_order_state_code,
+					m.version
+				from task_order m
+		where m.order_id in 
+			(select a.order_id
+				from task_order a, task_notice_cycle c, task_confirm_order m
+				where a.CYCLE_ID = c.CYCLE_ID
+				and a.order_id = m.order_id
+				and a.DELETE_STATE = 0
+				and c.is_alarm = 0
+				and STRCMP(m.run_type, 'input') = 0
+				and STRCMP(m.CONFIRM_ORDER_STATE_CODE, '10A') = 0
+				and unix_timestamp(a.alarm_time) < unix_timestamp(date_add(SYSDATE(), interval c.alarm_time MINUTE)))		
+			]]>
+	</select>
+	
+	<select id="selectInvalidTaskOrder" resultMap="taskOrderResultMap">
+		<![CDATA[
+			select 	a.order_id,
+					a.task_type_id,
+					a.cycle_id,
+					a.create_time,
+					a.create_user_id,
+					a.real_complete_time,
+					a.require_complete_time,
+					a.order_state_code,
+					a.is_delay,
+					a.confirm_order_state_code,
+					a.version
+			from task_order a, task_confirm_order b, task_order_info c
+			where a.ORDER_ID = b.ORDER_ID
+			and a.ORDER_ID = c.ORDER_ID
+			and STRCMP(a.ORDER_STATE_CODE, '10C') <> 0
+			and STRCMP(b.CONFIRM_ORDER_STATE_CODE, '10C') <> 0
+			and STRCMP(b.RUN_CODE, 'quality_confirm') = 0
+			and a.DELETE_STATE = 0
+			and c.TASK_TYPE_INFO_ID = 11
+			and unix_timestamp(date_sub(c.TASK_INFO_VALUE, interval 6 HOUR)) < unix_timestamp(SYSDATE())
+		]]>
+	</select>
+
+	<select id="selectInvalidTaskOrderByAgreement" resultMap="taskOrderResultMap">
+		<![CDATA[
+			select 	a.order_id,
+					a.task_type_id,
+					a.cycle_id,
+					a.create_time,
+					a.create_user_id,
+					a.real_complete_time,
+					a.require_complete_time,
+					a.order_state_code,
+					a.is_delay,
+					a.confirm_order_state_code,
+					a.version
+			FROM task_order a, task_order_info c
+			WHERE a.ORDER_ID = c.ORDER_ID
+			AND a.DELETE_STATE = 0
+			AND c.TASK_TYPE_INFO_ID = 11
+			AND STRCMP(a.ORDER_STATE_CODE, '10X') <> 0
+			AND UNIX_TIMESTAMP(DATE_ADD(c.TASK_INFO_VALUE, INTERVAL 7 DAY)) < UNIX_TIMESTAMP(SYSDATE())
+			AND EXISTS(SELECT 1
+				FROM task_wo_order two, task_wo_order_sys_info twosi, sys_info info
+				WHERE two.`WO_ORDER_ID` = twosi.`WO_ORDER_ID`
+				AND twosi.`SYS_INFO_ID` = info.`sys_info_id`
+				AND twosi.`WO_INFO_VALUE` = 1
+				AND info.`agreement_flag` = 1
+				AND two.`ORDER_ID` = a.order_id)
+			AND ((((STRCMP(a.contract_state, '10B') = 0) OR (a.contract_user IS NULL)) AND
+		        	NOT EXISTS(SELECT 1 FROM agreement_manage m3 WHERE m3.order_id = a.order_id AND STRCMP(m3.agreement_state, '10X') <> 0)))
+		]]>
+	</select>
+
+	<select id="selectAgreementNum" resultType="java.lang.Integer" parameterType="TaskOrderQuery">
+		SELECT COUNT(1)
+		FROM task_order tor, task_wo_order two, task_wo_order_sys_info twosi, sys_info info
+		WHERE tor.order_id = two.`ORDER_ID`
+		AND two.`WO_ORDER_ID` = twosi.`WO_ORDER_ID`
+		AND twosi.`SYS_INFO_ID` = info.`sys_info_id`
+		AND twosi.`WO_INFO_VALUE` = 1
+		AND info.`agreement_flag` = 1
+		AND tor.`ORDER_ID` = #{orderId,jdbcType=NUMERIC}
+	</select>
+</mapper>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<typeAliases>
+
+		<typeAlias type="com.dpcoi.file.domain.FileUpload" alias="FileUpload" />
+
+		<typeAlias type="com.dpcoi.holiday.domain.Holiday" alias="Holiday" />
+		<typeAlias type="com.dpcoi.holiday.query.HolidayQuery" alias="HolidayQuery" />
+
+		<typeAlias type="com.dpcoi.order.domain.DpcoiOrder" alias="DpcoiOrder" />
+		<typeAlias type="com.dpcoi.order.query.DpcoiOrderQuery" alias="DpcoiOrderQuery" />
+
+		<typeAlias type="com.dpcoi.statistics.query.DpcoiStatisticsQuery" alias="DpcoiStatisticsQuery" />
+
+		<typeAlias type="com.dpcoi.sys.domain.DpcoiUser" alias="DpcoiUser" />
+		<typeAlias type="com.dpcoi.sys.domain.DpcoiUserRole" alias="DpcoiUserRole" />
+		<typeAlias type="com.dpcoi.sys.query.DpcoiUserQuery" alias="DpcoiUserQuery" />
+		<typeAlias type="com.dpcoi.sys.query.DpcoiUserRoleQuery" alias="DpcoiUserRoleQuery" />
+
+		<typeAlias type="com.dpcoi.woOrder.domain.DpcoiWoOrder" alias="DpcoiWoOrder" />
+		<typeAlias type="com.dpcoi.woOrder.domain.DpcoiWoOrderFile" alias="DpcoiWoOrderFile" />
+		<typeAlias type="com.dpcoi.woOrder.query.DpcoiWoOrderFileQuery" alias="DpcoiWoOrderFileQuery" />
+		<typeAlias type="com.dpcoi.woOrder.query.DpcoiWoOrderQuery" alias="DpcoiWoOrderQuery" />
+
+		<typeAlias type="com.other.history.domain.OperateHistory" alias="OperateHistory" />
+		<typeAlias type="com.other.history.query.OperateHistoryQuery" alias="OperateHistoryQuery" />
+	
+		<typeAlias type="com.success.agreement.base.domain.Agreement" alias="Agreement" />
+		<typeAlias type="com.success.agreement.base.domain.AgreementContent" alias="AgreementContent" />
+		<typeAlias type="com.success.agreement.base.domain.AgreementEmailUser" alias="AgreementEmailUser" />
+		<typeAlias type="com.success.agreement.base.domain.AgreementState" alias="AgreementState" />
+		<typeAlias type="com.success.agreement.base.domain.AgreementTache" alias="AgreementTache" />
+		
+		<typeAlias type="com.success.agreement.base.query.AgreementContentQuery" alias="AgreementContentQuery" />
+		<typeAlias type="com.success.agreement.base.query.AgreementOrderQuery" alias="AgreementOrderQuery" />
+		<typeAlias type="com.success.agreement.base.query.AgreementQuery" alias="AgreementQuery" />
+	
+		<typeAlias type="com.success.history.base.domain.HistoryAgreement" alias="HistoryAgreement" />
+		<typeAlias type="com.success.history.base.domain.HistoryAgreementContent" alias="HistoryAgreementContent" />
+		<typeAlias type="com.success.history.base.query.HistoryAgreementQuery" alias="HistoryAgreementQuery" />
+	
+		<typeAlias type="com.success.sys.access.domain.Access" alias="Access" />
+		<typeAlias type="com.success.sys.access.query.AccessQuery" alias="AccessQuery" />
+		
+		<typeAlias type="com.success.sys.config.domain.SysConfig" alias="SysConfig" />
+		<typeAlias type="com.success.sys.config.query.SysConfigQuery" alias="SysConfigQuery" />
+		
+		<typeAlias type="com.success.sys.email.domain.TimeTask" alias="TimeTask" />
+		<typeAlias type="com.success.sys.email.query.TimeTaskQuery" alias="TimeTaskQuery" />
+		
+		<typeAlias type="com.success.sys.org.domain.Org" alias="Org" />
+		<typeAlias type="com.success.sys.org.domain.OrgFun" alias="OrgFun" />
+		<typeAlias type="com.success.sys.org.query.OrgQuery" alias="OrgQuery" />
+		<typeAlias type="com.success.sys.module.domain.Module" alias="Module" />
+		<typeAlias type="com.success.sys.module.query.ModuleQuery" alias="ModuleQuery" />
+		<typeAlias type="com.success.sys.staff.domain.Staff" alias="Staff" />
+		<typeAlias type="com.success.sys.staff.query.StaffQuery" alias="StaffQuery" />
+		<typeAlias type="com.success.sys.user.domain.User" alias="User" />
+		<typeAlias type="com.success.sys.user.query.UserQuery" alias="UserQuery" />
+		<typeAlias type="com.success.sys.vehicle.domain.Vehicle" alias="Vehicle" />
+		<typeAlias type="com.success.sys.vehicle.query.VehicleQuery" alias="VehicleQuery" />
+		<typeAlias type="com.success.sys.menu.domain.UserMenu" alias="UserMenu" />
+		<typeAlias type="com.success.sys.menu.query.UserMenuQuery" alias="UserMenuQuery" />
+		<typeAlias type="com.success.sys.fun.domain.UserFun" alias="UserFun" />
+		<typeAlias type="com.success.sys.fun.query.UserFunQuery" alias="UserFunQuery" />
+		
+		<typeAlias type="com.success.task.base.domain.OrderContractState" alias="OrderContractState" />
+		<typeAlias type="com.success.task.base.domain.TaskConfirmOrder" alias="TaskConfirmOrder" />
+		<typeAlias type="com.success.task.base.domain.TaskConfirmOrderUser" alias="TaskConfirmOrderUser" />		
+		<typeAlias type="com.success.task.base.domain.TaskNoticeCycle" alias="TaskNoticeCycle" />
+		<typeAlias type="com.success.task.base.domain.TaskOrderInfo" alias="TaskOrderInfo" />
+		<typeAlias type="com.success.task.base.domain.TaskOrderState" alias="TaskOrderState" />
+		<typeAlias type="com.success.task.base.domain.TaskWoOrderDetail" alias="TaskWoOrderDetail" />
+		<typeAlias type="com.success.task.base.domain.TaskWoOrderInfo" alias="TaskWoOrderInfo" />
+		<typeAlias type="com.success.task.base.domain.TaskWoOrderSysInfo" alias="TaskWoOrderSysInfo" />
+		<typeAlias type="com.success.task.base.domain.WoOrderEmailUser" alias="WoOrderEmailUser" />
+		<typeAlias type="com.success.task.base.query.TaskConfirmOrderQuery" alias="TaskConfirmOrderQuery" />
+		<typeAlias type="com.success.task.base.query.TaskConfirmOrderUserQuery" alias="TaskConfirmOrderUserQuery" />		
+		<typeAlias type="com.success.task.base.query.TaskNoticeCycleQuery" alias="TaskNoticeCycleQuery" />
+		<typeAlias type="com.success.task.base.query.TaskOrderInfoQuery" alias="TaskOrderInfoQuery" />
+		<typeAlias type="com.success.task.base.query.TaskWoOrderDetailQuery" alias="TaskWoOrderDetailQuery" />
+		<typeAlias type="com.success.task.base.query.TaskWoOrderInfoQuery" alias="TaskWoOrderInfoQuery" />
+		
+		<typeAlias type="com.success.task.contract.domain.TaskContractOrg" alias="TaskContractOrg" />
+		<typeAlias type="com.success.task.contract.query.TaskContractQuery" alias="TaskContractQuery" />
+		
+		<typeAlias type="com.success.task.detail.domain.Detail" alias="Detail" />
+		<typeAlias type="com.success.task.detail.domain.TaskOrder" alias="TaskOrder" />
+		<typeAlias type="com.success.task.detail.domain.TaskWoOrder" alias="TaskWoOrder" />
+		<typeAlias type="com.success.task.detail.query.DetailQuery" alias="DetailQuery" />
+		<typeAlias type="com.success.task.detail.query.TaskOrderQuery" alias="TaskOrderQuery" />
+		<typeAlias type="com.success.task.detail.query.TaskWoOrderQuery" alias="TaskWoOrderQuery" />
+		
+		<typeAlias type="com.success.task.statistics.domain.Statistics" alias="Statistics" />
+		<typeAlias type="com.success.task.statistics.query.StatisticsQuery" alias="StatisticsQuery" />
+		
+		<typeAlias type="com.success.task.remind.domain.Remind" alias="Remind" />
+		<typeAlias type="com.success.task.remind.query.RemindQuery" alias="RemindQuery" />
+		
+		<typeAlias type="com.success.task.screen.domain.TaskScreen" alias="TaskScreen" />
+		<typeAlias type="com.success.task.screen.query.ScreenQuery" alias="ScreenQuery" />
+		
+		<typeAlias type="com.success.task.statistics.domain.Statistics" alias="Statistics" />
+		<typeAlias type="com.success.task.statistics.query.StatisticsOrderQuery" alias="StatisticsOrderQuery" />
+		<typeAlias type="com.success.task.statistics.query.StatisticsQuery" alias="StatisticsQuery" />
+		
+		<typeAlias type="com.success.templet.content.domain.TaskTacheInfoValue" alias="TaskTacheInfoValue" />
+		<typeAlias type="com.success.templet.content.domain.TaskTypeInfoValue" alias="TaskTypeInfoValue" />
+		<typeAlias type="com.success.templet.content.query.TaskTypeInfoQuery" alias="TaskTacheInfoQuery" />
+		<typeAlias type="com.success.templet.content.query.TaskTypeInfoQuery" alias="TaskTypeInfoQuery" />
+		
+		<typeAlias type="com.success.templet.run.domain.TaskTypeRun" alias="TaskTypeRun" />
+		<typeAlias type="com.success.templet.run.query.TaskTypeRunQuery" alias="TaskTypeRunQuery" />
+		
+		<typeAlias type="com.success.templet.task.domain.TaskType" alias="TaskType" />
+		<typeAlias type="com.success.templet.task.query.TaskTypeQuery" alias="TaskTypeQuery" />
+
+		<typeAlias type="com.success.templet.tache.domain.TacheUser" alias="TacheUser" />
+		<typeAlias type="com.success.templet.tache.domain.TaskTache" alias="TaskTache" />
+		<typeAlias type="com.success.templet.tache.query.TacheUserQuery" alias="TacheUserQuery" />
+		<typeAlias type="com.success.templet.tache.query.TaskTacheQuery" alias="TaskTacheQuery" />
+	</typeAliases>
+	
+	<mappers>
+		<mapper resource="cfg/mybatis/commonMapper.xml" />
+	</mappers>
+	
+</configuration>

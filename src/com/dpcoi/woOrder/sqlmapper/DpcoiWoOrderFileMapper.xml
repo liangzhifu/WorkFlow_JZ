@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dpcoiWoOrderFile">
+
+<insert id="insertSelective" parameterType="DpcoiWoOrderFile" useGeneratedKeys="true" keyProperty="id">
+        INSERT into dpcoi_wo_order_file
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            id,
+            <if test="dpcoiWoOrderId != null" >
+                dpcoi_wo_order_id,
+            </if>
+            <if test="fileId != null" >
+                file_id,
+            </if>
+            <if test="delFlag != null" >
+                del_flag,
+            </if>
+            <if test="createDate != null" >
+                create_date,
+            </if>
+            <if test="createBy != null" >
+                create_by,
+            </if>
+            <if test="updateDate != null" >
+                update_date,
+            </if>
+            <if test="updateBy != null" >
+                update_by,
+            </if>
+            <if test="woFileState != null" >
+                wo_file_state,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            #{id,jdbcType=BIGINT},
+            <if test="dpcoiWoOrderId != null" >
+                #{dpcoiWoOrderId,jdbcType=BIGINT},
+            </if>
+            <if test="fileId != null" >
+                #{fileId,jdbcType=BIGINT},
+            </if>
+            <if test="delFlag != null" >
+                #{delFlag,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null" >
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null" >
+                #{createBy,jdbcType=BIGINT},
+            </if>
+            <if test="updateDate != null" >
+                #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null" >
+                #{updateBy,jdbcType=BIGINT},
+            </if>
+            <if test="woFileState != null" >
+                #{woFileState,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateSelective" parameterType="DpcoiWoOrder">
+        update dpcoi_wo_order_file
+        <set>
+            <if test="delFlag != null" >
+                del_flag = #{delFlag,jdbcType=VARCHAR},
+            </if>
+            <if test="updateDate != null" >
+                update_date = #{updateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null" >
+                update_by = #{updateBy,jdbcType=BIGINT},
+            </if>
+            <if test="woFileState != null" >
+                wo_file_state = #{woFileState,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <select id="selectDpcoiWoOrderFileList" resultType="java.util.HashMap" parameterType="DpcoiWoOrderFileQuery">
+        SELECT wf.`ID` as dpcoiWoOrderFileId,
+            wf.`CREATE_BY` as createBy,
+            wf.`CREATE_DATE` as createDate,
+            wf.`wo_file_state` as woFileState,
+            fileInfo.`FILE_ID` as fileId,
+            fileInfo.`FILE_NAME` as fileName,
+            fileInfo.`FILe_TYPE` as fileType,
+            fileInfo.`FILE_ALIAS` as fileAlias,
+            fileInfo.`EXCEL_PDF_NAME` as excelPdfName,
+            DATE_FORMAT(fileInfo.create_date, '%Y-%m-%d %H:%i:%S') AS fileCreateDateStr,
+            (select users.`USER_NAME` from sys_users users where users.`USER_ID` = fileInfo.create_by) as createByName
+            from dpcoi_wo_order_file wf, file_upload fileInfo
+            where wf.`FILE_ID` = fileInfo.`FILE_ID`
+            and wf.`DEL_FLAG` = '0'
+            and wf.`DPCOI_WO_ORDER_ID` = #{dpcoiWoOrderId,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectDpcoiOrderFileList" resultType="java.util.HashMap" parameterType="DpcoiWoOrderFileQuery">
+        SELECT fileInfo.`FILE_ID` AS fileId,
+                fileInfo.`FILE_NAME` AS fileName,
+                fileInfo.`FILe_TYPE` AS fileType,
+                fileInfo.`FILE_ALIAS` AS fileAlias,
+                fileInfo.`EXCEL_PDF_NAME` AS excelPdfName,
+                DATE_FORMAT(fileInfo.create_date, '%Y-%m-%d %H:%i:%S') AS fileCreateDateStr,
+                (SELECT users.`USER_NAME` FROM sys_users users WHERE users.`USER_ID` = fileInfo.create_by) AS createByName,
+                (SELECT MIN(dwo.`DPCOI_WO_ORDER_TYPE`) FROM dpcoi_wo_order_file dwof, dpcoi_wo_order dwo
+                    WHERE dwof.`FILE_ID` = fileInfo.`FILE_ID`
+                    AND dwo.`DPCOI_WO_ORDER_ID` = dwof.`DPCOI_WO_ORDER_ID`
+                    AND dwof.`DEL_FLAG` = '0'
+                    AND dwof.`wo_file_state` = 1) AS dpcoiWoOrderType
+         FROM file_upload fileInfo
+         WHERE fileInfo.`FILE_ID` IN
+                (SELECT DISTINCT(fileInfo.`FILE_ID`)
+                FROM dpcoi_wo_order_file wf, file_upload fileInfo, dpcoi_wo_order dwo
+                WHERE wf.`FILE_ID` = fileInfo.`FILE_ID`
+                and wf.`DPCOI_WO_ORDER_ID` = dwo.`DPCOI_WO_ORDER_ID`
+                AND wf.`DEL_FLAG` = '0'
+                AND wf.`wo_file_state` = 1
+                AND dwo.`DPCOI_ORDER_ID` = #{dpcoiOrderId,jdbcType=BIGINT})
+    </select>
+
+    <select id="selectDpcoiWoOrderFileCount" parameterType="DpcoiWoOrderFileQuery" resultType="java.lang.Integer">
+        select count(1)
+        FROM dpcoi_order dor, dpcoi_wo_order dwo, dpcoi_wo_order_file dwof, file_upload fu
+        <where>
+            dor.`DPCOI_ORDER_ID` = dwo.`DPCOI_ORDER_ID`
+            AND dwo.`DPCOI_WO_ORDER_ID` = dwof.`DPCOI_WO_ORDER_ID`
+            AND dwof.`FILE_ID` = fu.`FILE_ID`
+            AND dor.`DEL_FLAG` = '0'
+            AND dwo.`DEL_FLAG` = '0'
+            AND dwof.`DEL_FLAG` = '0'
+            <if test="vehicleName != null and vehicleName != ''" >
+                and dor.`VEHICLE_NAME` like CONCAT('%',#{vehicleName},'%')
+            </if>
+            <if test="productNo != null and productNo != ''" >
+                and dor.`PRODUCT_NO` like CONCAT('%',#{productNo},'%')
+            </if>
+            <if test="hopeCuttingDate != null and hopeCuttingDate != ''" >
+                and dor.`HOPE_CUTTING_DATE` = #{hopeCuttingDate}
+            </if>
+            <if test="realCuttingDateStart != null and realCuttingDateStart != ''" >
+                and DATE_FORMAT(dor.`REAL_CUTTING_DATE`,'%Y-%m-%d') &gt;= DATE_FORMAT(#{realCuttingDateStart,jdbcType=DATE},'%Y-%m-%d')
+            </if>
+            <if test="realCuttingDateEnd != null and realCuttingDateEnd != ''" >
+                and DATE_FORMAT(dor.`REAL_CUTTING_DATE`,'%Y-%m-%d') &lt;= DATE_FORMAT(#{realCuttingDateEnd,jdbcType=DATE},'%Y-%m-%d')
+            </if>
+            <if test="releaseDateStart != null and releaseDateStart != ''" >
+                and DATE_FORMAT(dor.`RELEASE_DATE`,'%Y-%m-%d') &gt;= DATE_FORMAT(#{releaseDateStart,jdbcType=DATE},'%Y-%m-%d')
+            </if>
+            <if test="releaseDateEnd != null and releaseDateEnd != ''" >
+                and DATE_FORMAT(dor.`RELEASE_DATE`,'%Y-%m-%d') &lt;= DATE_FORMAT(#{releaseDateEnd,jdbcType=DATE},'%Y-%m-%d')
+            </if>
+            <if test="fileName != null and fileName != ''" >
+                and fu.`FILE_NAME` like CONCAT('%',#{fileName},'%')
+            </if>
+            <if test="taskOrderNo != null and taskOrderNo != ''" >
+                and EXISTS (SELECT 1 FROM task_order_info info
+                WHERE info.`TASK_TYPE_INFO_ID` = '1'
+                AND info.`ORDER_ID` = dor.`TASK_ORDER_ID`
+                AND info.`task_info_value` like CONCAT('%',#{taskOrderNo},'%'))
+            </if>
+            <if test="dpcoiWoOrderType != null and dpcoiWoOrderType != ''" >
+                and dwo.`DPCOI_WO_ORDER_TYPE` = #{dpcoiWoOrderType}
+            </if>
+            <if test="designChangeNo != null and designChangeNo != ''" >
+                AND dor.`DESIGN_CHANGE_NO` like CONCAT('%',#{designChangeNo},'%')
+            </if>
+            <if test="productLine != null and productLine != ''" >
+                AND dor.`product_line` like CONCAT('%',#{productLine},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectDpcoiWoOrderFileListPage" parameterType="DpcoiWoOrderFileQuery" resultType="java.util.HashMap">
+        SELECT dor.`DPCOI_ORDER_ID` AS dpcoiOrderId,
+        dor.`DPCOI_ORDER_STATE` AS dpcoiOrderState,
+        dor.`ISSUED_NO` AS issuedNo,
+        dor.`VEHICLE_NAME` as vehicleName,
+        dor.`PRODUCT_NO` as productNo,
+        dor.`REAL_CUTTING_DATE` as realCuttingDate,
+        dor.`RELEASE_DATE` as releaseDate,
+        dor.`DESIGN_CHANGE_NO` as designChangeNo,
+        dor.`product_line` as productLine,
+        dwo.`DPCOI_WO_ORDER_ID` AS dpcoiWoOrderId,
+        dwo.`DPCOI_WO_ORDER_STATE` AS dpcoiWoOrderState,
+        dwo.`DPCOI_WO_ORDER_TYPE` AS dpcoiWoOrderType,
+        (SELECT info.`task_info_value` FROM task_order_info info
+        WHERE info.`TASK_TYPE_INFO_ID` = '1'
+        AND info.`ORDER_ID` = dor.`TASK_ORDER_ID`) AS taskOrderNo,
+        fu.`FILE_ID` AS fileId,
+        fu.`FILE_NAME` AS fileName,
+        fu.`FILe_TYPE` AS fileType,
+        fu.`FILE_ALIAS` AS fileAlias,
+        fu.`EXCEL_PDF_NAME` as excelPdfName
+        FROM dpcoi_order dor, dpcoi_wo_order dwo, dpcoi_wo_order_file dwof, file_upload fu
+        <where>
+            dor.`DPCOI_ORDER_ID` = dwo.`DPCOI_ORDER_ID`
+            AND dwo.`DPCOI_WO_ORDER_ID` = dwof.`DPCOI_WO_ORDER_ID`
+            AND dwof.`FILE_ID` = fu.`FILE_ID`
+            AND dor.`DEL_FLAG` = '0'
+            AND dwo.`DEL_FLAG` = '0'
+            AND dwof.`DEL_FLAG` = '0'
+            <if test="vehicleName != null and vehicleName != ''" >
+                and dor.`VEHICLE_NAME` like CONCAT('%',#{vehicleName},'%')
+            </if>
+            <if test="productNo != null and productNo != ''" >
+                and dor.`PRODUCT_NO` like CONCAT('%',#{productNo},'%')
+            </if>
+            <if test="hopeCuttingDate != null and hopeCuttingDate != ''" >
+                and dor.`HOPE_CUTTING_DATE` = #{hopeCuttingDate}
+            </if>
+            <if test="realCuttingDateStart != null and realCuttingDateStart != ''" >
+                and DATE_FORMAT(dor.`REAL_CUTTING_DATE`,'%Y-%m-%d') &gt;= DATE_FORMAT(#{realCuttingDateStart,jdbcType=DATE},'%Y-%m-%d')
+            </if>
+            <if test="realCuttingDateEnd != null and realCuttingDateEnd != ''" >
+                and DATE_FORMAT(dor.`REAL_CUTTING_DATE`,'%Y-%m-%d') &lt;= DATE_FORMAT(#{realCuttingDateEnd,jdbcType=DATE},'%Y-%m-%d')
+            </if>
+            <if test="releaseDateStart != null and releaseDateStart != ''" >
+                and DATE_FORMAT(dor.`RELEASE_DATE`,'%Y-%m-%d') &gt;= DATE_FORMAT(#{releaseDateStart,jdbcType=DATE},'%Y-%m-%d')
+            </if>
+            <if test="releaseDateEnd != null and releaseDateEnd != ''" >
+                and DATE_FORMAT(dor.`RELEASE_DATE`,'%Y-%m-%d') &lt;= DATE_FORMAT(#{releaseDateEnd,jdbcType=DATE},'%Y-%m-%d')
+            </if>
+            <if test="fileName != null and fileName != ''" >
+                and fu.`FILE_NAME` like CONCAT('%',#{fileName},'%')
+            </if>
+            <if test="taskOrderNo != null and taskOrderNo != ''" >
+                and EXISTS (SELECT 1 FROM task_order_info info
+                WHERE info.`TASK_TYPE_INFO_ID` = '1'
+                AND info.`ORDER_ID` = dor.`TASK_ORDER_ID`
+                AND info.`task_info_value` like CONCAT('%',#{taskOrderNo},'%'))
+            </if>
+            <if test="dpcoiWoOrderType != null and dpcoiWoOrderType != ''" >
+                and dwo.`DPCOI_WO_ORDER_TYPE` = #{dpcoiWoOrderType}
+            </if>
+            <if test="designChangeNo != null and designChangeNo != ''" >
+                AND dor.`DESIGN_CHANGE_NO` like CONCAT('%',#{designChangeNo},'%')
+            </if>
+            <if test="productLine != null and productLine != ''" >
+                AND dor.`product_line` like CONCAT('%',#{productLine},'%')
+            </if>
+        </where>
+        ORDER BY dor.`DPCOI_ORDER_ID` DESC, dwo.`DPCOI_WO_ORDER_ID` ASC limit #{start},#{size}
+    </select>
+
+    <delete id="deleteDpcoiWoOrderFile" parameterType="DpcoiWoOrderFileQuery">
+        delete from dpcoi_wo_order_file where wo_file_state = 2 and dpcoi_wo_order_id = #{dpcoiWoOrderId}
+    </delete>
+
+    <update id="updateDpcoiWoOrderFilePassed" parameterType="DpcoiWoOrderFileQuery">
+        update dpcoi_wo_order_file
+        set wo_file_state = 1
+        where wo_file_state = 0
+        and dpcoi_wo_order_id = #{dpcoiWoOrderId}
+        and del_flag = '0'
+    </update>
+
+    <insert id="insertCopyDpcoiWoOrder" parameterType="java.util.HashMap">
+        INSERT INTO dpcoi_wo_order_file(DPCOI_WO_ORDER_ID, FILE_ID, create_by, create_date, update_by, update_date, DEL_FLAG, wo_file_state)
+        SELECT #{newDpcoiWoOrderId},wf.`FILE_ID`,wf.`CREATE_BY`,wf.`CREATE_DATE`,wf.`UPDATE_BY`,wf.`UPDATE_DATE`,wf.`DEL_FLAG`,wf.`wo_file_state`
+        FROM dpcoi_wo_order_file wf
+        WHERE wf.`DEL_FLAG` = '0'
+        AND wf.`DPCOI_WO_ORDER_ID` = #{oldDpcoiWoOrderId}
+    </insert>
+</mapper>

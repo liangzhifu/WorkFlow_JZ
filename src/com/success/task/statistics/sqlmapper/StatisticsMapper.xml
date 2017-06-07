@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="statistics">
+		<resultMap id="statisticsResultMap" type="Statistics">
+		<result property="totalNum" column="total_num" />
+		<result property="completeNum" column="complete_num" />
+		<result property="notCompleteNum" column="not_complete_num" />
+		<result property="delayNum" column="delay_num" />
+		<result property="allDelayNum" column="all_delay_num" />
+		<result property="name" column="name" />
+		<result property="tacheId" column="tache_id" />
+		<result property="completeDelayNum" column="complete_delay_num" />
+		<result property="ngNum" column="ng_num" />
+		<result property="noAgreementNum" column="no_agreement_num" />
+		<result property="improveNum" column="improve_num" />
+		<result property="noShowNum" column="no_show_num" />
+	</resultMap>
+	
+	<select id="selectStatistics" resultMap="statisticsResultMap" parameterType="StatisticsQuery">
+		<![CDATA[
+			select count(1) as total_num,
+				sum(case when a.ORDER_STATE_CODE = '10C' then 1 else 0 END) as complete_num,
+				sum(case when a.ORDER_STATE_CODE = '10C' then 0 else 1 END) as not_complete_num,
+				sum(case when a.IS_DELAY = 1 then 1 else 0 END) as all_delay_num,
+				sum(case when a.IS_DELAY = 1 and a.ORDER_STATE_CODE = '10C' then 1 else 0 END) as complete_delay_num,
+				sum(case when a.IS_DELAY = 1 and STRCMP(a.ORDER_STATE_CODE,'10C') <> 0 then 1 else 0 END) as delay_num,
+				sum(case when STRCMP(t.conclusion_state,'NG') = 0 then 1 else 0 END) as ng_num,
+				sum(case when ((t.agreement_id is null) and (STRCMP(a.contract_state, '10B') = 0 or a.contract_user is null)) 
+				and m.task_info_value < DATE_FORMAT(sysdate(),'%Y-%m-%d %H:%m:%s') 
+				and exists(SELECT 1
+					FROM task_wo_order two, task_wo_order_sys_info twosi, sys_info info
+					WHERE two.`WO_ORDER_ID` = twosi.`WO_ORDER_ID`
+					AND twosi.`SYS_INFO_ID` = info.`sys_info_id`
+					AND twosi.`WO_INFO_VALUE` = 1
+					AND info.`agreement_flag` = 1
+					AND two.`ORDER_ID` = a.order_id)
+				then 1 else 0 END) as no_agreement_num,
+				sum(case when t.agreement_id is not null and (exists(select 1 from agreement_content w where w.agreement_id = t.agreement_id 
+				and STRCMP(w.state,'NG') = 0 and w.term is not null]]>
+				<if test="@Ognl@isNotEmpty(improveTimeBegin)"> and DATE_FORMAT(w.term,'%Y-%m-%d %H:%m:%s') &gt; #{improveTimeBegin,jdbcType=VARCHAR} </if>
+				<if test="@Ognl@isNotEmpty(improveTimeEnd)"> and DATE_FORMAT(w.term,'%Y-%m-%d %H:%m:%s') &lt; #{improveTimeEnd,jdbcType=VARCHAR} </if>
+		<![CDATA[
+				) or exists(select 1 from agreement_content w where w.agreement_id = t.agreement_id and w.state is null)) then 1 else 0 END) as improve_num
+				from task_order a
+				left join task_type b on a.TASK_TYPE_ID = b.TASK_TYPE_ID
+				left join task_order_info c on c.ORDER_ID = a.ORDER_ID and c.TASK_TYPE_INFO_ID in 
+				(select d.TASK_TYPE_INFO_ID from task_type_info d where d.task_type_id = a.TASK_TYPE_ID and d.info_seq = 1 and d.delete_state = 0)
+				LEFT JOIN sys_users e on a.CREATE_USER_ID = e.USER_ID
+				left join task_notice_cycle f on f.cycle_id = a.cycle_id 
+				left join sys_org h on e.org_id = h.org_id
+				left join task_order_info m on m.order_id = a.order_id and m.task_type_info_id = 11
+				left join agreement_manage t on t.order_id = a.ORDER_ID and (STRCMP(t.agreement_state, '10B') = 0 or STRCMP(t.agreement_state, '10C') = 0)
+		]]>
+		<where>
+			a.delete_state = 0
+			and a.order_id &gt; 512
+			<if test="@Ognl@isNotEmpty(createUser)"> and e.user_name like CONCAT('%',#{createUser,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(createTimeBegin)"> and DATE_FORMAT(a.create_time,'%Y-%m-%d %H:%m:%s') &gt; #{createTimeBegin,jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(createTimeEnd)"> and DATE_FORMAT(a.create_time,'%Y-%m-%d %H:%m:%s') &lt; #{createTimeEnd,jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(changeTimeBegin)"> and m.task_info_value &gt; #{changeTimeBegin,jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(changeTimeEnd)"> and m.task_info_value &lt; #{changeTimeEnd,jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(isDelay)"> and a.is_delay = #{isDelay,jdbcType=NUMERIC} </if>
+			<if test="@Ognl@isNotEmpty(orderStateCode)"> and a.ORDER_STATE_CODE = #{orderStateCode,jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(orgId)"> and exists (select 1 from sys_org org where org.org_id = #{orgId,jdbcType=NUMERIC}
+				and POSITION(org.ORG_PATH_CODE IN h.ORG_PATH_CODE) > 0) </if>
+		</where>
+	</select>
+	
+	<select id="selectStatisticsCount" resultType="long" parameterType="StatisticsQuery">
+		select 1 from dual;
+	</select>
+	
+	<select id="selectOrgStatistics" resultMap="statisticsResultMap" parameterType="StatisticsQuery">
+	<![CDATA[
+		select b.org_name as name,
+			a.TACHE_ID,
+			count(1) as total_num,
+				sum(case when a.WO_ORDER_STATE_CODE = '10C' then 1 else 0 END) as complete_num,
+				sum(case when a.WO_ORDER_STATE_CODE = '10B' then 1 else 0 END) as not_complete_num,
+				sum(case when a.IS_DELAY = 1 and a.WO_ORDER_STATE_CODE = '10C' then 1 else 0 END) as complete_delay_num,
+				sum(case when a.IS_DELAY = 1 and a.WO_ORDER_STATE_CODE = '10C' then 0 else 1 END) as delay_num,
+				sum(case when 
+				locate(CONCAT(',',c.sys_info_id,','), CONCAT(',', left(d.WO_INFO_VALUE, locate('<<?><?>>', d.WO_INFO_VALUE) -1), ',')) > 0
+				and exists(select 1 from agreement_manage m, agreement_tache n where m.agreement_id = n.agreement_id and n.tache_id = b.TACHE_ID
+				and m.order_id = a.ORDER_ID and n.user_id is null and STRCMP(m.agreement_state, '10X') <> 0)
+				then 1 else 0 end) as no_show_num
+			from task_wo_order a, task_tache b, task_tache_sys_info c,task_wo_order_info d
+			where a.TACHE_ID = b.TACHE_ID
+			and b.tache_id = c.tache_id
+			and a.WO_ORDER_ID = d.WO_ORDER_ID
+			and a.order_id > 512
+			and a.ORDER_ID in 
+			(select a.order_id
+				from task_order a
+				left join task_type b on a.TASK_TYPE_ID = b.TASK_TYPE_ID
+				left join task_order_info c on c.ORDER_ID = a.ORDER_ID and c.TASK_TYPE_INFO_ID in 
+				(select d.TASK_TYPE_INFO_ID from task_type_info d where d.task_type_id = a.TASK_TYPE_ID and d.info_seq = 1 and d.delete_state = 0)
+				LEFT JOIN sys_users e on a.CREATE_USER_ID = e.USER_ID
+				left join task_notice_cycle f on f.cycle_id = a.cycle_id 
+				left join sys_org h on e.org_id = h.org_id
+				left join task_order_info m on m.order_id = a.order_id and m.task_type_info_id = 11
+	]]>
+		
+		<where>
+			a.delete_state = 0
+			<if test="@Ognl@isNotEmpty(createUser)"> and e.user_name like CONCAT('%',#{createUser,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(createTimeBegin)"> and DATE_FORMAT(a.create_time,'%Y-%m-%d %H:%m:%s') &gt; #{createTimeBegin,jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(createTimeEnd)"> and DATE_FORMAT(a.create_time,'%Y-%m-%d %H:%m:%s') &lt; #{createTimeEnd,jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(changeTimeBegin)"> and m.task_info_value &gt; #{changeTimeBegin,jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(changeTimeEnd)"> and m.task_info_value &lt; #{changeTimeEnd,jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(isDelay)"> and a.is_delay = #{isDelay,jdbcType=NUMERIC} </if>
+			<if test="@Ognl@isNotEmpty(orderStateCode)"> and a.ORDER_STATE_CODE = #{orderStateCode,jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(orgId)"> and exists (select 1 from sys_org org where org.org_id = #{orgId,jdbcType=NUMERIC}
+				and POSITION(org.ORG_PATH_CODE IN h.ORG_PATH_CODE) > 0) </if>
+		</where>
+		<![CDATA[)
+		GROUP BY b.TACHE_ID
+		]]>
+	</select>
+	
+	<select id="selectOrgStatisticsCount" resultType="long" parameterType="StatisticsQuery">
+	<![CDATA[
+		select count(1)
+		from (select 1 
+			from task_wo_order a, task_tache b, task_tache_sys_info c,task_wo_order_info d
+			where a.TACHE_ID = b.TACHE_ID
+			and b.tache_id = c.tache_id
+			and a.WO_ORDER_ID = d.WO_ORDER_ID
+			and a.order_id > 512
+			and a.ORDER_ID in 
+			(select a.order_id
+				from task_order a
+				left join task_type b on a.TASK_TYPE_ID = b.TASK_TYPE_ID
+				left join task_order_info c on c.ORDER_ID = a.ORDER_ID and c.TASK_TYPE_INFO_ID in 
+				(select d.TASK_TYPE_INFO_ID from task_type_info d where d.task_type_id = a.TASK_TYPE_ID and d.info_seq = 1 and d.delete_state = 0)
+				LEFT JOIN sys_users e on a.CREATE_USER_ID = e.USER_ID
+				left join task_notice_cycle f on f.cycle_id = a.cycle_id 
+				left join sys_org h on e.org_id = h.org_id
+				left join task_order_info m on m.order_id = a.order_id and m.task_type_info_id = 11
+	]]>
+		
+		<where>
+			a.delete_state = 0
+			<if test="@Ognl@isNotEmpty(createUser)"> and e.user_name like CONCAT('%',#{createUser,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(createTimeBegin)"> and DATE_FORMAT(a.create_time,'%Y-%m-%d %H:%m:%s') &gt; #{createTimeBegin,jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(createTimeEnd)"> and DATE_FORMAT(a.create_time,'%Y-%m-%d %H:%m:%s') &lt; #{createTimeEnd,jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(changeTimeBegin)"> and m.task_info_value &gt; #{changeTimeBegin,jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(changeTimeEnd)"> and m.task_info_value &lt; #{changeTimeEnd,jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(isDelay)"> and a.is_delay = #{isDelay,jdbcType=NUMERIC} </if>
+			<if test="@Ognl@isNotEmpty(orderStateCode)"> and a.ORDER_STATE_CODE = #{orderStateCode,jdbcType=VARCHAR} </if>
+			<if test="@Ognl@isNotEmpty(orgId)"> and exists (select 1 from sys_org org where org.org_id = #{orgId,jdbcType=NUMERIC}
+				and POSITION(org.ORG_PATH_CODE IN h.ORG_PATH_CODE) > 0) </if>
+		</where>
+		<![CDATA[)
+		GROUP BY b.TACHE_ID ) c
+		]]>
+	</select>
+</mapper>

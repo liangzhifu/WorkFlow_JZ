@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="orgFun">
+
+
+	<!-- 添加组织功能操作 -->
+	<insert id="insertOrgFun" parameterType="OrgFun"
+		useGeneratedKeys="true" keyProperty="orgFunId"> 
+		<![CDATA[
+		insert into sys_org_fun(org_id,
+						fun_id,
+						org_fun,
+						delete_state)
+  					 values (#{orgId,jdbcType=NUMERIC},
+  					 		 #{funId,jdbcType=NUMERIC},
+							 #{orgFun,jdbcType=VARCHAR},
+							 0)
+		]]>
+	</insert>
+
+	<!-- 更新组织功能操作 -->
+	<update id="updateOrgFun" parameterType="OrgFun">
+		update sys_org_fun
+		<set>
+			<if test="orgFun != null">org_fun = #{orgFun,jdbcType=NUMERIC},</if>
+		</set>
+		where org_id=#{orgId, jdbcType=NUMERIC}
+	</update>
+
+	<!-- 删除组织功能操作 -->
+	<delete id="deleteOrgFun" parameterType="OrgFun">
+		<![CDATA[
+			update sys_org_fun set delete_state = 1 where org_id = #{orgId,jdbcType=NUMERIC}
+		]]>
+	</delete>
+
+</mapper>

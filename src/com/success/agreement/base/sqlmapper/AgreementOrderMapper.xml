@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="agreementOrder">
+
+	<resultMap id="agreementOrderResultMap" type="Detail">
+		<result property="orderId" column="order_id" />
+		<result property="taskTypeName" column="task_type_name" />
+		<result property="publishCode" column="publish_code" />
+		<result property="changeTime" column="change_time" />
+		<result property="orderStateCode" column="order_state_code" />
+		<result property="createUser" column="create_user" />
+		<result property="createOrg" column="create_org" />
+		<result property="createTime" column="create_time" />
+		<result property="isDelay" column="is_delay" />
+		<result property="completeTime" column="complete_time" />
+		<result property="requireCompleteTime" column="require_complete_time" />
+		<result property="cycleId" column="cycle_id" />
+		<result property="isNotice" column="is_notice" />
+		<result property="isAlarm" column="is_alarm" />
+		<result property="cycleIsDelay" column="cycle_is_delay" />
+		<result property="noticeCycle" column="notice_cycle" />
+		<result property="alarmTime" column="alarm_time" />
+		<result property="delayCycle" column="delay_cycle" />
+		<result property="agentId" column="agent_id" />
+		<result property="agentType" column="agent_type" />
+		<result property="issueDate" column="issue_date" />
+		<result property="changeContent" column="change_content" />
+		<result property="productionLine" column="production_line" />
+		<result property="carType" column="car_type" />
+		<result property="mountingMat" column="mounting_mat" />
+		<result property="invalidateText" column="invalidate_text" />
+	</resultMap>
+	
+	<select id="selectAgreementOrder" resultMap="agreementOrderResultMap" parameterType="AgreementOrderQuery">
+		<![CDATA[
+			select a.ORDER_ID, 
+				b.TASK_TYPE_NAME, 
+				c.TASK_INFO_VALUE as publish_code, 
+				g.TASK_INFO_VALUE as change_time, 
+				g1.TASK_INFO_VALUE as issue_date, 
+				g2.TASK_INFO_VALUE as change_content, 
+				g3.TASK_INFO_VALUE as production_line, 
+				g4.TASK_INFO_VALUE as car_type, 
+				g5.TASK_INFO_VALUE as mounting_mat, 
+				a.ORDER_STATE_CODE, 
+				DATE_FORMAT(a.CREATE_TIME,'%Y-%m-%d %H:%m:%s') as create_time, 
+				e.USER_NAME as create_user, 
+				a.IS_DELAY, 
+				a.invalidate_text,
+				DATE_FORMAT(a.REAL_COMPLETE_TIME,'%Y-%m-%d %H:%m:%s') as complete_time, 
+				DATE_FORMAT(a.REQUIRE_COMPLETE_TIME,'%Y-%m-%d %H:%m:%s') as require_complete_time,
+				f.cycle_id,
+				f.is_notice,
+				f.is_alarm,
+				f.is_delay as cycle_is_delay,
+				f.notice_cycle,
+				f.alarm_time,
+				f.delay_cycle,
+				h.org_name as create_org
+				from task_order a
+				left join task_type b on a.TASK_TYPE_ID = b.TASK_TYPE_ID
+				left join task_order_info c on c.ORDER_ID = a.ORDER_ID and c.TASK_TYPE_INFO_ID = 1
+				LEFT JOIN sys_users e on a.CREATE_USER_ID = e.USER_ID
+				left join task_notice_cycle f on f.cycle_id = a.cycle_id 
+				left join task_order_info g on g.ORDER_ID = a.ORDER_ID and g.TASK_TYPE_INFO_ID = 11
+				left join sys_org h on e.org_id = h.org_id
+				left join task_order_info g1 on g1.ORDER_ID = a.ORDER_ID and g1.TASK_TYPE_INFO_ID = 10
+				left join task_order_info g2 on g2.ORDER_ID = a.ORDER_ID and g2.TASK_TYPE_INFO_ID = 9 
+				left join task_order_info g3 on g3.ORDER_ID = a.ORDER_ID and g3.TASK_TYPE_INFO_ID = 2 
+				left join task_order_info g4 on g4.ORDER_ID = a.ORDER_ID and g4.TASK_TYPE_INFO_ID = 3 
+				left join task_order_info g5 on g5.ORDER_ID = a.ORDER_ID and g5.TASK_TYPE_INFO_ID = 4 
+				left join task_order_info g11 on g11.ORDER_ID = a.ORDER_ID and g11.TASK_TYPE_INFO_ID = 11 
+		]]>
+		<where>
+		<![CDATA[
+			not exists(select 1 from agreement_manage t where t.order_id = a.ORDER_ID and (STRCMP(t.agreement_state, '10B') = 0 or STRCMP(t.agreement_state, '10C') = 0))
+			and STRCMP(a.contract_state, '10B') = 0 and a.contract_user is null
+			and a.delete_state = 0
+			and exists(SELECT 1
+				FROM task_wo_order two, task_wo_order_sys_info twosi, sys_info info
+				WHERE two.`WO_ORDER_ID` = twosi.`WO_ORDER_ID`
+				AND twosi.`SYS_INFO_ID` = info.`sys_info_id`
+				AND twosi.`WO_INFO_VALUE` = 1
+				AND info.`agreement_flag` = 1
+				AND two.`ORDER_ID` = a.order_id)
+		]]>
+			<![CDATA[and TO_DAYS(NOW()) - TO_DAYS(g11.TASK_INFO_VALUE) <= 7]]>
+			<if test="@Ognl@isNotEmpty(publishCode)"> and c.TASK_INFO_VALUE like CONCAT('%',#{publishCode,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(changeTime)"> and g.TASK_INFO_VALUE like CONCAT(#{changeTime,jdbcType=VARCHAR},'%') </if>
+		</where>
+		order by c.TASK_INFO_VALUE asc
+	</select>
+
+	<select id="selectAgreementOrderCount" resultType="long" parameterType="DetailQuery">
+		<![CDATA[
+			select count(1)
+			from task_order a
+				left join task_type b on a.TASK_TYPE_ID = b.TASK_TYPE_ID
+				left join task_order_info c on c.ORDER_ID = a.ORDER_ID and c.TASK_TYPE_INFO_ID = 1
+				LEFT JOIN sys_users e on a.CREATE_USER_ID = e.USER_ID
+				left join task_notice_cycle f on f.cycle_id = a.cycle_id 
+				left join task_order_info g on g.ORDER_ID = a.ORDER_ID and g.TASK_TYPE_INFO_ID = 11
+				left join sys_org h on e.org_id = h.org_id
+				left join task_order_info g1 on g1.ORDER_ID = a.ORDER_ID and g1.TASK_TYPE_INFO_ID = 10
+				left join task_order_info g2 on g2.ORDER_ID = a.ORDER_ID and g2.TASK_TYPE_INFO_ID = 9 
+				left join task_order_info g3 on g3.ORDER_ID = a.ORDER_ID and g3.TASK_TYPE_INFO_ID = 2 
+				left join task_order_info g4 on g4.ORDER_ID = a.ORDER_ID and g4.TASK_TYPE_INFO_ID = 3 
+				left join task_order_info g5 on g5.ORDER_ID = a.ORDER_ID and g5.TASK_TYPE_INFO_ID = 4
+				left join task_order_info g11 on g11.ORDER_ID = a.ORDER_ID and g11.TASK_TYPE_INFO_ID = 11 
+		]]>
+		<where>
+		<![CDATA[
+			not exists(select 1 from agreement_manage t where t.order_id = a.ORDER_ID and (STRCMP(t.agreement_state, '10B') = 0 or STRCMP(t.agreement_state, '10C') = 0))
+			and STRCMP(a.contract_state, '10B') = 0 and a.contract_user is null
+			and a.delete_state = 0
+			and exists(SELECT 1
+				FROM task_wo_order two, task_wo_order_sys_info twosi, sys_info info
+				WHERE two.`WO_ORDER_ID` = twosi.`WO_ORDER_ID`
+				AND twosi.`SYS_INFO_ID` = info.`sys_info_id`
+				AND twosi.`WO_INFO_VALUE` = 1
+				AND info.`agreement_flag` = 1
+				AND two.`ORDER_ID` = a.order_id)
+		]]>
+			<![CDATA[and TO_DAYS(NOW()) - TO_DAYS(g11.TASK_INFO_VALUE) <= 7]]>
+			<if test="@Ognl@isNotEmpty(publishCode)"> and c.TASK_INFO_VALUE like CONCAT('%',#{publishCode,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(changeTime)"> and g.TASK_INFO_VALUE like CONCAT(#{changeTime,jdbcType=VARCHAR},'%') </if>
+		</where>
+	</select>
+</mapper>

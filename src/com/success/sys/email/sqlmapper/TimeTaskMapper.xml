@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="timeTask">
+	<resultMap id="timeTaskResultMap" type="TimeTask">
+		<result property="timeTaskId" column="time_task_id" />
+		<result property="woOrderId" column="wo_order_id" />
+		<result property="orderId" column="order_id" />
+		<result property="confirmOrderId" column="confirm_order_id" />
+		<result property="noticeType" column="notice_type" />
+		<result property="noticeColor" column="notice_color" />
+		<result property="deleteState" column="delete_state" />
+		<result property="taskTypeName" column="task_type_name" />
+		<result property="publishCode" column="publish_code" />
+		<result property="userId" column="user_id" />
+		<result property="userName" column="user_name" />
+		<result property="userEmail" column="user_email" />
+		<result property="failedNum" column="failed_num" />
+		<result property="comment" column="comment" />
+	</resultMap>
+
+	<select id="selectTimeTask" resultMap="timeTaskResultMap" parameterType="TimeTaskQuery">
+			select time_task_id, 
+				wo_order_id, 
+				order_id,
+				confirm_order_id, 
+				notice_type,
+				notice_color,
+				delete_state, 
+				task_type_name, 
+				publish_code, 
+				user_id,
+				user_name,
+				user_email,
+				failed_num,
+				comment
+			from time_task 
+			where delete_state = #{deleteState,jdbcType=NUMERIC}
+	</select>
+
+	<insert id="insertTimeTask" parameterType="TimeTask" useGeneratedKeys="true"
+		keyProperty="timeTaskId"> 
+		<![CDATA[
+		insert into time_task(wo_order_id, 
+				order_id,
+				confirm_order_id, 
+				notice_type,
+				notice_color,
+				delete_state, 
+				task_type_name, 
+				publish_code, 
+				user_id,
+				user_name,
+				user_email,
+				failed_num,
+				comment,
+				create_time)
+  					 values (#{woOrderId,jdbcType=NUMERIC},
+  					 		 #{orderId,jdbcType=NUMERIC},
+  					 		 #{confirmOrderId,jdbcType=NUMERIC},
+							 #{noticeType,jdbcType=NUMERIC},
+							 #{noticeColor,jdbcType=NUMERIC},
+  					 		 0,
+							 #{taskTypeName,jdbcType=VARCHAR},
+							 #{publishCode,jdbcType=VARCHAR},
+  					 		 #{userId,jdbcType=NUMERIC},
+							 #{userName,jdbcType=VARCHAR},
+							 #{userEmail,jdbcType=VARCHAR},
+							 0,
+							 #{comment,jdbcType=VARCHAR},
+							 sysdate())
+		]]>
+	</insert>
+
+	<update id="updateTimeTask" parameterType="TimeTask">
+		update time_task
+		<set>
+			<if test="failedNum != null">failed_num = #{failedNum,jdbcType=NUMERIC},</if>
+			<if test="deleteState != null">delete_state = #{deleteState,jdbcType=NUMERIC},</if>
+		</set>
+		where time_task_id=#{timeTaskId, jdbcType=NUMERIC}
+	</update>
+	
+	<delete id="deleteTimeTask" parameterType="TimeTask">
+		<![CDATA[
+			update time_task set delete_state = #{deleteState,jdbcType=NUMERIC} where time_task_id = #{timeTaskId,jdbcType=NUMERIC}
+		]]>
+	</delete>
+
+</mapper>

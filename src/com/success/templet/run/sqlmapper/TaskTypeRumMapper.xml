@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="taskTypeRun">
+	<resultMap id="taskTypeRunResultMap" type="TaskTypeRun" >
+		<result property="id" column="id"/>
+		<result property="taskTypeId" column="task_type_id"/>
+		<result property="seq" column="seq"/>
+		<result property="runCode" column="run_code"/>
+		<result property="runName" column="run_name"/>
+		<result property="runType" column="run_type"/>
+		<result property="userId" column="user_id"/>
+		<result property="userName" column="user_name"/>
+	</resultMap>
+	
+	<select id="selectTaskTypeRun" resultMap="taskTypeRunResultMap" parameterType="TaskTypeRunQuery">
+			select a.id, a.task_type_id, a.seq, a.run_code, a.run_name, a.run_type,
+				a.user_id, a.user_name
+				from task_type_run a
+		<where>
+			a.delete_state = 0
+			<if test="@Ognl@isNotEmpty(taskTypeId)">  and a.task_type_id = #{taskTypeId,jdbcType=NUMERIC} </if>
+		</where>
+	</select>
+
+</mapper>

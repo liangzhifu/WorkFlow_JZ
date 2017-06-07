@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="agreementContent">
+
+	<resultMap id="AgreementContentResultMap" type="AgreementContent">
+		<result property="id" column="id" />
+		<result property="agreementId" column="agreement_id" />
+		<result property="seq" column="seq" />
+		<result property="problem" column="problem" />
+		<result property="improve" column="improve" />
+		<result property="responsible" column="responsible" />
+		<result property="termStr" column="term_str" />
+		<result property="responsibleName" column="responsible_name" />
+		<result property="state" column="state" />
+		<result property="confirm" column="confirm" />
+		<result property="confirmName" column="confirm_name" />
+		<result property="contentState" column="content_state" />
+		<result property="refuseReason" column="refuse_reason" />
+	</resultMap>
+	
+	<resultMap id="agreementContentMailUserResultMap" type="AgreementEmailUser">
+		<result property="agreementId" column="agreement_id" />
+		<result property="userName" column="user_name" />
+		<result property="userId" column="user_id" />
+		<result property="userEmail" column="user_email" />
+	</resultMap>
+	
+	<insert id="insertAgreementContent" parameterType="AgreementContent" useGeneratedKeys="true" keyProperty="id"> 
+		<![CDATA[
+		insert into agreement_content(agreement_id, seq, problem, responsible, content_state, delete_state)
+		values(#{agreementId,jdbcType=NUMERIC},
+		#{seq,jdbcType=NUMERIC},
+		#{problem,jdbcType=VARCHAR},
+		#{responsible,jdbcType=NUMERIC},
+		#{contentState,jdbcType=NUMERIC},
+		0)
+		]]>
+	</insert>
+	
+	<update id="updateAgreementContent" parameterType="AgreementContent">
+		update agreement_content
+		<set>
+			<if test="seq != null">seq = #{seq,jdbcType=NUMERIC},</if>
+			<if test="problem != null">problem = #{problem,jdbcType=VARCHAR},</if>
+			<if test="improve != null">improve = #{improve,jdbcType=VARCHAR},</if>
+			<if test="responsible != null">responsible = #{responsible,jdbcType=NUMERIC},</if>
+			<if test="confirm != null">confirm = #{confirm,jdbcType=NUMERIC},</if>
+			<if test="term != null">term = #{term,jdbcType=TIMESTAMP},</if>
+			<if test="contentState != null">content_state = #{contentState,jdbcType=VARCHAR},</if>
+			<if test="state != null">state = #{state,jdbcType=VARCHAR},</if>
+			<if test="refuseReason != null">refuse_reason = #{refuseReason,jdbcType=VARCHAR},</if>
+		</set>
+		where id = #{id, jdbcType=NUMERIC}
+	</update>
+	
+	<delete id="deleteAgreementContent" parameterType="java.lang.Integer">
+		<![CDATA[
+			delete from agreement_content where id = #{id,jdbcType=NUMERIC}
+		]]>
+	</delete>
+	
+	<select id="selectAgreementContent" resultMap="AgreementContentResultMap" parameterType="AgreementContentQuery">
+		<![CDATA[
+			SELECT a.id, a.agreement_id, a.problem, a.seq, a.responsible,
+				a.improve, a.state, a.content_state, a.confirm,
+				b.USER_NAME as responsible_name,
+				c.USER_NAME as confirm_name,
+				DATE_FORMAT(a.term,'%Y-%m-%d') as term_str,
+				a.refuse_reason
+				from agreement_content a
+				left JOIN sys_users b on b.USER_ID = a.responsible
+				left join sys_users c on c.USER_ID = a.confirm
+		]]>
+		<where>
+			a.agreement_id = #{agreementId,jdbcType=NUMERIC}
+			and a.content_state = '10B'
+			and a.responsible = #{responsible,jdbcType=NUMERIC}
+		</where>
+	</select>
+	
+	<select id="selectAgreementContent2" resultMap="AgreementContentResultMap" parameterType="AgreementContentQuery">
+		<![CDATA[
+			SELECT a.id, a.agreement_id, a.problem, a.seq, a.responsible,
+				a.improve, a.state, a.content_state, a.confirm,
+				b.USER_NAME as responsible_name,
+				c.USER_NAME as confirm_name,
+				DATE_FORMAT(a.term,'%Y-%m-%d') as term_str,
+				a.refuse_reason
+				from agreement_content a
+				left JOIN sys_users b on b.USER_ID = a.responsible
+				left join sys_users c on c.USER_ID = a.confirm
+		]]>
+		<where>
+			a.agreement_id = #{agreementId,jdbcType=NUMERIC}
+			and a.content_state = '10R'
+			and a.confirm = #{confirm,jdbcType=NUMERIC}
+		</where>
+	</select>
+	
+	<select id="selectAgreementContent3" resultMap="AgreementContentResultMap" parameterType="java.lang.Integer">
+		<![CDATA[
+			SELECT a.id, a.agreement_id, a.problem, a.seq, a.responsible,
+				a.improve, a.state, a.content_state, a.confirm,
+				b.USER_NAME as responsible_name,
+				c.USER_NAME as confirm_name,
+				DATE_FORMAT(a.term,'%Y-%m-%d') as term_str,
+				a.refuse_reason
+				from agreement_content a
+				left JOIN sys_users b on b.USER_ID = a.responsible
+				left join sys_users c on c.USER_ID = a.confirm
+		]]>
+		<where>
+			a.agreement_id = #{agreementId,jdbcType=NUMERIC}
+		</where>
+	</select>
+	
+	<select id="selectAgreementMailUser" resultMap="agreementContentMailUserResultMap"
+		parameterType="java.lang.Integer">
+		select a.agreement_id, c.USER_ID, c.USER_NAME, c.EMAIL as user_email
+			from agreement_manage a, agreement_content b, sys_users c
+			<where>
+				a.agreement_id = b.agreement_id
+				and b.confirm = c.USER_ID
+				<if test="@Ognl@isNotEmpty(agreementId)"> and a.agreement_id = #{agreementId,jdbcType=NUMERIC} </if>
+				<if test="@Ognl@isNotEmpty(agreementId)"> and b.responsible = #{responsible,jdbcType=NUMERIC} </if>
+			</where>
+	</select>
+	
+	<select id="selectAgreementContentById" resultMap="AgreementContentResultMap" parameterType="java.lang.Integer">
+		<![CDATA[
+			SELECT a.id, a.agreement_id, a.problem, a.seq, a.responsible,
+				a.improve, a.state, a.content_state, a.confirm,
+				b.USER_NAME as responsible_name,
+				c.USER_NAME as confirm_name,
+				DATE_FORMAT(a.term,'%Y-%m-%d') as term_str,
+				a.refuse_reason
+				from agreement_content a
+				left JOIN sys_users b on b.USER_ID = a.responsible
+				left join sys_users c on c.USER_ID = a.confirm
+		]]>
+		<where>
+			a.id = #{id,jdbcType=NUMERIC}
+		</where>
+	</select>
+</mapper>

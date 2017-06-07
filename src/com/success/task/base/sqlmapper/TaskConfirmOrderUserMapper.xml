@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="taskConfirmOrderUser">
+	<resultMap id="taskConfirmUserResultMap" type="TaskConfirmOrderUser">
+		<result property="orderId" column="orderId" />
+		<result property="taskTypeInfoId" column="taskTypeInfoId" />
+		<result property="taskInfoValue" column="taskInfoValue" />
+		<result property="confirmOrderId" column="confirmOrderId" />
+		<result property="confirmUserId" column="confirmUserId" />
+		<result property="confirmOrderStateCode" column="confirmOrderStateCode" />
+		<result property="runCode" column="runCode" />
+		<result property="userId" column="userId" />
+		<result property="userName" column="userName" />
+	</resultMap>
+
+	<select id="selectTaskConfirmOrderUser" resultMap="taskConfirmUserResultMap"
+		parameterType="TaskConfirmOrderUserQuery">
+		<![CDATA[
+		SELECT
+			a.ORDER_ID AS orderId,
+			b.TASK_TYPE_INFO_ID AS taskTypeInfoId,
+			b.TASK_INFO_VALUE AS taskInfoValue,
+			c.CONFIRM_ORDER_ID AS confirmOrderId,
+			c.CONFIRM_USER_ID AS confirmUserId,
+			CASE c.CONFIRM_ORDER_STATE_CODE
+				WHEN '10A' THEN
+					'初始化'
+				WHEN '10B' THEN
+					'处理中'
+				WHEN '10C' THEN
+					'已确认'
+				ELSE
+					'其他'
+			END AS confirmOrderStateCode,
+ 			c.RUN_CODE AS runCode,
+ 			d.USER_ID AS userId,
+ 			d.USER_NAME AS userName
+		FROM
+			task_order a
+			left join task_order_info b on a.ORDER_ID = b.ORDER_ID and b.TASK_TYPE_INFO_ID = 1 
+			left join task_confirm_order c on a.ORDER_ID = c.ORDER_ID and c.RUN_TYPE = 'confirm'
+			left join sys_users d on c.CONFIRM_USER_ID = d.USER_ID
+		]]>
+		<where>
+			a.DELETE_STATE = 0
+			<if test="@Ognl@isNotEmpty(taskInfoValue)"> and b.TASK_INFO_VALUE like
+				CONCAT('%',#{taskInfoValue,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(userName)"> and d.USER_NAME like
+				CONCAT('%',#{userName,jdbcType=VARCHAR},'%') </if>
+		</where>
+	</select>
+	<select id="selectTaskConfirmOrderUserCount" resultType="long"
+		parameterType="TaskConfirmOrderUserQuery">
+		<![CDATA[
+		SELECT
+			count(1)
+		FROM
+			task_order a
+			left join task_order_info b on a.ORDER_ID = b.ORDER_ID and b.TASK_TYPE_INFO_ID = 1 
+			left join task_confirm_order c on a.ORDER_ID = c.ORDER_ID and c.RUN_TYPE = 'confirm'
+			left join sys_users d on c.CONFIRM_USER_ID = d.USER_ID
+		]]>
+		<where>
+			a.DELETE_STATE = 0
+			<if test="@Ognl@isNotEmpty(taskInfoValue)"> and b.TASK_INFO_VALUE like
+				CONCAT('%',#{taskInfoValue,jdbcType=VARCHAR},'%') </if>
+			<if test="@Ognl@isNotEmpty(userName)"> and d.USER_NAME like
+				CONCAT('%',#{userName,jdbcType=VARCHAR},'%') </if>
+		</where>
+	</select>
+
+	<update id="updateTaskConfirmOrderUser" parameterType="TaskConfirmOrder">
+		update task_confirm_order
+		<set>
+			<if test="confirmUserId != null">confirm_user_id = #{confirmUserId,jdbcType=NUMERIC},</if>
+			<if test="confirmOrderStateCode != null">confirm_order_state_code =
+				#{confirmOrderStateCode,jdbcType=VARCHAR},</if>
+			<if test="confirmUserId == null">confirm_user_id = null,</if>
+
+		</set>
+		where confirm_order_id=#{confirmOrderId, jdbcType=NUMERIC}
+	</update>
+</mapper>

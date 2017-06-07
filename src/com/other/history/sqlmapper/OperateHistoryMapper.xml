@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="operateHistory">
+    <insert id="insertSelective" parameterType="OperateHistory" useGeneratedKeys="true" keyProperty="id">
+        INSERT into operate_history
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            id,
+            <if test="SystermType != null" >
+                systerm_type,
+            </if>
+            <if test="operateType != null" >
+                operate_type,
+            </if>
+            <if test="operateBy != null" >
+                operate_by,
+            </if>
+            <if test="operateDate != null" >
+                operate_date,
+            </if>
+            <if test="businessType != null" >
+                business_type,
+            </if>
+            <if test="businessId != null" >
+                business_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            #{id,jdbcType=BIGINT},
+            <if test="SystermType != null" >
+                #{SystermType,jdbcType=BIGINT},
+            </if>
+            <if test="operateType != null" >
+                #{operateType,jdbcType=BIGINT},
+            </if>
+            <if test="operateBy != null" >
+                #{operateBy,jdbcType=BIGINT},
+            </if>
+            <if test="operateDate != null" >
+                #{operateDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="businessType != null" >
+                #{businessType,jdbcType=BIGINT},
+            </if>
+            <if test="businessId != null" >
+                #{businessId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="selectOperateHistoryList" parameterType="OperateHistoryQuery" resultType="java.util.HashMap">
+        SELECT history.`id`,
+            history.`business_id` AS businessId,
+            history.`business_type` AS businessType,
+            (SELECT users.`USER_NAME` FROM sys_users users WHERE users.`USER_ID` = history.`operate_by`) AS opeateByName,
+            DATE_FORMAT(history.`operate_date`, '%Y-%m-%d %H:%i:%S') AS operateDateStr,
+            history.`operate_type` AS operateType,
+            history.`systerm_type` AS systermType
+            FROM operate_history history
+            <where>
+                <if test="businessId != null" >
+                    and history.`business_id` = #{businessId,jdbcType=BIGINT}
+                </if>
+                <if test="businessType != null" >
+                    and history.`business_type` = #{businessType,jdbcType=BIGINT}
+                </if>
+                <if test="SystermType != null" >
+                    and history.`systerm_type` = #{SystermType,jdbcType=BIGINT}
+                </if>
+            </where>
+    </select>
+</mapper>

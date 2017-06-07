@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="taskType">
+	<resultMap id="taskTypeResultMap" type="TaskType" >
+		<result property="taskTypeId" column="task_type_id"/>
+		<result property="taskTypeName" column="task_type_name"/>
+		<result property="taskTypeWordPath" column="task_type_work_path"/>
+		<result property="cycleId" column="cycle_id"/>
+		<result property="version" column="version"/>
+	</resultMap>
+	
+	<select id="selectByIdQuery" resultMap="taskTypeResultMap" parameterType="TaskTypeQuery">
+		<![CDATA[
+			select 
+				m.task_type_name, 
+				m.task_type_word_path, 
+				m.cycle_id,
+				m.version
+			from task_type m
+  			where m.task_type_id = #{taskTypeId,jdbcType=NUMERIC}
+  			and m.delete_state = 0
+		]]>
+	</select>
+</mapper>

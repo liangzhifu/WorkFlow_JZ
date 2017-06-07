@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="TaskTacheMapper">
+
+    <resultMap id="taskTacheResultMap" type="TaskTache">
+        <result property="tacheId" column="tache_id" jdbcType="BIGINT"/>
+        <result property="tacheCode" column="tache_code" jdbcType="VARCHAR"/>
+        <result property="tacheName" column="tache_name" jdbcType="VARCHAR"/>
+        <result property="orgId" column="org_id" jdbcType="BIGINT"/>
+        <result property="orgName" column="org_name" jdbcType="VARCHAR"/>
+        <result property="staffId" column="staff_id" jdbcType="BIGINT"/>
+        <result property="staffName" column="staff_name" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        tache_id, tache_code, tache_name, org_id, org_name, staff_id, staff_name
+    </sql>
+
+    <select id="selectTaskTacheListOfOrder" parameterType="TaskTacheQuery" resultMap="taskTacheResultMap">
+        select
+        tache.tache_id, tache.tache_code, tache.tache_name,
+        tache.org_id, tache.org_name, tache.staff_id, tache.staff_name
+        from task_order tor, task_type_tache ttt, task_tache tache
+        where tor.`version` = ttt.`version`
+        and ttt.`TACHE_ID` = tache.`TACHE_ID`
+        and tor.`ORDER_ID` = #{orderId}
+    </select>
+</mapper>

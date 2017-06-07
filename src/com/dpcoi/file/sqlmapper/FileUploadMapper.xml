@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="fileUpload">
+
+<insert id="insertSelective" parameterType="FileUpload" useGeneratedKeys="true" keyProperty="fileId">
+        INSERT into file_upload
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            file_id,
+            <if test="fileName != null" >
+                file_name,
+            </if>
+            <if test="fileAlias != null" >
+                file_alias,
+            </if>
+            <if test="fileType != null" >
+                file_type,
+            </if>
+            <if test="excelPdfName != null" >
+                excel_pdf_name,
+            </if>
+            <if test="createDate != null" >
+                create_date,
+            </if>
+            <if test="createBy != null" >
+                create_by,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            #{fileId,jdbcType=BIGINT},
+            <if test="fileName != null" >
+                #{fileName,jdbcType=VARCHAR},
+            </if>
+            <if test="fileAlias != null" >
+                #{fileAlias,jdbcType=VARCHAR},
+            </if>
+            <if test="fileType != null" >
+                #{fileType,jdbcType=VARCHAR},
+            </if>
+            <if test="excelPdfName != null" >
+                #{excelPdfName,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null" >
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null" >
+                #{createBy,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="selectBySelf" parameterType="FileUpload" resultType="FileUpload">
+        select fu.`FILE_ID` as fileId,
+        fu.`FILE_NAME` as fileName,
+        fu.`FILe_TYPE` as fileType,
+        fu.`FILE_ALIAS` as fileAlias,
+        fu.`EXCEL_PDF_NAME` as excelPdfName
+        from file_upload fu
+        where fu.`FILE_ID` = #{fileId,jdbcType=BIGINT}
+    </select>
+</mapper>
