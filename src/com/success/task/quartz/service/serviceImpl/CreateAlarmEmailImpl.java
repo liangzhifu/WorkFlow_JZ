@@ -28,7 +28,7 @@ import com.success.templet.task.dao.TaskTypeDao;
 import com.success.templet.task.domain.TaskType;
 import com.success.templet.task.query.TaskTypeQuery;
 
-//@Component("createAlarmEmailImpl")
+@Component("createAlarmEmailImpl")
 public class CreateAlarmEmailImpl {
 	
 	@Resource(name = "taskOrderDao")

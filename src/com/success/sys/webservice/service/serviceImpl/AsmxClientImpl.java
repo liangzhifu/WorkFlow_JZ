@@ -10,8 +10,7 @@ import com.success.sys.webservice.service.AsmxClient;
 public class AsmxClientImpl implements AsmxClient {
 
 	private String url = "http://s401app09.cn.takatacorp.com/TKWS/Service.asmx";//提供接口的地址  
-	private String soapaction = "http://s401app09.cn.takatacorp.com/";   //域名，这是在server定义的 
-    //private String TOKEN = "96ce90a5-0980-4708-8250-df0cd4ac67f1";//天津
+	private String soapaction = "http://s401app09.cn.takatacorp.com/";   //域名，这是在server定义的
     private String TOKEN = "A1CFE4CF-209C-479B-B013-953EAB88D4C4";//荆州
     
     public String createAccountService(String userName)throws Exception{
