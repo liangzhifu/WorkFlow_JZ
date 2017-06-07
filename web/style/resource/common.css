@@ -1,0 +1,408 @@
+a,a:hover{
+	text-decoration: none;
+}
+.modal.fade{
+	left: 5%;top: 0; padding-left: 5%;
+}
+.modal.fade .form-inline{
+	background-color: #FFF;max-width:90%;
+}
+/**瀵煎叆瀵煎嚭 **/
+#excelExpForm input[type='checkbox']{
+	margin-top:0;
+}
+#excelExpForm label{
+	width: 75px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow:ellipsis;
+}
+/**鍒嗛〉妗�**/
+.block{
+	border:1px solid #ccc;
+	background: #fff;
+	margin:1em 0em;
+}
+.block_center{
+	margin-top: 10px;
+	margin-left: 10px;
+	margin-right: 10px;
+	margin-bottom: 10px;
+}
+.block-header div{
+	padding-top:5px;
+	color:#999;
+}
+.block-header{
+	min-height: 30px;
+padding-right: 20px;
+padding-left: 20px;
+background-color: #fafafa;
+background-image: -moz-linear-gradient(top,#fff,#f2f2f2);
+background-image: -webkit-gradient(linear,0 0,0 100%,from(#fff),to(#f2f2f2));
+background-image: -webkit-linear-gradient(top,#fff,#f2f2f2);
+background-image: -o-linear-gradient(top,#fff,#f2f2f2);
+background-image: linear-gradient(to bottom,#fff,#f2f2f2);
+background-repeat: repeat-x;
+border-bottom: 1px solid #ccc;
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff',endColorstr='#fff2f2f2',GradientType=0);
+-webkit-box-shadow: 0 1px 4px rgba(0,0,0,0.065);
+-moz-box-shadow: 0 1px 4px rgba(0,0,0,0.065);
+box-shadow: 0 1px 4px rgba(0,0,0,0.065);
+}
+.block form{
+	margin:0;
+}
+.block .table{
+	margin-bottom:0;
+	border-collapse: separate;
+}
+
+
+.block table tr{
+	height:45px;
+}
+
+.block table{
+	background: #FAFAFA;
+}
+
+.block .table td{
+	border-top:none;
+	vertical-align: middle;
+}
+.block .table_border td{
+	border-top: 1px solid #ddd;
+}
+.block .table tr:last-child{
+	border-top:1px solid #ddd;
+}
+.table.table-striped.table-bordered.table-hover{
+	margin-bottom:0;
+	table-layout:fixed;
+}
+.table.table-striped.table-bordered.table-hover thead th{
+	height:30px;
+	text-align: center;
+}
+.table.table-striped tr{
+	height:30px;
+	text-align: center;
+}
+.table.table-striped.table-bordered.table-hover td{
+    width:100%;
+    word-break:keep-all;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+.tfoot{
+	border-left:1px solid #ddd;
+	border-right:1px solid #ddd;
+	border-bottom:1px solid #ddd;
+	height:30px;
+	vertical-align: middle;
+	background-color: #F5F5F6;
+	fot-size:12px;
+	
+}
+.table-foot-left{
+	float:left;
+	padding:8px;
+	height:100%;
+	width:180px;
+	padding-top:11px;
+}
+.table-foot-left button{
+	vertical-align: middle;
+	border:none;
+	height:20px;
+	vertical-align: top;
+}
+.tfoot .table-foot-center button,.tfoot .table-foot-left button{
+	color:#676a6c;
+	padding-bottom:3px;
+	border:none;
+	background-color: #F5F5F6;
+}
+.tfoot .table-foot-center button:focus,.tfoot .table-foot-left button:focus{
+}
+.table-foot-center{
+	float: right;
+	padding:3px;
+	height:100%;
+}
+.table-foot-center input{
+	height: 20px;
+	width: 36px;
+	vertical-align: middle;
+	line-height: 20px;
+}
+.tfoot .table-foot-center .disabled{
+	color:#CACBCB;
+ }
+.tfoot .separator {
+height: 18px;
+border: none;
+border-left: 2px solid #ccc;
+margin: 0 15px;
+width:1px;
+display: inline-block;
+}
+
+.tfoot .table-foot-left .separator{
+	
+}
+.table-foot-center span{
+	margin: 0 2px;
+	width: 22px;
+	height: 23px;
+	text-align: center;
+	vertical-align: middle;
+	line-height: 22px;
+
+}
+.table-foot-center .active{
+	background-color:#ccc;
+	color:#F5F5F6;
+	cursor: pointer;
+}
+.table-foot-left .active{
+	cursor: pointer;
+	color:#F5F5F6;
+	background-color:#ccc;
+}
+.table-foot-left i{
+	widht:22px;
+	height:23px;
+}
+.table-foot-left .active i{
+ 	background-color:#F5F5F6;
+	color:#676a6c;
+ }
+/**--*/
+#searchDriver {
+}
+
+.button-border {
+  border-color: #1B9AF7;
+  color: black; }
+  .button-border:hover {
+    background-color: rgba(255, 255, 255, 0.9); }
+    
+.button-border.button-plain {
+	color: #1B9AF7;
+}
+
+.pagination {
+	display: block;
+}
+
+h4 {
+  margin-top: 25px;
+}
+.row {
+  margin-bottom: 15px;
+  margin-left: 0px;
+  margin-right: 0px;
+}
+.row .row {
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+[class*="col-"] {
+ 
+  border: 0px solid #ddd;
+  border: 0px solid rgba(86,61,124,.2);
+  border-bottom: 0px;
+  border-top: 0px;
+}
+
+.form-inline .form-control{
+	width: 60%;
+}
+
+#editModal label{
+	margin-top:10px;
+}
+
+#editModal .close{
+	background-image: none !important;
+	width:25px;
+	height:25px;
+}
+
+/* label{
+	margin-left: 5%;
+	margin-top: 7px;
+	color: rgba(213, 162, 162, 0.8); 
+} */
+.control-label {
+	margin-top: 0px;
+} 
+
+.modal-header{
+	background-color: white;
+	max-width: 90%;
+}
+
+.modal-footer{
+	
+}
+#editModal .form-control[readonly]{
+	float:none;
+	background: #f5f5f5!important;
+	border-width: 1px;
+	margin-left:0;
+	width:60%;
+	cursor: not-allowed;
+}
+.form-control[readonly] {
+	width: 70%;
+	display: inline-block;
+	margin-left: 5%;
+	float: right;
+	border-width:0px;
+	background:#fff!important;
+}
+
+.form-control[date] {
+	width: 70%;
+	display: inline-block;
+	margin-left: 5%;
+	float: right;
+}
+ 
+input[type=radio] {
+	opacity: 1;
+	height: 14px; 
+	margin-left: -10px;
+}
+
+input[type=checkbox] {
+	opacity: 1;
+}
+
+.form-control-order {
+	width: 70%;
+	display: inline-block;
+	margin-left: 5%;
+	float: right;
+}
+
+.amap-sug-result {
+	position: absolute !important;
+    visibility: hidden;
+}
+.main-content {
+	margin-left:0;
+}
+.tab_content {
+	overflow:auto;
+}
+label.error {
+    background-position: 0 9px;
+    padding-top: 7px;
+}
+/**瀹藉害***/
+.w80{
+	width:80%;
+}
+.w50{
+	width:50%;
+}
+.l{
+	float:left;
+}
+.r{
+	float:right;
+}
+body,tr,td,a, label, input, button, select, textarea, .uneditable-input, .navbar-search .search-query .form-inline .table_border{
+    font-family: Helvetica,Georgia,Arial,sans-serif,瀹嬩綋;
+    font-size: 12px;
+}
+/**涓婁紶鎸夐挳**/
+.uploadFile{
+	display:inline-block; margin:0 10px;  position:relative; overflow:hidden;
+}
+.uploadFile i{
+	margin-right:2px;
+	font-size:14px;
+}
+.uploadFile input{
+	position:absolute; right:0; top:0; font-size:100px; opacity:0; filter:alpha(opacity=0);
+}
+/**鏍戝舰閫夋嫨妗�**/
+.treeFind{
+	margin-bottom: 10px;
+}
+.treeFind .input-group .form-control {
+	width:150px;
+	height:30px;
+}
+.treeFind .input-group .search-btn{
+	margin-left:2px;
+}
+.treeFind .input-group button{
+	padding:0 15px;
+	margin:0 5px;
+}
+.dropdownlist{
+	height:22px !important;
+	width:142px !important;
+	border-right:1px solid #ddd !important;
+	border-bottom:1px solid #ddd !important;
+	border-left:1px solid #999 !important;
+	border-top:1px solid #999 !important;
+	padding:0px !important;
+	border-radius:1px !important;
+	margin-left: 5% !important;
+}
+.dropdownlist:hover{
+	border:1px solid #999;
+}
+.text {
+	height:22px !important;
+	width:142px !important;
+	display: inline-block !important;
+	margin-left: 5% !important;
+}
+.text:focus{
+	border-color:#999 !important;
+	}
+.error{
+	color:red;
+}
+.page-content {
+    background: rgb(255, 255, 255);
+    margin: 0px;
+    padding: 0px 5px 0px;
+}
+.btn {
+	padding: 1px 5px;
+	padding-right: 8px;
+}
+.form-checkbox-mypage{
+	position: static !important;
+	z-index: 0 !important;
+	float: none;
+	margin:auto 4px auto 8px !important;
+}
+.form-checkbox-mypage+label{
+	width:140px;
+}
+
+.form-radio-mypage{
+	position: static !important;
+	z-index: 0 !important;
+	float: none;
+	margin:auto 4px auto 8px !important;
+}
+.form-radio-mypage+label{
+	width:140px;
+}
+
+.col-md-12 span{
+	white-space:nowrap;
+	display: inline-block;
+}

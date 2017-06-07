@@ -1,0 +1,67 @@
+    //多字段验证用VType  
+    Ext.apply(Ext.form.VTypes,{  
+        password:function(val,field){  
+            if(field.initialPassField){  
+                var pwd = Ext.getCmp(field.initialPassField);  
+                return (val == pwd.getValue());  
+            }  
+            return true;  
+        },  
+        passwordText:'两次密码不一致'  
+    });  
+    Ext.onReady(function(){  
+        Ext.QuickTips.init();  
+        var changePasswordFrom = new Ext.form.FormPanel({  
+            title:'修改密码',  
+            renderTo:'changepasswordPanel',  
+            frame:true,  
+            width:400,  
+            buttonAlign:'center',  
+            labelAlign:'right',  
+            labeWidth:80,  
+            defaultType:'textfield',  
+            defaults:{width:150,allowBlank:false,msgTarget:'side',  
+                 minLength:6,  
+                 minLengthText:'密码不能少于6位',  
+                 maxLength:10,  
+                 maxLengthText:'密码不能超过10位'},  
+            items:[   
+                {  
+                 fieldLabel:'输入新密码',  
+                 name:'password',  
+                 inputType:'password',  
+                 blankText:'密码不能为空',  
+                 id:'password'  
+                },{  
+                 fieldLabel:'再次输入密码',  
+                 name:'secondPassword',  
+                 inputType:'password',  
+                 blankText:'密码不能为空',  
+                 vtype:'password',  
+                 initialPassField:'password'  
+                }     
+            ],  
+            buttons:[{  
+                text:'修改密码',  
+                handler:function(){  
+                    if(!changePasswordFrom.getForm().isValid()){  
+                      return;  
+                    }  
+                    changePasswordFrom.getForm().submit({  
+                        url:contextPath+'/user/editPassword.do',  
+                        success:function(f,action){  
+                            if(action.result.success){  
+                                alert('修改成功');  
+                            }  
+                            window.close();
+                        },  
+                        failure:function(f,action){   
+                            changePasswordFrom.getForm().reset();  
+                            Ext.Msg.alert('修改失败');  
+                        }   
+                    });  
+                }  
+            }]  
+        });  
+      
+    });  

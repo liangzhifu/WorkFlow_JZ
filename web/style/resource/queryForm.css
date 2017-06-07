@@ -1,0 +1,64 @@
+@CHARSET "UTF-8";
+
+/* @import "base.css"; */
+body{
+	color:#333;
+	font-family:"Microsoft YaHei" ;
+	font-size:12px;
+}
+.query-sub-pannel{ 
+	height:245px;
+	width:550px;
+	z-index :5;
+	position : absolute;
+	display : none;
+	overflow: hidden;
+	top:28px;
+	left:0px;
+	ZOOM: 1;
+	font-family: "微软雅黑";
+	background-color:#FFF;
+	border: 1px solid #cfcfcf;
+	box-shadow : 1px 0 2px #978d8d inset;
+	-webkit-box-shodow : 1px 0 2px #978d8d inset;
+	-moz-box-shadow : 1px 0 2px #978d8d inset;
+}
+.title { width:440px;
+	font-family: "微软雅黑";
+	font-size: 13px;
+	color: #000000;
+	font-weight: bold;
+	background-image: url(../../images/icons/icon_form_search.png);
+	background-repeat: no-repeat;
+	padding-left: 20px;
+	padding-bottom:3px;
+	border-bottom:  1px solid #5c5c5c;
+	margin-left:20px;
+}
+.line{ width:460px; border-bottom:  1px solid #c4c4c4; padding-top:20px; margin-left:20px; margin-bottom:10px;}
+.x{ 
+	text-align:right;
+	line-height:20px;
+}
+.title1 {
+	font-family: "微软雅黑";
+	font-size: 13px;
+}
+.table2 {
+	font-family: "微软雅黑";
+	font-size: 12px;
+	color: #282828;
+	width:460px; 
+	margin-left:20px; 
+	margin-top:15px;
+}
+
+.font{
+	font-family: "微软雅黑";
+	font-size: 12px;
+	color: #000;
+	line-height:35px;
+	}
+.btn{ 
+	text-align:center;
+}

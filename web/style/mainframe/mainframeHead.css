@@ -1,0 +1,376 @@
+@CHARSET "UTF-8";
+
+.header {
+	position: absolute; /**fixed*/
+	top: 0px;
+	width: 100%;
+	height: 84px;
+	background-color: #ffffff;
+	border-bottom: 2px solid #d9000f;
+}
+
+.logo {
+	background-image: url(../images/takata2.png);
+	height: 70px;
+	width: 146px;
+	float: left;
+	margin-left: 10px;
+	margin-top: 7px;
+}
+
+/* 导航栏  */
+.nav {
+	height: 54px;
+/* 	float: left; */
+	margin-left: 0px;
+	margin-top: 0px;
+	background-image: url(../images/banner_bg_01.png);
+}
+
+/* 子菜单导航栏  */
+.subNav {
+	top: 54px;
+	margin-left: 0px;
+	margin-top: 0px;
+	height: 30px;
+}
+
+.m01,.m02,.m03,.m04,.m05,.m06,.m07 {
+	width: 96px;
+	height: 54px;
+	float: left;
+	color: #333;
+	line-height: 54px;
+	text-align: center;
+	font-weight: bold;
+	font-size: 14px;
+	font-family: "Microsoft YaHei";
+	cursor: pointer;
+}
+
+.m33 {
+	width: 96px;
+	height: 20px;
+	float: left;
+	color: #333;
+	line-height: 20px;
+	text-align: center;
+	font-weight: bold;
+	font-size: 14px;
+	font-family: "Microsoft YaHei";
+	cursor: pointer;
+}
+
+.m01 {
+	background-color: #d9000f;
+	color: #ffffff;
+}
+
+.m02:hover,.m03:hover,.m04:hover,.m05:hover,.m06:hover,.m07:hover {
+	background-color: #f3f5f5;
+	color: #d7191f;
+}
+
+.subM01,.subM02 {
+	position: relative;
+	width: 150px;
+	height: 28px;
+	float: left;
+	color: #333;
+	line-height: 28px;
+	text-align: center;
+	font-weight: bold;
+	font-size: 14px;
+	font-family: "Microsoft YaHei";
+	cursor: pointer;
+}
+
+.subc2{
+border:1px solid #d2a000;
+box-shadow: 0 1px 2px #fedd71 inset,0 -1px 0 #a38b39 inset,0 -2px 3px #fedd71 inset;
+background: #fece34;
+background: -webkit-linear-gradient(top,#fece34,#d8a605);
+background: -moz-linear-gradient(top,#fece34,#d8a605);
+background: linear-gradient(top,#fece34,#d8a605);
+}
+
+.round,
+	.side,
+	.tags{
+padding-right: 30px;
+}
+.round:after{
+position: absolute;
+display: inline-block;
+content: "\003c";
+top:50%;
+right:10px;
+margin-top: -10px;
+width: 17px;
+height: 20px;
+padding-left: 3px;
+line-height:18px;
+font-size: 10px;
+font-weight: normal;
+border-radius: 10px;
+text-shadow:-2px 0 1px #333;
+-webkit-transform:rotate(-90deg);
+-moz-transform:rotate(-90deg); 
+transform:rotate(-90deg);
+}
+
+.subM02.subc2.round:after{
+box-shadow:1px 0 1px rgba(255,255,255,.8) inset,1px 0 1px rgba(148,131,4,.9);
+background:-webkit-linear-gradient(top,#cf9d00,#d2a000);
+background:-moz-linear-gradient(top,#cf9d00,#d2a000);
+background:linear-gradient(top,#cf9d00,#d2a000);                         
+}
+
+.m_icon{
+	text-align:"center";
+	height:58px
+	}
+
+/* 用户信息 */
+.user_menu {
+	position: absolute;
+	top: 0px;
+	right: 96px;
+	height: 54px;
+	line-height: 54px;
+	z-index: 100;
+	padding-right: 1px;
+}
+
+/* 退出信息 */
+.exit_menu {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	height: 54px;
+	line-height: 54px;
+	z-index: 100;
+	padding-right: 1px;
+}
+
+
+/* 修改密码信息 */
+.password_menu {
+	position: absolute;
+	top: 0px;
+	right: 96px;
+	height: 54px;
+	line-height: 54px;
+	z-index: 100;
+	padding-right: 1px;
+}
+
+.user_menu li {
+	float: right;
+	width: 118px;
+	margin-right: 0px;
+	font-size: 12px;
+	line-height: 18px;
+}
+
+.exit_menu li {
+	float: right;
+	width: 96px;
+	margin-right: 0px;
+	font-size: 12px;
+	line-height: 18px;
+}
+
+.password_menu li {
+	float: right;
+	width: 96px;
+	margin-right: 0px;
+	font-size: 12px;
+	line-height: 18px;
+}
+
+.user_menu li.lihover,.menu li.licurrent {
+	padding-bottom: 0px;
+}
+
+.exit_menu li.lihover,.menu li.licurrent {
+	padding-bottom: 0px;
+}
+
+.user_menu li a {
+	width: 118px;
+	padding-left: 10px;
+	font-size: 12px;
+	color: #333;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.user_img {
+	background-image: url(../images/img_user.png);
+	width: 32px;
+	height: 32px;
+	float: left;
+	margin-top: 11px;
+}
+
+.exit_img {
+	background-image: url(../images/img_user.png);
+	width: 32px;
+	height: 32px;
+	float: left;
+	margin-top: 11px;
+}
+
+.user_name {
+	float: left;
+	margin-left: 10px;
+	margin-top: 9px;
+	line-height: 18px
+}
+
+.exit_name {
+	float: left;
+	margin-left: 10px;
+	margin-top: 9px;
+	line-height: 18px
+}
+
+.user_btn {
+	float: right;
+	background-image: url(../images/btn_down.png);
+	margin-right: 20px;
+	margin-top: 24px;
+	height: 8px;
+	width: 8px;
+}
+
+/** 用户详情，在鼠标悬浮的时候显示，默认隐藏  **/
+.li_3_content {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	height: 54px; /*174px 54px*/
+	width: 118px;
+	line-height: 20px;
+	z-index: 100;
+	background-color: #fff;
+	border: 0px solid #d9000f;
+}
+
+.li_3_content a:hover {
+	color: #d7191f !important;
+}
+
+#loginUserInfoDetail {
+	display: none;
+}
+
+.li_3_content dd {
+	padding-left: 10px;
+}
+
+.li_3_content dd a {
+	text-align: center;
+	padding: 0;
+	border-right: none;
+	color: #333;
+	font-weight: normal;
+	width: auto;
+}
+
+.li_3_content dd.lastItem {
+	
+}
+
+.li_3_content dd.lastItem a {
+	border-bottom: none;
+}
+
+/**用户退出 **/
+.li_4_content {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	height: 54px; /*174px 54px*/
+	width: 96px;
+	line-height: 20px;
+	z-index: 100;
+	background-color: #fff;
+	border: 0px solid #d9000f;
+}
+
+.exit_img {
+	background-image: url(../images/img_user.png);
+	width: 32px;
+	height: 32px;
+	float: left;
+	margin-top: 11px;
+}
+
+.exit_name {
+	float: left;
+	margin-left: 10px;
+	margin-top: 9px;
+	line-height: 18px
+}
+
+.user-info {
+	color: #808080;
+}
+
+.line01 {
+	float: left;
+	width: 98px;
+	height: 3px;
+	border-bottom: 1px #bfbfbf dotted;
+	margin-top: 0px;
+}
+
+.userAction {
+	width: 70px;
+	cursor: pointer;
+	border:0px solid red;
+}
+
+.icon_modify {
+	width: 12px;
+	height: 12px;
+	float: left;
+	margin-top: 4px;
+	margin-left: 0px;
+	margin-right: 5px;
+	background-image: url(../images/icon_modify.png);
+}
+
+.icon_account {
+	width: 12px;
+	height: 12px;
+	float: left;
+	margin-top: 5px;
+	margin-left: 0px;
+	margin-right: 5px;
+	background-image: url(../images/icon_account.png);
+}
+
+.icon_quit {
+	width: 12px;
+	height: 12px;
+	float: left;
+	margin-top: 5px;
+	margin-left: 0px;
+	margin-right: 5px;
+	background-image: url(../images/icon_quit.png);
+}
+
+.icon_modify:hover {
+	background-image: url(../images/icon_modify-hover.png);
+}
+
+.icon_account:hover {
+	background-image: url(../images/icon_account-hover.png);
+}
+
+.icon_quit:hover {
+	background-image: url(../images/icon_quit-hover.png);
+}

@@ -1,0 +1,11 @@
+@CHARSET "UTF-8";
+@import "base.css";
+
+/**页面头部样式定义*/
+@import "mainframeHead.css?version=3";
+
+/**页面菜单**/
+@import "mainframeMenu.css";
+
+/**页面主要内容样式**/
+@import "mainframeContent.css";

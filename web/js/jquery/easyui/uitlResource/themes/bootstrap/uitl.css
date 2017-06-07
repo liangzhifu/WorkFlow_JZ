@@ -1,0 +1,61 @@
+@CHARSET "UTF-8";
+
+.ztesofe_panel{
+	background:#efefef;
+	width:100;
+}
+
+.formContent{
+	position:absolute;
+	width:100%;
+	top:28px;
+	bottom:30px;
+	overflow:auto;
+	border:0px solid red;
+}
+
+.formRow{
+	width:100%;
+	height:auto;
+	overflow:auto;
+}
+
+.formField{
+	float:left;
+	width:auto;
+	height:33px;
+	border:0px solid #000000;
+}
+.fieldLabel{
+	float:left;
+	width:80px; 
+	height:33px;
+	line-height:33px;
+	text-align:right; 
+	border:0px solid red;	
+}
+.fieldContent{
+	float:left;
+	width:210px;
+	height:33px;
+	/**line-height:33px;*/
+	text-align:left; 
+	border:0px solid red;
+}
+
+.formBottom{
+	position:absolute;
+	bottom:0px;
+	height:35px;
+	width:100%;
+	text-align:center;
+	background:#F8F8F8;
+	border:1px solid #bbbbbb;
+}
+
+.formBottomWrap{
+	margin-top:2px;/**ie:6, chrome:2**/
+	line-height:0px;
+ 	overflow:hidden;
+	text-align:center;
+}
