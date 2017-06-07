@@ -261,7 +261,7 @@ public class ExportPDFImpl implements ExportPDF {
 
 		//判断是否需要立合
 		Integer agreementNum = this.taskOrderService.getAgreementNum(taskOrderQuery);
-		if(agreementNum.intValue() > 1){
+		if(agreementNum.intValue() > 0){
 			form.setField("other-1", "true");
 		}else {
 			form.setField("other-2", "true");
