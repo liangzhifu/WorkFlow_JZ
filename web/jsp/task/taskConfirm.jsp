@@ -13,6 +13,7 @@
 			var confirmOrderId = '${confirmOrderId}';
 			var confrimConfirmUser = '${confirm_confirm_user}';
 			var quality2ConfirmUser = '${quality2_confirm_user}';
+            var managerConfirmUser = '${manager_confirm_user}';
 			var runCode = '${runCode}';
 		</script>
 		<script type="text/javascript" src="<c:url value='/js/module/task/taskConfirm.js?version=41'/>"></script>

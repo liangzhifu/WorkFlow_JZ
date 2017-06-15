@@ -520,6 +520,10 @@ function doSubmit(){
 	Ext.each(order_8, function(item){
 		checkFlag = true;
 	});
+    var order_13 = Ext.getCmp('order_13').getValue();
+    Ext.each(order_13, function(item){
+        checkFlag = true;
+    });
 	if(!checkFlag){
 		Ext.MessageBox.alert("提示", "必须选择一个复选框！");
 		return;

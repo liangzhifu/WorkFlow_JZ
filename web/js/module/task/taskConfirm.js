@@ -597,7 +597,7 @@ function doEditQuality2Confirm(){
                                 }else {
                                     alert(responseText.message);
                                 }
-                                doSubmit();
+                                doEditManagerConfirm();
                             },
                             failure : function(e) {
                                 Ext.Msg.alert('提示', '修改品质部长承认人失败！');
@@ -614,7 +614,7 @@ function doEditQuality2Confirm(){
 
 function doEditManagerConfirm(){
 	flag = true;
-	Ext.Msg.confirm("确认框", "是否需要重新选择项目管理部部长承认人："+quality2ConfirmUser, function (btn) {
+	Ext.Msg.confirm("确认框", "是否需要重新选择项目管理部部长承认人："+managerConfirmUser, function (btn) {
 		if(btn=='yes'){
 			while(flag){
 				var returnValue = window.showModalDialog(contextPath + "/jsp/system/selectUser.jsp", null, "dialogHeight=500px;dialogwidth=400px;help=no;scrollbars=no;");

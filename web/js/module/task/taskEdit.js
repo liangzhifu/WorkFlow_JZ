@@ -511,6 +511,11 @@ function doSubmit(){
 	Ext.each(order_8, function(item){
 		order_8_value += ","+item.inputValue;
 	});
+    var order_13_value = "";
+    var order_13 = Ext.getCmp('order_13').getValue();
+    Ext.each(order_13, function(item){
+        order_13_value += ","+item.inputValue;
+    });
 	Ext.Ajax.request( {
 		url : contextPath+'/taskOrder/editChangeTime.do',
 		async: false,
@@ -527,6 +532,7 @@ function doSubmit(){
 			order_6 : order_6_value,
 			order_7 : order_7_value,
 			order_8 : order_8_value,
+            order_13 : order_13_value,
 			order_9 : order_9,
             order_12 : order_12,
 			order_8_input : order_8_input

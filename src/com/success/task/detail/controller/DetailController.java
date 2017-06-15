@@ -187,6 +187,7 @@ public class DetailController {
 			List<TaskConfirmOrder> taskConfirmOrderList = this.taskConfirmOrderService.queryTaskConfirmOrders(taskConfirmOrderQuery2);
 			String confirm_confirm_user = "";
 			String quality2_confirm_user = "";
+			String manager_confirm_user = "";
 			for(int i = 0; i < taskConfirmOrderList.size(); i++){
 				TaskConfirmOrder taskConfirmOrder2 = taskConfirmOrderList.get(i);
 				String runCode = taskConfirmOrder2.getRunCode();
@@ -194,10 +195,13 @@ public class DetailController {
 					confirm_confirm_user = taskConfirmOrder2.getConfirmUserName();
 				}else if("quality2_confirm".equals(runCode)){
 					quality2_confirm_user = taskConfirmOrder2.getConfirmUserName();
+				}else if("manager_confirm".equals(runCode)){
+					manager_confirm_user = taskConfirmOrder2.getConfirmUserName();
 				}
 			}
 			model.put("confirm_confirm_user", confirm_confirm_user);
 			model.put("quality2_confirm_user", quality2_confirm_user);
+			model.put("manager_confirm_user", manager_confirm_user);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
