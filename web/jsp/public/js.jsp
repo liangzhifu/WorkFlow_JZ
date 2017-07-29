@@ -6,3 +6,4 @@
 <script src="/WorkFlow/style/assets/js/jBox/jBox.min.js"></script>
 <script src="/WorkFlow/style/assets/js/jquery.form.js"></script>
 <script src="/WorkFlow/style/assets/js/jquery-ui.js"></script>
+<script src="/WorkFlow/style/multiselect/jquery.multiselect.js"></script>
