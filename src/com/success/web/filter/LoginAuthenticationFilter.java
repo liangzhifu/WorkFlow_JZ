@@ -65,6 +65,8 @@ public class LoginAuthenticationFilter implements Filter {
 		excludeURL.add(contextPath + "/taskScreenShow/queryTaskScreenShowList.do");
 		excludeURL.add(contextPath + "/taskScreenShow/queryTaskScreenCount.do");
 		excludeURL.add(contextPath + "/jsp/screen/screenShow.jsp");
+		excludeURL.add(contextPath + "/rrProblem/getRRProblemScreenShowDlg.do");
+		excludeURL.add(contextPath + "/jsp/dpcoi/rrProblemScreenShow.jsp");
 	}
 
 }
