@@ -102,6 +102,60 @@
                 </div>
             </div>
 
+            <c:if test="${!empty dpcoiOrder.rrProblemId}">
+                <div class="span12">
+                    <div class="block" >
+                        <div class="block-header" >
+                            <div >
+                                <i class="icon-edit"></i>RR问题点信息
+                            </div>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label class="control-label">状态：${rrProblem.problemStatus}</label>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="control-label">问题编号：${rrProblem.problemNo}</label>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="control-label">问题类型：${rrProblem.problemType}</label>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="control-label">工程：${rrProblem.engineering}</label>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="control-label">客户：${rrProblem.customer}</label>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="control-label">车型：${rrProblem.vehicle}</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label class="control-label">品名：${rrProblem.productNo}</label>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="control-label">生产线：${rrProblem.productLine}</label>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="control-label">严重度：${rrProblem.severity}</label>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="control-label">根本原因：${rrProblem.rootCause}</label>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="control-label">永久对策：${rrProblem.permanentGame}</label>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="control-label">不良内容：${rrProblem.badContent}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </c:if>
+
             <div class="row-fluid">
                 <div class="span12" >
                     <div class="block" >
@@ -312,7 +366,7 @@
                             <tr>
                                 <td>
                                     <c:if test="${item.operateType == 1}">生成</c:if>
-                                    <c:if test="${item.operateType == 2}">同步</c:if>
+                                    <c:if test="${item.operateType == 2}">4M同步</c:if>
                                     <c:if test="${item.operateType == 3}">作废</c:if>
                                     <c:if test="${item.operateType == 4}">修改</c:if>
                                 </td>

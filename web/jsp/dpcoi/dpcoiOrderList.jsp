@@ -119,7 +119,11 @@
                         </td>
                         <td style="white-space:normal;padding: 0px;display:table-cell; vertical-align:middle;">
                             <span ng-show="dpcoiOrderDate.dpcoiOrderType == 1">{{dpcoiOrderDate.designChangeNo}}</span>
-                            <span ng-show="dpcoiOrderDate.dpcoiOrderType == 2">{{dpcoiOrderDate.taskOrderNo}}</span>
+                            <span ng-show="dpcoiOrderDate.dpcoiOrderType == 2">
+                                <span ng-hide="dpcoiOrderDate.rrProblemId==null" style="background-color:mediumslateblue">{{dpcoiOrderDate.taskOrderNo}}</span>
+                                <span ng-show="dpcoiOrderDate.rrProblemId==null">{{dpcoiOrderDate.taskOrderNo}}</span>
+
+                            </span>
                         </td>
                         <td style="white-space:normal;padding: 0px;display:table-cell; vertical-align:middle;">{{dpcoiOrderDate.vehicleName}}</td>
                         <td style="white-space:normal;word-wrap:break-word;word-break:break-all;padding: 0px;display:table-cell; vertical-align:middle;">{{dpcoiOrderDate.productNo}}</td>
