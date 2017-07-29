@@ -6,6 +6,8 @@ public class TaskWoOrderDetailQuery {
 	
 	private Integer userId;
 
+	private String woOrderStateCode;
+
 	public Integer getOrderId() {
 		return orderId;
 	}
@@ -21,5 +23,12 @@ public class TaskWoOrderDetailQuery {
 	public void setUserId(Integer userId) {
 		this.userId = userId;
 	}
-	
+
+	public String getWoOrderStateCode() {
+		return woOrderStateCode;
+	}
+
+	public void setWoOrderStateCode(String woOrderStateCode) {
+		this.woOrderStateCode = woOrderStateCode;
+	}
 }
