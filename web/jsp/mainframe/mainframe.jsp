@@ -37,7 +37,12 @@
 	</div>
 	<div id="divSubCatalog" class="subNav subc2">
 	<c:forEach items="${subCatalogList}" var="catalog" varStatus="status">
-		<div class="subM02 subc2" id="subCatalog${catalog.menuId}" title="${catalog.menuName}" moduleId="${catalog.menuId}" moduleUrl="${catalog.menuUrl}">${catalog.menuName}</div>
+		<div class="subM02 subc2" id="subCatalog${catalog.menuId}" title="${catalog.menuName}" moduleId="${catalog.menuId}" moduleUrl="${catalog.menuUrl}">
+		${catalog.menuName}
+			<c:if test="${catalog.woOrderNumber > 0}">
+				<span style="position:absolute;top: 0px;right: 0px;width: 20px;height: 18px;font-size: 14px;line-height: 14px;color:red;font-weight:bold;font-style:italic;background-color:blue;">${catalog.woOrderNumber}</span>
+			</c:if>
+		</div>
 	</c:forEach>
 	</div>
 	<!--  
