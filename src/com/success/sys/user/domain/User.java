@@ -23,6 +23,10 @@ public class User {
 	private String mobileTel;
 	// 是否领导
 	private String isHeader;
+	//RR问题责任人
+	private String rrProblemPersionliable;
+	//RR部长
+	private String rrMinister;
 	// 备注
 	private String userMark;
 	//
@@ -140,5 +144,21 @@ public class User {
 
 	public void setOrgName(String orgName) {
 		this.orgName = orgName;
+	}
+
+	public String getRrProblemPersionliable() {
+		return rrProblemPersionliable;
+	}
+
+	public void setRrProblemPersionliable(String rrProblemPersionliable) {
+		this.rrProblemPersionliable = rrProblemPersionliable;
+	}
+
+	public String getRrMinister() {
+		return rrMinister;
+	}
+
+	public void setRrMinister(String rrMinister) {
+		this.rrMinister = rrMinister;
 	}
 }

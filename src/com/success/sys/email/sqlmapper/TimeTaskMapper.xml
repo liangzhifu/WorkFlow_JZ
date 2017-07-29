@@ -16,6 +16,7 @@
 		<result property="userEmail" column="user_email" />
 		<result property="failedNum" column="failed_num" />
 		<result property="comment" column="comment" />
+		<result property="emailTitle" column="email_title" />
 	</resultMap>
 
 	<select id="selectTimeTask" resultMap="timeTaskResultMap" parameterType="TimeTaskQuery">
@@ -32,7 +33,8 @@
 				user_name,
 				user_email,
 				failed_num,
-				comment
+				comment,
+				email_title
 			from time_task 
 			where delete_state = #{deleteState,jdbcType=NUMERIC}
 	</select>
@@ -53,7 +55,8 @@
 				user_email,
 				failed_num,
 				comment,
-				create_time)
+				create_time,
+				email_title)
   					 values (#{woOrderId,jdbcType=NUMERIC},
   					 		 #{orderId,jdbcType=NUMERIC},
   					 		 #{confirmOrderId,jdbcType=NUMERIC},
@@ -67,7 +70,8 @@
 							 #{userEmail,jdbcType=VARCHAR},
 							 0,
 							 #{comment,jdbcType=VARCHAR},
-							 sysdate())
+							 sysdate(),
+							 #{emailTitle,jdbcType=VARCHAR})
 		]]>
 	</insert>
 

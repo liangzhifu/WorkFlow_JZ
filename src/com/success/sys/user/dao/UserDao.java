@@ -75,7 +75,6 @@ public class UserDao extends BaseDao {
 	
 	/**
 	 * 查询审核组织用户
-	 * @param query
 	 * @return
 	 */
 	public List<User> selectVerifyUser(){
@@ -84,5 +83,9 @@ public class UserDao extends BaseDao {
 	
 	public List<User> selectOrderContractUser(){
 		return this.sqlSession.selectList("user.selectOrderContractUser");
+	}
+
+	public Integer selectMinisterJurisdiction(User user){
+		return this.sqlSession.selectOne("user.selectMinisterJurisdiction", user);
 	}
 }

@@ -16,7 +16,8 @@
 		<result property="userMark" column="user_mark" />
 		<result property="deleteState" column="delete_state" />
 		<result property="isHeader" column="isHeader" />
-
+		<result property="rrProblemPersionliable" column="rr_problem_persionliable" />
+		<result property="rrMinister" column="rr_minister" />
 	</resultMap>
 
 	<select id="selectUserByCode" resultMap="userResultMap"
@@ -66,7 +67,9 @@
 			s.user_sex,
 			s.user_mark,
 			(select org_name from sys_org org where org.org_id = s.org_id) as orgName,
-			case s.isHeader when '1' then '是' when '0' then '否' else s.isHeader end as isHeader
+			s.isHeader,
+			s.rr_problem_persionliable,
+			s.rr_minister
 		from sys_users s
 		]]>
 		<where>
@@ -192,7 +195,8 @@
 			<if test="userMark != null">USER_MARK = #{userMark,jdbcType=VARCHAR},</if>
 			<if test="deleteState != null">DELETE_STATE = #{deleteState,jdbcType=VARCHAR},</if>
 			<if test="isHeader != null">ISHEADER = #{isHeader,jdbcType=VARCHAR},</if>
-
+			<if test="rrProblemPersionliable != null">rr_problem_persionliable = #{rrProblemPersionliable,jdbcType=VARCHAR},</if>
+			<if test="rrMinister != null">rr_minister = #{rrMinister,jdbcType=VARCHAR},</if>
 		</set>
 		where user_id=#{userId, jdbcType=NUMERIC}
 	</update>
@@ -241,5 +245,23 @@
 		where s.delete_state = 0
 		and s.org_id = 231
 		]]>
+	</select>
+
+	<select id="selectPersionLiableList" resultType="java.util.HashMap">
+		select
+			s.user_id as userId,
+			s.user_name as userName
+		from sys_users s
+		where s.delete_state = 0
+		and s.rr_problem_persionliable = '1'
+		order by convert(s.user_name using gbk) asc
+	</select>
+
+	<select id="selectMinisterJurisdiction" parameterType="User" resultType="java.lang.Integer">
+		SELECT COUNT(1)
+		FROM sys_users users, sys_org org
+		WHERE users.`ORG_ID` = org.`ORG_ID`
+		AND users.`rr_minister` = 1
+		AND users.`USER_ID` = #{userId}
 	</select>
 </mapper>

@@ -30,6 +30,8 @@ public class TimeTask {
 	
 	private String comment;
 
+	private String emailTitle;
+
 	public Integer getTimeTaskId() {
 		return timeTaskId;
 	}
@@ -140,5 +142,13 @@ public class TimeTask {
 
 	public void setComment(String comment) {
 		this.comment = comment;
+	}
+
+	public String getEmailTitle() {
+		return emailTitle;
+	}
+
+	public void setEmailTitle(String emailTitle) {
+		this.emailTitle = emailTitle;
 	}
 }
