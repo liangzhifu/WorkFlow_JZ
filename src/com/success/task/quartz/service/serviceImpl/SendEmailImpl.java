@@ -48,7 +48,7 @@ public class SendEmailImpl {
 				for(int i = 0; i < timeTaskList.size(); i++){
 					index = index % 11;
 					sendMailDao = null;
-					sendMailDao = MailSenderFactory.getSender("403_4M@cn.takata.com", "", "10.235.12.102", "25");
+					sendMailDao = MailSenderFactory.getSender("404_4M@cn.takata.com", "", "10.235.12.102", "25");
 					TimeTask timeTask = timeTaskList.get(i);
 					int failedNum = timeTask.getFailedNum();
 					String toMailAddress = timeTask.getUserEmail();//"1009568392@qq.com";
@@ -138,12 +138,18 @@ public class SendEmailImpl {
 							subject = "DPCOI作废-设变废除";
 						}else if(noticeType == 37){
 							subject = "DPCOI作废-4M变更废除";
+						}else if(noticeType == 38){
+							subject = "RR问题点Delay";
 						}else {
 							
 						}
 						//内容
+						String emailTitle = timeTask.getEmailTitle();
+						if(!(emailTitle == null || "".equals(emailTitle))){
+							subject = emailTitle + ":" + subject;
+						}
 						String content = timeTask.getComment() + "<br>系统URL：http://s401app09.cn.takatacorp.com";
-						sendMailDao.send("403_4M@cn.takata.com", toMailAddress, subject, content);
+						sendMailDao.send("404_4M@cn.takata.com", toMailAddress, subject, content);
 						timeTask.setDeleteState(1);
 						this.timeTaskDao.deleteTimeTask(timeTask);
 					}catch(Exception e1){
