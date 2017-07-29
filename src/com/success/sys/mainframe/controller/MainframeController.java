@@ -162,7 +162,7 @@ public class MainframeController {
 				RRProblemWoOrderQuery rrProblemWoOrderQuery = new RRProblemWoOrderQuery();
 				rrProblemWoOrderQuery.setDpcoiUserId(user.getUserId());
 				number = this.rRProblemWoOrderService.queryRRProblemWoOrderCount(rrProblemWoOrderQuery);
-			}else if(menuId == 18){//DPCOI代办
+			}else if(menuId == 19){//DPCOI代办
 				DpcoiWoOrderQuery dpcoiWoOrderQuery = new DpcoiWoOrderQuery();
 				dpcoiWoOrderQuery.setDpcoiUserId(user.getUserId());
 				number = this.dpcoiWoOrderService.queryDpcoiWoOrderCount(dpcoiWoOrderQuery);
