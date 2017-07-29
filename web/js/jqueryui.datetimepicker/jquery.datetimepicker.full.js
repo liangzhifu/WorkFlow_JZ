@@ -1189,7 +1189,8 @@ var DateFormatter;
 		beforeShowDay: null,
 
 		enterLikeTab: true,
-		showApplyButton: false
+		showApplyButton: false,
+        applyButtonName: 'Running Change'
 	};
 
 	var dateHelper = null,
@@ -1488,7 +1489,7 @@ var DateFormatter;
 				timepicker = $('<div class="xdsoft_timepicker active"><button type="button" class="xdsoft_prev"></button><div class="xdsoft_time_box"></div><button type="button" class="xdsoft_next"></button></div>'),
 				timeboxparent = timepicker.find('.xdsoft_time_box').eq(0),
 				timebox = $('<div class="xdsoft_time_variant"></div>'),
-				applyButton = $('<button type="button" class="xdsoft_save_selected blue-gradient-button">Running Change</button>'),
+				applyButton = $('<button type="button" class="xdsoft_save_selected blue-gradient-button">'+options.applyButtonName+'</button>'),
 
 				monthselect = $('<div class="xdsoft_select xdsoft_monthselect"><div></div></div>'),
 				yearselect = $('<div class="xdsoft_select xdsoft_yearselect"><div></div></div>'),
@@ -2001,7 +2002,7 @@ var DateFormatter;
 				e.preventDefault();
 				datetimepicker.data('changed', true);
 				_xdsoft_datetime.setCurrentTime(getCurrentValue());
-				input.val("Running Change");
+				input.val(options.applyButtonName);
 				datetimepicker.trigger('close.xdsoft');
 			});
 			mounth_picker
