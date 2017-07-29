@@ -4,6 +4,12 @@
 
 	<typeAliases>
 
+		<typeAlias type="com.dpcoi.config.domain.DpcoiConfig" alias="DpcoiConfig" />
+		<typeAlias type="com.dpcoi.config.domain.DpcoiConfigCode" alias="DpcoiConfigCode" />
+		<typeAlias type="com.dpcoi.config.domain.DpcoiConfigVehicle" alias="DpcoiConfigVehicle" />
+		<typeAlias type="com.dpcoi.config.query.DpcoiConfigQuery" alias="DpcoiConfigQuery" />
+		<typeAlias type="com.dpcoi.config.query.DpcoiConfigVehicleQuery" alias="DpcoiConfigVehicleQuery" />
+
 		<typeAlias type="com.dpcoi.file.domain.FileUpload" alias="FileUpload" />
 
 		<typeAlias type="com.dpcoi.holiday.domain.Holiday" alias="Holiday" />
@@ -11,8 +17,14 @@
 
 		<typeAlias type="com.dpcoi.order.domain.DpcoiOrder" alias="DpcoiOrder" />
 		<typeAlias type="com.dpcoi.order.query.DpcoiOrderQuery" alias="DpcoiOrderQuery" />
+		<typeAlias type="com.dpcoi.order.query.RRProblemOrderQuery" alias="RRProblemOrderQuery" />
 
+		<typeAlias type="com.dpcoi.rr.domain.RRProblem" alias="RRProblem" />
+		<typeAlias type="com.dpcoi.rr.query.RRProblemQuery" alias="RRProblemQuery" />
+
+		<typeAlias type="com.dpcoi.statistics.domain.RRDelayStatistics" alias="RRDelayStatistics" />
 		<typeAlias type="com.dpcoi.statistics.query.DpcoiStatisticsQuery" alias="DpcoiStatisticsQuery" />
+		<typeAlias type="com.dpcoi.statistics.query.RRDelayStatisticsQuery" alias="RRDelayStatisticsQuery" />
 
 		<typeAlias type="com.dpcoi.sys.domain.DpcoiUser" alias="DpcoiUser" />
 		<typeAlias type="com.dpcoi.sys.domain.DpcoiUserRole" alias="DpcoiUserRole" />
@@ -23,6 +35,8 @@
 		<typeAlias type="com.dpcoi.woOrder.domain.DpcoiWoOrderFile" alias="DpcoiWoOrderFile" />
 		<typeAlias type="com.dpcoi.woOrder.query.DpcoiWoOrderFileQuery" alias="DpcoiWoOrderFileQuery" />
 		<typeAlias type="com.dpcoi.woOrder.query.DpcoiWoOrderQuery" alias="DpcoiWoOrderQuery" />
+		<typeAlias type="com.dpcoi.woOrder.query.RRProblemWoOrderFileQuery" alias="RRProblemWoOrderFileQuery" />
+		<typeAlias type="com.dpcoi.woOrder.query.RRProblemWoOrderQuery" alias="RRProblemWoOrderQuery" />
 
 		<typeAlias type="com.other.history.domain.OperateHistory" alias="OperateHistory" />
 		<typeAlias type="com.other.history.query.OperateHistoryQuery" alias="OperateHistoryQuery" />
