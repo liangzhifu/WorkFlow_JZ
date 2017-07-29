@@ -36,7 +36,17 @@ var mainframeConfig = (function() {
 						var dataHtml = "";
 						for(var i=0;i<data.length;i++){
 							var catalog = data[i];
-							dataHtml += '<div class="subM02 subc2" id="subCatalog'+catalog.menuId+'" title="'+catalog.menuName+'" moduleId="'+catalog.menuId+'" moduleUrl="'+catalog.menuUrl+'">'+catalog.menuName+'</div>';
+							var number = catalog.woOrderNumber;
+							if(number == 0){
+                                dataHtml += '<div class="subM02 subc2" id="subCatalog'+catalog.menuId+'" title="'+catalog.menuName+'" moduleId="'+catalog.menuId+'" moduleUrl="'+catalog.menuUrl+'">'
+                                    +catalog.menuName
+                                    +'</div>';
+							}else {
+                                dataHtml += '<div class="subM02 subc2" id="subCatalog'+catalog.menuId+'" title="'+catalog.menuName+'" moduleId="'+catalog.menuId+'" moduleUrl="'+catalog.menuUrl+'">'
+                                    +catalog.menuName
+                                    +'<span style="position:absolute;top: 0px;right: 0px;width: 20px;height: 14px;font-size: 12px;line-height: 14px;color:red;font-weight:bold;font-style:italic;background-color:blue;">'+number+'</span>'
+                                    +'</div>';
+							}
 						}
 						$("#divSubCatalog").append(dataHtml);
 						//加载事件
