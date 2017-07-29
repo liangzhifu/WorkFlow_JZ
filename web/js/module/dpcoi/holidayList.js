@@ -30,7 +30,7 @@ holidayListApp.controller("holidayListController", function ($scope) {
         $scope.holidayList.searchForm.holidayStart = $("#holidayStart").val();
         $scope.holidayList.searchForm.holidayEnd = $("#holidayEnd").val();
         $scope.holidayList.searchForm.pagenum = $scope.holidayList.pageInfo.page-1;
-        $scope.holidayList.searchForm.pageCount = 10;
+        $scope.holidayList.searchForm.pageCount = 30;
         $scope.holidayList.searchForm.size = $scope.holidayList.searchForm.pageCount;
         $scope.holidayList.searchForm.start = $scope.holidayList.searchForm.pagenum * $scope.holidayList.searchForm.size;
         $.ajax({
