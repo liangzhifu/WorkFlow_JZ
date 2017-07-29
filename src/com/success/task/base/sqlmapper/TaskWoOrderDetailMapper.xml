@@ -38,6 +38,12 @@
 			<if test="@Ognl@isNotEmpty(userId)"> 
 				and a.tache_id in (select tache_id from task_type_tache_user where user_id = #{userId,jdbcType=NUMERIC} and delete_state = 0)
 			</if>
+			<if test="@Ognl@isNotEmpty(woOrderStateCode)">
+				and a.WO_ORDER_STATE_CODE = #{woOrderStateCode, jdbcType=VARCHAR}
+			</if>
 		</where>
+		<if test="@Ognl@isNotEmpty(orderId) and @Ognl@isNotEmpty(userId) and @Ognl@isNotEmpty(woOrderStateCode)">
+			ORDER BY a.wo_order_id ASC LIMIT 1
+		</if>
 	</select>
 </mapper>
