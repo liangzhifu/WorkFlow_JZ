@@ -173,7 +173,7 @@ public class ExportExcelImpl implements ExportExcel {
 	
 	/**
 	 * 导出屏幕展示的变更单
-	 * @param detailList
+	 * @param taskScreenList
 	 * @param path
 	 * @return
 	 * @throws Exception
