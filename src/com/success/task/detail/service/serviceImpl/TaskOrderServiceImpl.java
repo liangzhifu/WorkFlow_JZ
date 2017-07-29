@@ -145,6 +145,7 @@ public class TaskOrderServiceImpl implements TaskOrderService {
 		TaskWoOrderDetailQuery taskWoOrderDetailQuery = new TaskWoOrderDetailQuery();
 		taskWoOrderDetailQuery.setOrderId(taskOrder.getOrderId());
 		taskWoOrderDetailQuery.setUserId(userId);
+		taskWoOrderDetailQuery.setWoOrderStateCode("10B");
 		List<TaskWoOrder> taskWoOrderList = this.taskWoOrderService.queryTaskWoOrders(taskWoOrderDetailQuery);
 		taskOrder.setTaskWoOrderList(taskWoOrderList);
 		
