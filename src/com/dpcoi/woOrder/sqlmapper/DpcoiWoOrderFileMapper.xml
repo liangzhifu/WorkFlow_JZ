@@ -131,6 +131,7 @@
             AND dor.`DEL_FLAG` = '0'
             AND dwo.`DEL_FLAG` = '0'
             AND dwof.`DEL_FLAG` = '0'
+            and dor.`DPCOI_ORDER_TYPE` in (1, 2)
             <if test="vehicleName != null and vehicleName != ''" >
                 and dor.`VEHICLE_NAME` like CONCAT('%',#{vehicleName},'%')
             </if>
@@ -202,6 +203,7 @@
             AND dor.`DEL_FLAG` = '0'
             AND dwo.`DEL_FLAG` = '0'
             AND dwof.`DEL_FLAG` = '0'
+            and dor.`DPCOI_ORDER_TYPE` in (1, 2)
             <if test="vehicleName != null and vehicleName != ''" >
                 and dor.`VEHICLE_NAME` like CONCAT('%',#{vehicleName},'%')
             </if>

@@ -3,6 +3,8 @@ package com.dpcoi.order.controller;
 import com.dpcoi.order.domain.DpcoiOrder;
 import com.dpcoi.order.query.DpcoiOrderQuery;
 import com.dpcoi.order.service.DpcoiOrderService;
+import com.dpcoi.rr.domain.RRProblem;
+import com.dpcoi.rr.service.RRProblemService;
 import com.other.history.query.OperateHistoryQuery;
 import com.other.history.service.OperateHistoryService;
 import com.success.common.Constant;
@@ -35,6 +37,9 @@ public class DpcoiOrderController {
     @Resource(name = "userService")
     private UserService userService;
 
+    @Resource(name = "rRProblemService")
+    private RRProblemService rRProblemService;
+
     @Resource(name = "operateHistoryService")
     private OperateHistoryService operateHistoryService;
 
@@ -64,6 +69,15 @@ public class DpcoiOrderController {
         model.put("dpcoiWoOrderDetailList", dpcoiWoOrderDetailList);
         dpcoiOrder = this.dpcoiOrderService.queryDpcoiOrder(dpcoiOrder);
         model.put("dpcoiOrder", dpcoiOrder);
+        Integer rrProblemId = dpcoiOrder.getRrProblemId();
+        if(rrProblemId != null){
+            RRProblem rrProblem = new RRProblem();
+            rrProblem.setId(rrProblemId);
+            rrProblem = this.rRProblemService.queryRRProblem(rrProblem);
+            model.put("rrProblem", rrProblem);
+        }else {
+            model.put("rrProblem", null);
+        }
         OperateHistoryQuery operateHistoryQuery = new OperateHistoryQuery();
         operateHistoryQuery.setSystermType(1);
         operateHistoryQuery.setBusinessType(1);

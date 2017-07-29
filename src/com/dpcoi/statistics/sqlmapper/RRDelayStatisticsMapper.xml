@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="RRDelayStatisticsMapper" >
+    <resultMap id="BaseResultMap" type="RRDelayStatistics" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="rr_problem_id" property="rrProblemId" jdbcType="INTEGER" />
+        <result column="persion_liable" property="persionLiable" jdbcType="VARCHAR" />
+        <result column="delay_date" property="delayDate" jdbcType="DATE" />
+        <result column="problem_progress" property="problemProgress" jdbcType="VARCHAR" />
+        <result column="delay_type" property="delayType" jdbcType="INTEGER" />
+        <result column="speed_of_progress" property="speedOfProgress" jdbcType="VARCHAR" />
+        <result column="problem_status" property="problemStatus" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        id, rr_problem_id, persion_liable, delay_date, problem_progress, delay_type, speed_of_progress, problem_status
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select
+        <include refid="Base_Column_List" />
+        from dpcoi_rr_delay_statistics
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <insert id="insertSelective" parameterType="RRDelayStatistics" >
+        insert into dpcoi_rr_delay_statistics
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="rrProblemId != null" >
+                rr_problem_id,
+            </if>
+            <if test="persionLiable != null" >
+                persion_liable,
+            </if>
+            <if test="delayDate != null" >
+                delay_date,
+            </if>
+            <if test="problemProgress != null" >
+                problem_progress,
+            </if>
+            <if test="delayType != null" >
+                delay_type,
+            </if>
+            <if test="speedOfProgress != null" >
+                speed_of_progress,
+            </if>
+            <if test="problemStatus != null" >
+                problem_status,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="rrProblemId != null" >
+                #{rrProblemId,jdbcType=INTEGER},
+            </if>
+            <if test="persionLiable != null" >
+                #{persionLiable,jdbcType=VARCHAR},
+            </if>
+            <if test="delayDate != null" >
+                #{delayDate,jdbcType=DATE},
+            </if>
+            <if test="problemProgress != null" >
+                #{problemProgress,jdbcType=VARCHAR},
+            </if>
+            <if test="delayType != null" >
+                #{delayType,jdbcType=INTEGER},
+            </if>
+            <if test="speedOfProgress != null" >
+                #{speedOfProgress,jdbcType=VARCHAR},
+            </if>
+            <if test="problemStatus != null" >
+                #{problemStatus,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="RRDelayStatistics" >
+        update dpcoi_rr_delay_statistics
+        <set >
+            <if test="rrProblemId != null" >
+                rr_problem_id = #{rrProblemId,jdbcType=INTEGER},
+            </if>
+            <if test="persionLiable != null" >
+                persion_liable = #{persionLiable,jdbcType=VARCHAR},
+            </if>
+            <if test="delayDate != null" >
+                delay_date = #{delayDate,jdbcType=DATE},
+            </if>
+            <if test="problemProgress != null" >
+                problem_progress = #{problemProgress,jdbcType=VARCHAR},
+            </if>
+            <if test="delayType != null" >
+                delay_type = #{delayType,jdbcType=INTEGER},
+            </if>
+            <if test="speedOfProgress != null" >
+                speed_of_progress = #{speedOfProgress,jdbcType=VARCHAR},
+            </if>
+            <if test="problemStatus != null" >
+                problem_status = #{problemStatus,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+
+    <select id="selectStatisticsCount" resultType="java.lang.Integer" parameterType="RRDelayStatisticsQuery">
+        SELECT COUNT(1)
+        FROM dpcoi_rr_delay_statistics statis
+        <where>
+            <if test="dateBegin != null and dateBegin != ''">
+                and DATE_FORMAT(statis.`delay_date`, '%Y-%m-%d') &gt;= #{dateBegin}
+            </if>
+            <if test="dateEnd != null and dateEnd != ''">
+                and DATE_FORMAT(statis.`delay_date`, '%Y-%m-%d') &lt;= #{dateEnd}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectStatisticsList" resultType="java.util.HashMap" parameterType="RRDelayStatisticsQuery">
+        SELECT statis.`persion_liable` AS userName,
+        COUNT(1) AS num
+        FROM dpcoi_rr_delay_statistics statis
+        <where>
+            <if test="dateBegin != null and dateBegin != ''">
+                and DATE_FORMAT(statis.`delay_date`, '%Y-%m-%d') &gt;= #{dateBegin}
+            </if>
+            <if test="dateEnd != null and dateEnd != ''">
+                and DATE_FORMAT(statis.`delay_date`, '%Y-%m-%d') &lt;= #{dateEnd}
+            </if>
+        </where>
+        GROUP BY statis.`persion_liable`
+    </select>
+
+    <select id="selectRRDelayStatisticsList" resultType="java.util.HashMap" parameterType="RRDelayStatisticsQuery">
+        select statis.`problem_progress` as problemProgress,
+        statis.`speed_of_progress` as speedOfPorgress,
+        statis.`problem_status` as problemStatus,
+        DATE_FORMAT(statis.`delay_date`, '%Y-%m-%d') as delayDate,
+        rr.`problem_no` as problemNo
+        FROM dpcoi_rr_delay_statistics statis, dpcoi_rr_problem rr
+        <where>
+            statis.`rr_problem_id` = rr.`id`
+            <if test="dateBegin != null and dateBegin != ''">
+                and DATE_FORMAT(statis.`delay_date`, '%Y-%m-%d') &gt;= #{dateBegin}
+            </if>
+            <if test="dateEnd != null and dateEnd != ''">
+                and DATE_FORMAT(statis.`delay_date`, '%Y-%m-%d') &lt;= #{dateEnd}
+            </if>
+            <if test="userName != null and userName != ''">
+                and statis.`persion_liable`= #{userName}
+            </if>
+        </where>
+    </select>
+</mapper>

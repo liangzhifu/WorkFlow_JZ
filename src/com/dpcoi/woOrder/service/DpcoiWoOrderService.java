@@ -39,6 +39,15 @@ public interface DpcoiWoOrderService {
     public List<Map<String, Object>> queryDpcoiWoOrderListPage(DpcoiWoOrderQuery dpcoiWoOrderQuery) throws ServiceException;
 
     /**
+     * 获取dpcoiWoOrder订单列表
+     * @param dpcoiWoOrderQuery 查询条件
+     * @return 返回结果
+     * @throws ServiceException 异常
+     */
+    public List<Map<String, Object>> queryDpcoiWoOrderList(DpcoiWoOrderQuery dpcoiWoOrderQuery) throws ServiceException;
+
+
+    /**
      * 获取dpcoiWoOrder订单数量
      * @param dpcoiWoOrderQuery 查询条件
      * @return 返回结果

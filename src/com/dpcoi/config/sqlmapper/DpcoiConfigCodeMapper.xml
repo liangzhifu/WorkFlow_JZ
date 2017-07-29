@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dpcoiConfigCodeMapper">
+
+    <select id="selectDpcoiConfigCodeList" resultType="DpcoiConfigCode">
+        SELECT config_code_id AS configCodeId,
+          config_code_name AS configCodeName
+        FROM dpcoi_config_code
+    </select>
+
+</mapper>

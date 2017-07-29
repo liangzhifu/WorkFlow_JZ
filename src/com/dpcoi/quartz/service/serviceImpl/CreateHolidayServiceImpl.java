@@ -30,7 +30,7 @@ public class CreateHolidayServiceImpl {
             Date nowDate = new Date();
             Calendar cal = Calendar.getInstance();
             cal.setTime(nowDate);
-            cal.add(Calendar.MONTH, 1);
+            cal.add(Calendar.MONTH, 3);
             int maxDay = cal.getActualMaximum(Calendar.DATE);
             for(int i = 0; i < maxDay; i++){
                 if(cal.get(Calendar.DAY_OF_WEEK)==Calendar.SATURDAY||cal.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY) {
@@ -45,6 +45,7 @@ public class CreateHolidayServiceImpl {
                         this.holidayService.addHoliday(holiday);
                     }
                 }
+                cal.add(Calendar.DATE, 1);
             }
         }catch (Exception e){
             e.printStackTrace();

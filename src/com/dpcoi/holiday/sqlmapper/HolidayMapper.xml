@@ -68,7 +68,7 @@
                 and DATE_FORMAT(holiday.`holiday`,'%y-%M-%d') &lt;= DATE_FORMAT(#{holidayEnd},'%y-%M-%d')
             </if>
         </where>
-        order by holiday.`holiday` limit #{start},#{size}
+        order by holiday.`holiday` DESC limit #{start},#{size}
     </select>
 
     <select id="selectHolidayCount" parameterType="HolidayQuery" resultType="java.lang.Integer">
@@ -82,5 +82,17 @@
                 and DATE_FORMAT(holiday.`holiday`,'%y-%M-%d') &lt;= DATE_FORMAT(#{holidayEnd},'%y-%M-%d')
             </if>
         </where>
+    </select>
+
+    <select id="selectHolidayList" resultType="java.util.Date">
+        SELECT holiday.`holiday`
+        from sys_holiday holiday
+        where DATE_FORMAT(holiday.`holiday`,'%Y-%m-%d') &gt;= DATE_FORMAT(sysdate(),'%Y-%m-%d')
+    </select>
+
+    <select id="selectHolidayListFromBeginDate" resultType="java.util.Date" parameterType="java.lang.String">
+        SELECT holiday.`holiday`
+        from sys_holiday holiday
+        where DATE_FORMAT(holiday.`holiday`,'%Y-%m-%d') &gt;= #{beginDate}
     </select>
 </mapper>

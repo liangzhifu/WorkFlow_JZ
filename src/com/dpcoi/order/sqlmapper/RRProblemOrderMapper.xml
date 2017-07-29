@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="RRProblemOrderMapper">
+
+    <sql id="WHERE_SQL">
+      <where>
+          dor.`rr_problem_id` = problem.`id`
+          and dor.del_flag = 0
+          and dor.`DPCOI_ORDER_TYPE` = 3
+          <if test="badContent != null and badContent != ''" >
+              and problem.`bad_content` like CONCAT('%',#{badContent,jdbcType=VARCHAR},'%')
+          </if>
+          <if test="problemProgress != null and problemProgress != ''" >
+              and problem.`problem_progress` = #{problemProgress,jdbcType=VARCHAR}
+          </if>
+          <if test="speedOfProgress != null and speedOfProgress != ''" >
+              and problem.`speed_of_progress` = #{speedOfProgress,jdbcType=VARCHAR}
+          </if>
+          <if test="problemStatus != null and problemStatus != ''" >
+              and problem.problem_status = #{problemStatus,jdbcType=VARCHAR}
+          </if>
+          <if test="problemType != null and problemType != ''" >
+              and problem.problem_type = #{problemType,jdbcType=VARCHAR}
+          </if>
+          <if test="engineering != null and engineering != ''" >
+              and problem.engineering = #{engineering,jdbcType=VARCHAR}
+          </if>
+          <if test="customer != null and customer != ''" >
+              and problem.customer = #{customer,jdbcType=VARCHAR}
+          </if>
+          <if test="vehicle != null and vehicle != ''" >
+              and problem.vehicle like concat('%',#{vehicle,jdbcType=VARCHAR},'%')
+          </if>
+          <if test="productNo != null and productNo != ''" >
+              and problem.product_no = #{productNo,jdbcType=VARCHAR}
+          </if>
+          <if test="happenDateBegin != null and happenDateBegin != ''" >
+              and DATE_FORMAT(problem.happen_date,'%Y-%m-%d') &gt;= #{happenDateBegin,jdbcType=VARCHAR}
+          </if>
+          <if test="happenDateEnd != null and happenDateEnd != ''" >
+              and DATE_FORMAT(problem.happen_date,'%Y-%m-%d') &lt;= #{happenDateEnd,jdbcType=VARCHAR}
+          </if>
+          <if test="persionLiable != null and persionLiable != ''" >
+              and problem.persion_liable like concat('%',#{persionLiable,jdbcType=VARCHAR},'%')
+          </if>
+          <if test="productLine != null and productLine != ''" >
+              and problem.product_line like concat('%',#{productLine,jdbcType=VARCHAR},'%')
+          </if>
+          <if test="severity != null and severity != ''" >
+              and problem.severity = #{severity,jdbcType=VARCHAR}
+          </if>
+          <if test="responsibleDepartment != null and responsibleDepartment != ''" >
+              and problem.responsible_department = #{responsibleDepartment,jdbcType=VARCHAR}
+          </if>
+      </where>
+    </sql>
+
+    <select id="selectRRProblemOrderListPage" parameterType="RRProblemOrderQuery" resultType="java.util.HashMap">
+        SELECT dor.`DPCOI_ORDER_ID` as rrProblemOrderId,
+        dor.`DPCOI_ORDER_STATE` as rrProblemOrderState,
+        problem.`problem_status` as problemStatus,
+        problem.`problem_no` as problemNo,
+        problem.`problem_type` as problemType,
+        problem.`engineering`,
+        problem.`customer`,
+        problem.`vehicle`,
+        problem.product_no as productNo,
+        problem.`bad_content` as badContent,
+        problem.`severity`,
+        problem.`product_line` as productLine,
+        problem.`reason_for_delay` as reasonForDelay,
+        problem.`Speed_of_progress` as speedOfProgress,
+        problem.root_cause as rootCause,
+        problem.permanent_game as permanentGame,
+        (select dwo.`DPCOI_WO_ORDER_TYPE` from dpcoi_wo_order dwo
+        where dwo.`DPCOI_ORDER_ID` = dor.`DPCOI_ORDER_ID`
+        and dwo.`DPCOI_WO_ORDER_STATE` in (1, 2, 3)) as dpcoiWoOrderType
+        from dpcoi_order dor, dpcoi_rr_problem problem
+        <include refid="WHERE_SQL"></include>
+        order by dor.`DPCOI_ORDER_ID` desc limit #{start},#{size}
+    </select>
+
+    <select id="selectRRProblemOrderCount" parameterType="RRProblemOrderQuery" resultType="java.lang.Integer">
+        SELECT count(1)
+        from dpcoi_order dor, dpcoi_rr_problem problem
+        <include refid="WHERE_SQL"></include>
+    </select>
+</mapper>

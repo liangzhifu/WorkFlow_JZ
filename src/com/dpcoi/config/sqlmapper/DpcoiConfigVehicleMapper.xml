@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dpcoiConfigVehicleMapper">
+    <resultMap id="BaseResultMap" type="DpcoiConfigVehicle" >
+        <id column="config_vehicle_id" property="configVehicleId" jdbcType="INTEGER" />
+        <result column="config_vehicle_value" property="configVehicleValue" jdbcType="VARCHAR" />
+        <result column="config_id" property="configId" jdbcType="INTEGER" />
+        <result column="delete_state" property="deleteState" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        config_vehicle_id, config_vehicle_value, config_id, delete_state
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select
+        <include refid="Base_Column_List" />
+        from dpcoi_config_vehicle
+        where config_vehicle_id = #{configVehicleId,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+        delete from dpcoi_config_vehicle
+        where config_vehicle_id = #{configVehicleId,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="DpcoiConfigVehicle" >
+        insert into dpcoi_config_vehicle (config_vehicle_id, config_vehicle_value,
+        config_id, delete_state)
+        values (#{configVehicleId,jdbcType=INTEGER}, #{configVehicleValue,jdbcType=VARCHAR},
+        #{configId,jdbcType=INTEGER}, #{deleteState,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="DpcoiConfigVehicle" >
+        insert into dpcoi_config_vehicle
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="configVehicleId != null" >
+                config_vehicle_id,
+            </if>
+            <if test="configVehicleValue != null" >
+                config_vehicle_value,
+            </if>
+            <if test="configId != null" >
+                config_id,
+            </if>
+            <if test="deleteState != null" >
+                delete_state,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="configVehicleId != null" >
+                #{configVehicleId,jdbcType=INTEGER},
+            </if>
+            <if test="configVehicleValue != null" >
+                #{configVehicleValue,jdbcType=VARCHAR},
+            </if>
+            <if test="configId != null" >
+                #{configId,jdbcType=INTEGER},
+            </if>
+            <if test="deleteState != null" >
+                #{deleteState,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="DpcoiConfigVehicle" >
+        update dpcoi_config_vehicle
+        <set >
+            <if test="configVehicleValue != null" >
+                config_vehicle_value = #{configVehicleValue,jdbcType=VARCHAR},
+            </if>
+            <if test="configId != null" >
+                config_id = #{configId,jdbcType=INTEGER},
+            </if>
+            <if test="deleteState != null" >
+                delete_state = #{deleteState,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where config_vehicle_id = #{configVehicleId,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="DpcoiConfigVehicle" >
+        update dpcoi_config_vehicle
+        set config_vehicle_value = #{configVehicleValue,jdbcType=VARCHAR},
+        config_id = #{configId,jdbcType=INTEGER},
+        delete_state = #{deleteState,jdbcType=VARCHAR}
+        where config_vehicle_id = #{configVehicleId,jdbcType=INTEGER}
+    </update>
+
+    <sql id="WHERE_SQL">
+        <where>
+            dcv.`config_id` = config.`config_id`
+            and dcv.`delete_state` = '0'
+            <if test="configId != null and configId != ''">
+                and dcv.`config_id` = #{configId,jdbcType=INTEGER}
+            </if>
+            <if test="configVehicleValue != null and configVehicleValue != ''">
+                and dcv.`config_vehicle_value` LIKE CONCAT('%',#{configVehicleValue,jdbcType=VARCHAR},'%')
+            </if>
+        </where>
+    </sql>
+
+    <select id="selectDpcoiConfigVehicleCount" resultType="java.lang.Integer" parameterType="DpcoiConfigVehicleQuery">
+        SELECT count(1)
+        from dpcoi_config_vehicle dcv, dpcoi_config config
+        <include refid="WHERE_SQL"></include>
+    </select>
+
+    <select id="selectDpcoiConfigVehicleListPage" resultType="java.util.HashMap" parameterType="DpcoiConfigVehicleQuery">
+        select dcv.`config_vehicle_id` as configVehicleId,
+        dcv.`config_vehicle_value` as configVehicleValue,
+        config.`config_id` as configId,
+        config.`config_value` as configValue
+        from dpcoi_config_vehicle dcv, dpcoi_config config
+        <include refid="WHERE_SQL"></include>
+        order by dcv.`config_vehicle_value`
+        limit #{start},#{size}
+    </select>
+
+    <select id="selectDpcoiConfigVehicleList" resultType="java.util.HashMap" parameterType="DpcoiConfigVehicleQuery">
+        select dcv.`config_vehicle_id` as configVehicleId,
+        dcv.`config_vehicle_value` as configVehicleValue,
+        dcv.`config_vehicle_value` as label,
+        dcv.`config_vehicle_value` as `value`,
+        config.`config_id` as configId,
+        config.`config_value` as configValue
+        from dpcoi_config_vehicle dcv, dpcoi_config config
+        <include refid="WHERE_SQL"></include>
+        order by dcv.`config_vehicle_value`
+    </select>
+
+    <select id="selectDpcoiConfigVehicle" resultType="java.util.HashMap" parameterType="DpcoiConfigVehicleQuery">
+        select dcv.`config_vehicle_id` as configVehicleId,
+        dcv.`config_vehicle_value` as configVehicleValue,
+        config.`config_id` as configId,
+        config.`config_value` as configValue
+        from dpcoi_config_vehicle dcv, dpcoi_config config
+        where dcv.`config_id` = config.`config_id`
+        and dcv.delete_state='0'
+        and config.delete_state = '0'
+        and dcv.`config_vehicle_value`= #{configVehicleValue,jdbcType=VARCHAR}
+    </select>
+</mapper>

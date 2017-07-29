@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="RRProblemWoOrderFileMapper">
+
+    <sql id="WHERE_SQL">
+      <where>
+          dor.`DPCOI_ORDER_ID` = dwo.`DPCOI_ORDER_ID`
+          AND dwo.`DPCOI_WO_ORDER_ID` = dwof.`DPCOI_WO_ORDER_ID`
+          AND dwof.`FILE_ID` = fu.`FILE_ID`
+          and dor.`rr_problem_id` = problem.`id`
+          AND dor.`DEL_FLAG` = '0'
+          AND dwo.`DEL_FLAG` = '0'
+          AND dwof.`DEL_FLAG` = '0'
+          and dor.`DPCOI_ORDER_TYPE` = 3
+          <if test="badContent != null and badContent != ''" >
+              and problem.`bad_content` like CONCAT('%',#{badContent,jdbcType=VARCHAR},'%')
+          </if>
+          <if test="problemProgress != null and problemProgress != ''" >
+              and problem.`problem_progress` = #{problemProgress,jdbcType=VARCHAR}
+          </if>
+          <if test="speedOfProgress != null and speedOfProgress != ''" >
+              and problem.`speed_of_progress` = #{speedOfProgress,jdbcType=VARCHAR}
+          </if>
+          <if test="problemStatus != null and problemStatus != ''" >
+              and problem.problem_status = #{problemStatus,jdbcType=VARCHAR}
+          </if>
+          <if test="problemType != null and problemType != ''" >
+              and problem.problem_type = #{problemType,jdbcType=VARCHAR}
+          </if>
+          <if test="engineering != null and engineering != ''" >
+              and problem.engineering = #{engineering,jdbcType=VARCHAR}
+          </if>
+          <if test="customer != null and customer != ''" >
+              and problem.customer = #{customer,jdbcType=VARCHAR}
+          </if>
+          <if test="vehicle != null and vehicle != ''" >
+              and problem.vehicle like concat('%',#{vehicle,jdbcType=VARCHAR},'%')
+          </if>
+          <if test="productNo != null and productNo != ''" >
+              and problem.product_no = #{productNo,jdbcType=VARCHAR}
+          </if>
+          <if test="happenDateBegin != null and happenDateBegin != ''" >
+              and DATE_FORMAT(problem.happen_date,'%Y-%m-%d') &gt;= #{happenDateBegin,jdbcType=VARCHAR}
+          </if>
+          <if test="happenDateEnd != null and happenDateEnd != ''" >
+              and DATE_FORMAT(problem.happen_date,'%Y-%m-%d') &lt;= #{happenDateEnd,jdbcType=VARCHAR}
+          </if>
+          <if test="persionLiable != null and persionLiable != ''" >
+              and problem.persion_liable like concat('%',#{persionLiable,jdbcType=VARCHAR},'%')
+          </if>
+          <if test="productLine != null and productLine != ''" >
+              and problem.product_line like concat('%',#{productLine,jdbcType=VARCHAR},'%')
+          </if>
+          <if test="severity != null and severity != ''" >
+              and problem.severity = #{severity,jdbcType=VARCHAR}
+          </if>
+          <if test="responsibleDepartment != null and responsibleDepartment != ''" >
+              and problem.responsible_department = #{responsibleDepartment,jdbcType=VARCHAR}
+          </if>
+      </where>
+    </sql>
+
+    <select id="selectRRProblemWoOrderFileListPage" parameterType="RRProblemWoOrderFileQuery" resultType="java.util.HashMap">
+        select dor.`DPCOI_ORDER_ID` as dpcoiOrderId,
+        dor.`DPCOI_ORDER_STATE` as dpcoiOrderState,
+        dor.`DPCOI_ORDER_TYPE` as dpcoiOrderType,
+        problem.`problem_status` as problemStatus,
+        problem.`problem_no` as problemNo,
+        problem.`problem_type` as problemType,
+        problem.`product_no` as productNo,
+        problem.`engineering`,
+        problem.`customer`,
+        problem.`vehicle`,
+        problem.`bad_content` as badContent,
+        problem.`severity`,
+        problem.product_no as productNo,
+        problem.`product_line` as productLine,
+        problem.`reason_for_delay` as reasonForDelay,
+        problem.`Speed_of_progress` as speedOfProgress,
+        problem.root_cause as rootCause,
+        problem.permanent_game as permanentGame,
+        fu.`FILE_ID` AS fileId,
+        fu.`FILE_NAME` AS fileName,
+        fu.`FILe_TYPE` AS fileType,
+        fu.`FILE_ALIAS` AS fileAlias,
+        fu.`EXCEL_PDF_NAME` as excelPdfName,
+        dwo.`DPCOI_WO_ORDER_ID` as dpcoiWoOrderId,
+        dwo.`DPCOI_WO_ORDER_STATE` as dpcoiWoOrderState,
+        dwo.`DPCOI_WO_ORDER_TYPE` as dpcoiWoOrderType
+        FROM dpcoi_order dor, dpcoi_wo_order dwo, dpcoi_wo_order_file dwof, file_upload fu, dpcoi_rr_problem problem
+        <include refid="WHERE_SQL"></include>
+        order by dor.`DPCOI_ORDER_ID` desc limit #{start},#{size}
+    </select>
+
+    <select id="selectRRProblemWoOrderFileCount" parameterType="RRProblemWoOrderFileQuery" resultType="java.lang.Integer">
+        select count(1)
+        FROM dpcoi_order dor, dpcoi_wo_order dwo, dpcoi_wo_order_file dwof, file_upload fu, dpcoi_rr_problem problem
+        <include refid="WHERE_SQL"></include>
+    </select>
+
+</mapper>

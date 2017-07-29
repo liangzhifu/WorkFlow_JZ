@@ -69,10 +69,10 @@ public class DpcoiWoOrderFileServiceImpl implements DpcoiWoOrderFileService {
 
         //Excel转PDF
         String excelPdfName = "";
-        if("application/vnd.ms-excel".equals(fileType) || "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet".equals(fileType)){
-            excelPdfName = UUID.randomUUID().toString() + ".pdf";
-            TransferToolUtil.els2pdf(filePath, path + "fileupload/"+excelPdfName);
-        }
+//        if("application/vnd.ms-excel".equals(fileType) || "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet".equals(fileType)){
+//            excelPdfName = UUID.randomUUID().toString() + ".pdf";
+//            TransferToolUtil.els2pdf(filePath, path + "fileupload/"+excelPdfName);
+//        }
 
         FileUpload fileUpload = new FileUpload();
         fileUpload.setFileName(fileName);

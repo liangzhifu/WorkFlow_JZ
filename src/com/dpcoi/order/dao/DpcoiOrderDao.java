@@ -53,6 +53,15 @@ public class DpcoiOrderDao extends BaseDao {
     }
 
     /**
+     * 根据RR问题点ID查询订单实体
+     * @param rrProblemId RR问题点ID
+     * @return 返回结果
+     */
+    public DpcoiOrder selectDpcoiOrderByRRProblem(Integer rrProblemId){
+        return this.sqlSession.selectOne("dpcoiOrder.selectDpcoiOrderByRRProblem", rrProblemId);
+    }
+
+    /**
      * 根据dpcoiOrderId查询订单实体
      * @param dpcoiOrder 订单ID
      * @return 返回结果
@@ -77,6 +86,15 @@ public class DpcoiOrderDao extends BaseDao {
      */
     public DpcoiOrder selectDpcoiOrderOfTaskOrder(TaskOrder taskOrder) {
         return this.sqlSession.selectOne("dpcoiOrder.selectDpcoiOrderOfTaskOrder", taskOrder);
+    }
+
+    /**
+     * 通过4M定单编号获取dpcoi定单
+     * @param taskOrderNo 4M定单编号
+     * @return 返回结果
+     */
+    public DpcoiOrder selectDpcoiOrderOfTaskOrderNo(String taskOrderNo) {
+        return this.sqlSession.selectOne("dpcoiOrder.selectDpcoiOrderOfTaskOrderNo", taskOrderNo);
     }
 
     /**

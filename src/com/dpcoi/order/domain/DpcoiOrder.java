@@ -139,6 +139,8 @@ public class DpcoiOrder {
     //生产线
     private String productLine;
 
+    private Integer rrProblemId;
+
     public Integer getDpcoiOrderId() {
         return dpcoiOrderId;
     }
@@ -492,5 +494,13 @@ public class DpcoiOrder {
 
     public void setProductLine(String productLine) {
         this.productLine = productLine;
+    }
+
+    public Integer getRrProblemId() {
+        return rrProblemId;
+    }
+
+    public void setRrProblemId(Integer rrProblemId) {
+        this.rrProblemId = rrProblemId;
     }
 }

@@ -1,5 +1,7 @@
 package com.dpcoi.order.service.serviceImpl;
 
+import com.dpcoi.rr.dao.RRProblemDao;
+import com.dpcoi.rr.domain.RRProblem;
 import com.dpcoi.util.EmailUtil;
 import com.dpcoi.order.dao.DpcoiOrderDao;
 import com.dpcoi.order.domain.DpcoiOrder;
@@ -40,6 +42,9 @@ public class DpcoiOrderServiceImpl implements DpcoiOrderService {
     @Resource(name="operateHistoryDao")
     private OperateHistoryDao operateHistoryDao;
 
+    @Resource(name="rRProblemDao")
+    private RRProblemDao rRProblemDao;
+
     @Override
     public Integer addDpcoiOrder(DpcoiOrder dpcoiOrder) throws ServiceException {
         Integer num = this.dpcoiOrderDao.insertDpcoiOrder(dpcoiOrder);
@@ -74,7 +79,56 @@ public class DpcoiOrderServiceImpl implements DpcoiOrderService {
         dpcoiWoOrderQery.setDpcoiWoOrderType(dpcoiWoOrder.getDpcoiWoOrderType());
         String emaliUser = this.dpcoiWoOrderDao.selectWoOrderEmailUsers(dpcoiWoOrderQery);
         dpcoiOrder = this.queryDpcoiOrder(dpcoiOrder);
-        TimeTask timeTask = EmailUtil.generateTimeTask(dpcoiOrder, 18, emaliUser);
+        TimeTask timeTask = EmailUtil.generateTimeTask(dpcoiOrder, null, 18, emaliUser);
+        this.timeTaskDao.insertTimeTask(timeTask);
+        return num;
+    }
+
+    @Override
+    public Integer addDpcoiOrder(RRProblem rrProblem, User user) throws ServiceException {
+        DpcoiOrder dpcoiOrder = new DpcoiOrder();
+        dpcoiOrder.setRrProblemId(rrProblem.getId());
+        dpcoiOrder.setDpcoiOrderType(3);
+        dpcoiOrder.setDelFlag("0");
+        dpcoiOrder.setDpcoiOrderState(1);
+        dpcoiOrder.setCreateDate(new Date());
+        dpcoiOrder.setCreateBy(user.getUserId());
+        dpcoiOrder.setUpdateDate(new Date());
+        dpcoiOrder.setUpdateBy(user.getUserId());
+        dpcoiOrder.setPfmeaCreateDate(new Date());
+        dpcoiOrder.setPfmeaEmailDate(new Date());
+        dpcoiOrder.setPfmeaDelay(0);
+        dpcoiOrder.setCpDelay(0);
+        dpcoiOrder.setStandardBookDelay(0);
+        Integer num = this.dpcoiOrderDao.insertDpcoiOrder(dpcoiOrder);
+
+        //添加操作记录
+        Integer dpcoiOrderType = dpcoiOrder.getDpcoiOrderType();
+        OperateHistory operateHistory = new OperateHistory();
+        operateHistory.setSystermType(1);
+        operateHistory.setBusinessId(dpcoiOrder.getDpcoiOrderId());
+        operateHistory.setBusinessType(1);
+        operateHistory.setOperateBy(dpcoiOrder.getCreateBy());
+        operateHistory.setOperateDate(new Date());
+        operateHistory.setOperateType(5);
+        this.operateHistoryDao.insertOperateHistory(operateHistory);
+
+        dpcoiOrder = this.queryDpcoiOrder(dpcoiOrder);
+        DpcoiWoOrder dpcoiWoOrder = new DpcoiWoOrder();
+        dpcoiWoOrder.setDpcoiOrderId(dpcoiOrder.getDpcoiOrderId());
+        dpcoiWoOrder.setDelFlag("0");
+        dpcoiWoOrder.setDpcoiWoOrderState(1);
+        dpcoiWoOrder.setDpcoiWoOrderType(1);
+        dpcoiWoOrder.setCreateDate(new Date());
+        this.dpcoiWoOrderDao.insertDpcoiWoOrder(dpcoiWoOrder);
+
+        //发邮件通知人员
+        DpcoiWoOrderQuery dpcoiWoOrderQery = new DpcoiWoOrderQuery();
+        dpcoiWoOrderQery.setDpcoiWoOrderState(dpcoiWoOrder.getDpcoiWoOrderState());
+        dpcoiWoOrderQery.setDpcoiWoOrderType(dpcoiWoOrder.getDpcoiWoOrderType());
+        String emaliUser = this.dpcoiWoOrderDao.selectWoOrderEmailUsers(dpcoiWoOrderQery);
+        dpcoiOrder = this.queryDpcoiOrder(dpcoiOrder);
+        TimeTask timeTask = EmailUtil.generateTimeTask(dpcoiOrder, rrProblem, 18, emaliUser);
         this.timeTaskDao.insertTimeTask(timeTask);
         return num;
     }
@@ -97,6 +151,11 @@ public class DpcoiOrderServiceImpl implements DpcoiOrderService {
     @Override
     public DpcoiOrder queryDpcoiOrder(DpcoiOrder dpcoiOrder) throws ServiceException {
         return this.dpcoiOrderDao.selectBySelf(dpcoiOrder);
+    }
+
+    @Override
+    public DpcoiOrder queryDpcoiOrderByRRProblem(Integer rrProblemId) throws ServiceException {
+        return this.dpcoiOrderDao.selectDpcoiOrderByRRProblem(rrProblemId);
     }
 
     @Override
@@ -137,7 +196,16 @@ public class DpcoiOrderServiceImpl implements DpcoiOrderService {
         dpcoiOrder = this.queryDpcoiOrder(dpcoiOrder);
         String emaliUser = this.dpcoiOrderDao.selectOrderToVodiEmailUsers(dpcoiOrder);
         dpcoiOrder = this.queryDpcoiOrder(dpcoiOrder);
-        TimeTask timeTask = EmailUtil.generateTimeTask(dpcoiOrder, noticeType, emaliUser);
+        Integer rrProblemId = dpcoiOrder.getRrProblemId();
+        RRProblem rrProblem;
+        if(rrProblemId == null){
+            rrProblem = null;
+        }else {
+            rrProblem = new RRProblem();
+            rrProblem.setId(rrProblemId);
+            rrProblem = this.rRProblemDao.selectRRProblem(rrProblem);
+        }
+        TimeTask timeTask = EmailUtil.generateTimeTask(dpcoiOrder, rrProblem, noticeType, emaliUser);
         this.timeTaskDao.insertTimeTask(timeTask);
     }
 
@@ -166,6 +234,11 @@ public class DpcoiOrderServiceImpl implements DpcoiOrderService {
     @Override
     public DpcoiOrder quereyDpcoiOrderOfTaskOrder(TaskOrder taskOrder) throws ServiceException {
         return this.dpcoiOrderDao.selectDpcoiOrderOfTaskOrder(taskOrder);
+    }
+
+    @Override
+    public DpcoiOrder quereyDpcoiOrderOfTaskOrderNo(String taskOrderNo) throws ServiceException {
+        return this.dpcoiOrderDao.selectDpcoiOrderOfTaskOrderNo(taskOrderNo);
     }
 
     @Override

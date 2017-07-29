@@ -2,6 +2,7 @@ package com.dpcoi.order.service;
 
 import com.dpcoi.order.domain.DpcoiOrder;
 import com.dpcoi.order.query.DpcoiOrderQuery;
+import com.dpcoi.rr.domain.RRProblem;
 import com.success.sys.user.domain.User;
 import com.success.task.detail.domain.TaskOrder;
 import com.success.web.framework.exception.ServiceException;
@@ -21,6 +22,15 @@ public interface DpcoiOrderService {
      * @throws ServiceException 异常信息
      */
     public Integer addDpcoiOrder(DpcoiOrder dpcoiOrder) throws ServiceException;
+
+    /**
+     * 添加一个dpcoiOrder订单
+     * @param rrProblem RR问题点
+     * @param user 用户
+     * @return 返回结果
+     * @throws ServiceException 异常信息
+     */
+    public Integer addDpcoiOrder(RRProblem rrProblem, User user) throws ServiceException;
 
     /**
      * 更新一个dpcoiOrder订单
@@ -55,6 +65,14 @@ public interface DpcoiOrderService {
     public DpcoiOrder queryDpcoiOrder(DpcoiOrder dpcoiOrder) throws ServiceException;
 
     /**
+     *根据RR问题ID查询实体
+     * @param rrProblemId RR问题ID
+     * @return 返回结果
+     * @throws ServiceException 异常
+     */
+    public DpcoiOrder queryDpcoiOrderByRRProblem(Integer rrProblemId) throws ServiceException;
+
+    /**
      * 作废定单
      * @param dpcoiOrder 定单实体
      * @user 操作员
@@ -85,6 +103,14 @@ public interface DpcoiOrderService {
      * @throws ServiceException 异常
      */
     public DpcoiOrder quereyDpcoiOrderOfTaskOrder(TaskOrder taskOrder) throws ServiceException;
+
+    /**
+     * 通过4M定单编号获取dpcoi定单
+     * @param taskOrderNo 4M定单编号
+     * @return 返回结果
+     * @throws ServiceException 异常
+     */
+    public DpcoiOrder quereyDpcoiOrderOfTaskOrderNo(String taskOrderNo) throws ServiceException;
 
     /**
      * 删除定单

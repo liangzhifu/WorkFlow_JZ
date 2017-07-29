@@ -51,6 +51,15 @@ public class DpcoiWoOrderDao extends BaseDao {
     }
 
     /**
+     * 获取dpcoiWoOrder订单列表
+     * @param dpcoiWoOrderQuery 查询条件
+     * @return 返回结果
+     */
+    public List<Map<String, Object>> selectDpcoiWoOrderList(DpcoiWoOrderQuery dpcoiWoOrderQuery){
+        return this.sqlSession.selectList("dpcoiWoOrder.selectDpcoiWoOrderList", dpcoiWoOrderQuery);
+    }
+
+    /**
      * 根据dpcoiWoOrderId查询订单实体
      * @param dpcoiWoOrder 订单ID
      * @return 返回结果

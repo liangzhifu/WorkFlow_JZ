@@ -1,0 +1,783 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="RRProblemMapper" >
+    <resultMap id="BaseResultMap" type="RRProblem" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="problem_status" property="problemStatus" jdbcType="VARCHAR" />
+        <result column="problem_no" property="problemNo" jdbcType="VARCHAR" />
+        <result column="problem_type" property="problemType" jdbcType="VARCHAR" />
+        <result column="engineering" property="engineering" jdbcType="VARCHAR" />
+        <result column="problem_progress" property="problemProgress" jdbcType="VARCHAR" />
+        <result column="tracking_level" property="trackingLevel" jdbcType="VARCHAR" />
+        <result column="happen_date" property="happenDate" jdbcType="DATE" />
+        <result column="customer" property="customer" jdbcType="VARCHAR" />
+        <result column="vehicle" property="vehicle" jdbcType="VARCHAR" />
+        <result column="product_no" property="productNo" jdbcType="VARCHAR" />
+        <result column="bad_content" property="badContent" jdbcType="VARCHAR" />
+        <result column="persion_liable" property="persionLiable" jdbcType="VARCHAR" />
+        <result column="report_date" property="reportDate" jdbcType="DATE" />
+        <result column="Speed_of_progress" property="speedOfProgress" jdbcType="VARCHAR" />
+        <result column="reason_for_delay" property="reasonForDelay" jdbcType="VARCHAR" />
+        <result column="first_date" property="firstDate" jdbcType="DATE" />
+        <result column="second_date" property="secondDate" jdbcType="DATE" />
+        <result column="third_date" property="thirdDate" jdbcType="DATE" />
+        <result column="fourth_date" property="fourthDate" jdbcType="DATE" />
+        <result column="close_confirm" property="closeConfirm" jdbcType="VARCHAR" />
+        <result column="close_confirm_id" property="closeConfirmId" jdbcType="INTEGER" />
+        <result column="close_confirm_time" property="closeConfirmTime" jdbcType="TIMESTAMP" />
+        <result column="product_line" property="productLine" jdbcType="VARCHAR" />
+        <result column="severity" property="severity" jdbcType="VARCHAR" />
+        <result column="occurrence_frequency" property="occurrenceFrequency" jdbcType="VARCHAR" />
+        <result column="bad_quantity" property="badQuantity" jdbcType="VARCHAR" />
+        <result column="batch" property="batch" jdbcType="VARCHAR" />
+        <result column="happen_shift" property="happenShift" jdbcType="VARCHAR" />
+        <result column="responsible_department" property="responsibleDepartment" jdbcType="VARCHAR" />
+        <result column="record_ppm" property="recordPpm" jdbcType="VARCHAR" />
+        <result column="record_num" property="recordNum" jdbcType="VARCHAR" />
+        <result column="temporary" property="temporary" jdbcType="VARCHAR" />
+        <result column="root_cause" property="rootCause" jdbcType="VARCHAR" />
+        <result column="permanent_game" property="permanentGame" jdbcType="VARCHAR" />
+        <result column="effect_verification" property="effectVerification" jdbcType="VARCHAR" />
+        <result column="serial_number" property="serialNumber" jdbcType="VARCHAR" />
+        <result column="quality_warning_card_number" property="qualityWarningCardNumber" jdbcType="VARCHAR" />
+        <result column="product_scale" property="productScale" jdbcType="VARCHAR" />
+        <result column="pfmea" property="pfmea" jdbcType="VARCHAR" />
+        <result column="cp" property="cp" jdbcType="VARCHAR" />
+        <result column="standard_book" property="standardBook" jdbcType="VARCHAR" />
+        <result column="equipment_checklist" property="equipmentChecklist" jdbcType="VARCHAR" />
+        <result column="always_list" property="alwaysList" jdbcType="VARCHAR" />
+        <result column="inspection_reference_book" property="inspectionReferenceBook" jdbcType="VARCHAR" />
+        <result column="inspection_book" property="inspectionBook" jdbcType="VARCHAR" />
+        <result column="education" property="education" jdbcType="VARCHAR" />
+        <result column="change_point" property="changePoint" jdbcType="VARCHAR" />
+        <result column="expand_trace" property="expandTrace" jdbcType="VARCHAR" />
+        <result column="artificial" property="artificial" jdbcType="VARCHAR" />
+        <result column="materiel" property="materiel" jdbcType="VARCHAR" />
+        <result column="state" property="state" jdbcType="INTEGER" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        id, problem_status, problem_no, problem_type, engineering, problem_progress, tracking_level,
+        happen_date, customer, vehicle, product_no, bad_content, persion_liable, report_date,
+        Speed_of_progress, reason_for_delay, first_date, second_date, third_date, fourth_date,
+        close_confirm, close_confirm_id, close_confirm_time, product_line, severity, occurrence_frequency,
+        bad_quantity, batch, happen_shift, responsible_department, record_ppm, record_num,
+        temporary, root_cause, permanent_game, effect_verification, serial_number, quality_warning_card_number,
+        product_scale, pfmea, cp, standard_book, equipment_checklist, always_list, inspection_reference_book,
+        inspection_book, education, change_point, expand_trace, artificial, materiel, state
+    </sql>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="RRProblem" >
+        select
+        <include refid="Base_Column_List" />
+        from dpcoi_rr_problem
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+        delete from dpcoi_rr_problem
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="RRProblem" >
+        insert into dpcoi_rr_problem (id, problem_status, problem_no,
+        problem_type, engineering, problem_progress,
+        tracking_level, happen_date, customer,
+        vehicle, product_no, bad_content,
+        persion_liable, report_date, Speed_of_progress,
+        reason_for_delay, first_date, second_date,
+        third_date, fourth_date, close_confirm,
+        close_confirm_id, close_confirm_time, product_line,
+        severity, occurrence_frequency, bad_quantity,
+        batch, happen_shift, responsible_department,
+        record_ppm, record_num, temporary,
+        root_cause, permanent_game, effect_verification,
+        serial_number, quality_warning_card_number,
+        product_scale, pfmea, cp,
+        standard_book, equipment_checklist, always_list,
+        inspection_reference_book, inspection_book,
+        education, change_point, expand_trace,
+        artificial, materiel)
+        values (#{id,jdbcType=INTEGER}, #{problemStatus,jdbcType=VARCHAR}, #{problemNo,jdbcType=VARCHAR},
+        #{problemType,jdbcType=VARCHAR}, #{engineering,jdbcType=VARCHAR}, #{problemProgress,jdbcType=VARCHAR},
+        #{trackingLevel,jdbcType=VARCHAR}, #{happenDate,jdbcType=DATE}, #{customer,jdbcType=VARCHAR},
+        #{vehicle,jdbcType=VARCHAR}, #{productNo,jdbcType=VARCHAR}, #{badContent,jdbcType=VARCHAR},
+        #{persionLiable,jdbcType=VARCHAR}, #{reportDate,jdbcType=DATE}, #{speedOfProgress,jdbcType=VARCHAR},
+        #{reasonForDelay,jdbcType=VARCHAR}, #{firstDate,jdbcType=DATE}, #{secondDate,jdbcType=DATE},
+        #{thirdDate,jdbcType=DATE}, #{fourthDate,jdbcType=DATE}, #{closeConfirm,jdbcType=VARCHAR},
+        #{closeConfirmId,jdbcType=INTEGER}, #{closeConfirmTime,jdbcType=TIMESTAMP}, #{productLine,jdbcType=VARCHAR},
+        #{severity,jdbcType=VARCHAR}, #{occurrenceFrequency,jdbcType=VARCHAR}, #{badQuantity,jdbcType=VARCHAR},
+        #{batch,jdbcType=VARCHAR}, #{happenShift,jdbcType=VARCHAR}, #{responsibleDepartment,jdbcType=VARCHAR},
+        #{recordPpm,jdbcType=VARCHAR}, #{recordNum,jdbcType=VARCHAR}, #{temporary,jdbcType=VARCHAR},
+        #{rootCause,jdbcType=VARCHAR}, #{permanentGame,jdbcType=VARCHAR}, #{effectVerification,jdbcType=VARCHAR},
+        #{serialNumber,jdbcType=VARCHAR}, #{qualityWarningCardNumber,jdbcType=VARCHAR},
+        #{productScale,jdbcType=VARCHAR}, #{pfmea,jdbcType=VARCHAR}, #{cp,jdbcType=VARCHAR},
+        #{standardBook,jdbcType=VARCHAR}, #{equipmentChecklist,jdbcType=VARCHAR}, #{alwaysList,jdbcType=VARCHAR},
+        #{inspectionReferenceBook,jdbcType=VARCHAR}, #{inspectionBook,jdbcType=VARCHAR},
+        #{education,jdbcType=VARCHAR}, #{changePoint,jdbcType=VARCHAR}, #{expandTrace,jdbcType=VARCHAR},
+        #{artificial,jdbcType=VARCHAR}, #{materiel,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="RRProblem" useGeneratedKeys="true" keyProperty="id">
+        insert into dpcoi_rr_problem
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="problemStatus != null" >
+                problem_status,
+            </if>
+            <if test="problemNo != null" >
+                problem_no,
+            </if>
+            <if test="problemType != null" >
+                problem_type,
+            </if>
+            <if test="engineering != null" >
+                engineering,
+            </if>
+            <if test="problemProgress != null" >
+                problem_progress,
+            </if>
+            <if test="trackingLevel != null" >
+                tracking_level,
+            </if>
+            <if test="happenDate != null" >
+                happen_date,
+            </if>
+            <if test="customer != null" >
+                customer,
+            </if>
+            <if test="vehicle != null" >
+                vehicle,
+            </if>
+            <if test="productNo != null" >
+                product_no,
+            </if>
+            <if test="badContent != null" >
+                bad_content,
+            </if>
+            <if test="persionLiable != null" >
+                persion_liable,
+            </if>
+            <if test="reportDate != null" >
+                report_date,
+            </if>
+            <if test="speedOfProgress != null" >
+                Speed_of_progress,
+            </if>
+            <if test="reasonForDelay != null" >
+                reason_for_delay,
+            </if>
+            <if test="firstDate != null" >
+                first_date,
+            </if>
+            <if test="secondDate != null" >
+                second_date,
+            </if>
+            <if test="thirdDate != null" >
+                third_date,
+            </if>
+            <if test="fourthDate != null" >
+                fourth_date,
+            </if>
+            <if test="closeConfirm != null" >
+                close_confirm,
+            </if>
+            <if test="closeConfirmId != null" >
+                close_confirm_id,
+            </if>
+            <if test="closeConfirmTime != null" >
+                close_confirm_time,
+            </if>
+            <if test="productLine != null" >
+                product_line,
+            </if>
+            <if test="severity != null" >
+                severity,
+            </if>
+            <if test="occurrenceFrequency != null" >
+                occurrence_frequency,
+            </if>
+            <if test="badQuantity != null" >
+                bad_quantity,
+            </if>
+            <if test="batch != null" >
+                batch,
+            </if>
+            <if test="happenShift != null" >
+                happen_shift,
+            </if>
+            <if test="responsibleDepartment != null" >
+                responsible_department,
+            </if>
+            <if test="recordPpm != null" >
+                record_ppm,
+            </if>
+            <if test="recordNum != null" >
+                record_num,
+            </if>
+            <if test="temporary != null" >
+                temporary,
+            </if>
+            <if test="rootCause != null" >
+                root_cause,
+            </if>
+            <if test="permanentGame != null" >
+                permanent_game,
+            </if>
+            <if test="effectVerification != null" >
+                effect_verification,
+            </if>
+            <if test="serialNumber != null" >
+                serial_number,
+            </if>
+            <if test="qualityWarningCardNumber != null" >
+                quality_warning_card_number,
+            </if>
+            <if test="productScale != null" >
+                product_scale,
+            </if>
+            <if test="pfmea != null" >
+                pfmea,
+            </if>
+            <if test="cp != null" >
+                cp,
+            </if>
+            <if test="standardBook != null" >
+                standard_book,
+            </if>
+            <if test="equipmentChecklist != null" >
+                equipment_checklist,
+            </if>
+            <if test="alwaysList != null" >
+                always_list,
+            </if>
+            <if test="inspectionReferenceBook != null" >
+                inspection_reference_book,
+            </if>
+            <if test="inspectionBook != null" >
+                inspection_book,
+            </if>
+            <if test="education != null" >
+                education,
+            </if>
+            <if test="changePoint != null" >
+                change_point,
+            </if>
+            <if test="expandTrace != null" >
+                expand_trace,
+            </if>
+            <if test="artificial != null" >
+                artificial,
+            </if>
+            <if test="materiel != null" >
+                materiel,
+            </if>
+            <if test="state != null" >
+                state,
+            </if>
+            <if test="isDelay != null" >
+                is_delay,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="problemStatus != null" >
+                #{problemStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="problemNo != null" >
+                #{problemNo,jdbcType=VARCHAR},
+            </if>
+            <if test="problemType != null" >
+                #{problemType,jdbcType=VARCHAR},
+            </if>
+            <if test="engineering != null" >
+                #{engineering,jdbcType=VARCHAR},
+            </if>
+            <if test="problemProgress != null" >
+                #{problemProgress,jdbcType=VARCHAR},
+            </if>
+            <if test="trackingLevel != null" >
+                #{trackingLevel,jdbcType=VARCHAR},
+            </if>
+            <if test="happenDate != null" >
+                #{happenDate,jdbcType=DATE},
+            </if>
+            <if test="customer != null" >
+                #{customer,jdbcType=VARCHAR},
+            </if>
+            <if test="vehicle != null" >
+                #{vehicle,jdbcType=VARCHAR},
+            </if>
+            <if test="productNo != null" >
+                #{productNo,jdbcType=VARCHAR},
+            </if>
+            <if test="badContent != null" >
+                #{badContent,jdbcType=VARCHAR},
+            </if>
+            <if test="persionLiable != null" >
+                #{persionLiable,jdbcType=VARCHAR},
+            </if>
+            <if test="reportDate != null" >
+                #{reportDate,jdbcType=DATE},
+            </if>
+            <if test="speedOfProgress != null" >
+                #{speedOfProgress,jdbcType=VARCHAR},
+            </if>
+            <if test="reasonForDelay != null" >
+                #{reasonForDelay,jdbcType=VARCHAR},
+            </if>
+            <if test="firstDate != null" >
+                #{firstDate,jdbcType=DATE},
+            </if>
+            <if test="secondDate != null" >
+                #{secondDate,jdbcType=DATE},
+            </if>
+            <if test="thirdDate != null" >
+                #{thirdDate,jdbcType=DATE},
+            </if>
+            <if test="fourthDate != null" >
+                #{fourthDate,jdbcType=DATE},
+            </if>
+            <if test="closeConfirm != null" >
+                #{closeConfirm,jdbcType=VARCHAR},
+            </if>
+            <if test="closeConfirmId != null" >
+                #{closeConfirmId,jdbcType=INTEGER},
+            </if>
+            <if test="closeConfirmTime != null" >
+                #{closeConfirmTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="productLine != null" >
+                #{productLine,jdbcType=VARCHAR},
+            </if>
+            <if test="severity != null" >
+                #{severity,jdbcType=VARCHAR},
+            </if>
+            <if test="occurrenceFrequency != null" >
+                #{occurrenceFrequency,jdbcType=VARCHAR},
+            </if>
+            <if test="badQuantity != null" >
+                #{badQuantity,jdbcType=VARCHAR},
+            </if>
+            <if test="batch != null" >
+                #{batch,jdbcType=VARCHAR},
+            </if>
+            <if test="happenShift != null" >
+                #{happenShift,jdbcType=VARCHAR},
+            </if>
+            <if test="responsibleDepartment != null" >
+                #{responsibleDepartment,jdbcType=VARCHAR},
+            </if>
+            <if test="recordPpm != null" >
+                #{recordPpm,jdbcType=VARCHAR},
+            </if>
+            <if test="recordNum != null" >
+                #{recordNum,jdbcType=VARCHAR},
+            </if>
+            <if test="temporary != null" >
+                #{temporary,jdbcType=VARCHAR},
+            </if>
+            <if test="rootCause != null" >
+                #{rootCause,jdbcType=VARCHAR},
+            </if>
+            <if test="permanentGame != null" >
+                #{permanentGame,jdbcType=VARCHAR},
+            </if>
+            <if test="effectVerification != null" >
+                #{effectVerification,jdbcType=VARCHAR},
+            </if>
+            <if test="serialNumber != null" >
+                #{serialNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="qualityWarningCardNumber != null" >
+                #{qualityWarningCardNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="productScale != null" >
+                #{productScale,jdbcType=VARCHAR},
+            </if>
+            <if test="pfmea != null" >
+                #{pfmea,jdbcType=VARCHAR},
+            </if>
+            <if test="cp != null" >
+                #{cp,jdbcType=VARCHAR},
+            </if>
+            <if test="standardBook != null" >
+                #{standardBook,jdbcType=VARCHAR},
+            </if>
+            <if test="equipmentChecklist != null" >
+                #{equipmentChecklist,jdbcType=VARCHAR},
+            </if>
+            <if test="alwaysList != null" >
+                #{alwaysList,jdbcType=VARCHAR},
+            </if>
+            <if test="inspectionReferenceBook != null" >
+                #{inspectionReferenceBook,jdbcType=VARCHAR},
+            </if>
+            <if test="inspectionBook != null" >
+                #{inspectionBook,jdbcType=VARCHAR},
+            </if>
+            <if test="education != null" >
+                #{education,jdbcType=VARCHAR},
+            </if>
+            <if test="changePoint != null" >
+                #{changePoint,jdbcType=VARCHAR},
+            </if>
+            <if test="expandTrace != null" >
+                #{expandTrace,jdbcType=VARCHAR},
+            </if>
+            <if test="artificial != null" >
+                #{artificial,jdbcType=VARCHAR},
+            </if>
+            <if test="materiel != null" >
+                #{materiel,jdbcType=VARCHAR},
+            </if>
+            <if test="state != null" >
+                #{state,jdbcType=INTEGER},
+            </if>
+            <if test="isDelay != null" >
+                #{isDelay,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="RRProblem" >
+        update dpcoi_rr_problem
+        <set >
+            <if test="problemStatus != null" >
+                problem_status = #{problemStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="problemNo != null" >
+                problem_no = #{problemNo,jdbcType=VARCHAR},
+            </if>
+            <if test="problemType != null" >
+                problem_type = #{problemType,jdbcType=VARCHAR},
+            </if>
+            <if test="engineering != null" >
+                engineering = #{engineering,jdbcType=VARCHAR},
+            </if>
+            <if test="problemProgress != null" >
+                problem_progress = #{problemProgress,jdbcType=VARCHAR},
+            </if>
+            <if test="trackingLevel != null" >
+                tracking_level = #{trackingLevel,jdbcType=VARCHAR},
+            </if>
+            <if test="happenDate != null" >
+                happen_date = #{happenDate,jdbcType=DATE},
+            </if>
+            <if test="customer != null" >
+                customer = #{customer,jdbcType=VARCHAR},
+            </if>
+            <if test="vehicle != null" >
+                vehicle = #{vehicle,jdbcType=VARCHAR},
+            </if>
+            <if test="productNo != null" >
+                product_no = #{productNo,jdbcType=VARCHAR},
+            </if>
+            <if test="badContent != null" >
+                bad_content = #{badContent,jdbcType=VARCHAR},
+            </if>
+            <if test="persionLiable != null" >
+                persion_liable = #{persionLiable,jdbcType=VARCHAR},
+            </if>
+            <if test="reportDate != null" >
+                report_date = #{reportDate,jdbcType=DATE},
+            </if>
+            <if test="speedOfProgress != null" >
+                Speed_of_progress = #{speedOfProgress,jdbcType=VARCHAR},
+            </if>
+            <if test="reasonForDelay != null" >
+                reason_for_delay = #{reasonForDelay,jdbcType=VARCHAR},
+            </if>
+            <if test="firstDate != null" >
+                first_date = #{firstDate,jdbcType=DATE},
+            </if>
+            <if test="secondDate != null" >
+                second_date = #{secondDate,jdbcType=DATE},
+            </if>
+            <if test="thirdDate != null" >
+                third_date = #{thirdDate,jdbcType=DATE},
+            </if>
+            <if test="fourthDate != null" >
+                fourth_date = #{fourthDate,jdbcType=DATE},
+            </if>
+            <if test="closeConfirm != null" >
+                close_confirm = #{closeConfirm,jdbcType=VARCHAR},
+            </if>
+            <if test="closeConfirmId != null" >
+                close_confirm_id = #{closeConfirmId,jdbcType=INTEGER},
+            </if>
+            <if test="closeConfirmTime != null" >
+                close_confirm_time = #{closeConfirmTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="productLine != null" >
+                product_line = #{productLine,jdbcType=VARCHAR},
+            </if>
+            <if test="severity != null" >
+                severity = #{severity,jdbcType=VARCHAR},
+            </if>
+            <if test="occurrenceFrequency != null" >
+                occurrence_frequency = #{occurrenceFrequency,jdbcType=VARCHAR},
+            </if>
+            <if test="badQuantity != null" >
+                bad_quantity = #{badQuantity,jdbcType=VARCHAR},
+            </if>
+            <if test="batch != null" >
+                batch = #{batch,jdbcType=VARCHAR},
+            </if>
+            <if test="happenShift != null" >
+                happen_shift = #{happenShift,jdbcType=VARCHAR},
+            </if>
+            <if test="responsibleDepartment != null" >
+                responsible_department = #{responsibleDepartment,jdbcType=VARCHAR},
+            </if>
+            <if test="recordPpm != null" >
+                record_ppm = #{recordPpm,jdbcType=VARCHAR},
+            </if>
+            <if test="recordNum != null" >
+                record_num = #{recordNum,jdbcType=VARCHAR},
+            </if>
+            <if test="temporary != null" >
+                temporary = #{temporary,jdbcType=VARCHAR},
+            </if>
+            <if test="rootCause != null" >
+                root_cause = #{rootCause,jdbcType=VARCHAR},
+            </if>
+            <if test="permanentGame != null" >
+                permanent_game = #{permanentGame,jdbcType=VARCHAR},
+            </if>
+            <if test="effectVerification != null" >
+                effect_verification = #{effectVerification,jdbcType=VARCHAR},
+            </if>
+            <if test="serialNumber != null" >
+                serial_number = #{serialNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="qualityWarningCardNumber != null" >
+                quality_warning_card_number = #{qualityWarningCardNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="productScale != null" >
+                product_scale = #{productScale,jdbcType=VARCHAR},
+            </if>
+            <if test="pfmea != null" >
+                pfmea = #{pfmea,jdbcType=VARCHAR},
+            </if>
+            <if test="cp != null" >
+                cp = #{cp,jdbcType=VARCHAR},
+            </if>
+            <if test="standardBook != null" >
+                standard_book = #{standardBook,jdbcType=VARCHAR},
+            </if>
+            <if test="equipmentChecklist != null" >
+                equipment_checklist = #{equipmentChecklist,jdbcType=VARCHAR},
+            </if>
+            <if test="alwaysList != null" >
+                always_list = #{alwaysList,jdbcType=VARCHAR},
+            </if>
+            <if test="inspectionReferenceBook != null" >
+                inspection_reference_book = #{inspectionReferenceBook,jdbcType=VARCHAR},
+            </if>
+            <if test="inspectionBook != null" >
+                inspection_book = #{inspectionBook,jdbcType=VARCHAR},
+            </if>
+            <if test="education != null" >
+                education = #{education,jdbcType=VARCHAR},
+            </if>
+            <if test="changePoint != null" >
+                change_point = #{changePoint,jdbcType=VARCHAR},
+            </if>
+            <if test="expandTrace != null" >
+                expand_trace = #{expandTrace,jdbcType=VARCHAR},
+            </if>
+            <if test="artificial != null" >
+                artificial = #{artificial,jdbcType=VARCHAR},
+            </if>
+            <if test="materiel != null" >
+                materiel = #{materiel,jdbcType=VARCHAR},
+            </if>
+            <if test="state != null" >
+                state = #{state,jdbcType=INTEGER},
+            </if>
+            <if test="isDelay != null" >
+                is_delay = #{isDelay,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="RRProblem" >
+        update dpcoi_rr_problem
+        set problem_status = #{problemStatus,jdbcType=VARCHAR},
+        problem_no = #{problemNo,jdbcType=VARCHAR},
+        problem_type = #{problemType,jdbcType=VARCHAR},
+        engineering = #{engineering,jdbcType=VARCHAR},
+        problem_progress = #{problemProgress,jdbcType=VARCHAR},
+        tracking_level = #{trackingLevel,jdbcType=VARCHAR},
+        happen_date = #{happenDate,jdbcType=DATE},
+        customer = #{customer,jdbcType=VARCHAR},
+        vehicle = #{vehicle,jdbcType=VARCHAR},
+        product_no = #{productNo,jdbcType=VARCHAR},
+        bad_content = #{badContent,jdbcType=VARCHAR},
+        persion_liable = #{persionLiable,jdbcType=VARCHAR},
+        report_date = #{reportDate,jdbcType=DATE},
+        Speed_of_progress = #{speedOfProgress,jdbcType=VARCHAR},
+        reason_for_delay = #{reasonForDelay,jdbcType=VARCHAR},
+        first_date = #{firstDate,jdbcType=DATE},
+        second_date = #{secondDate,jdbcType=DATE},
+        third_date = #{thirdDate,jdbcType=DATE},
+        fourth_date = #{fourthDate,jdbcType=DATE},
+        close_confirm = #{closeConfirm,jdbcType=VARCHAR},
+        close_confirm_id = #{closeConfirmId,jdbcType=INTEGER},
+        close_confirm_time = #{closeConfirmTime,jdbcType=TIMESTAMP},
+        product_line = #{productLine,jdbcType=VARCHAR},
+        severity = #{severity,jdbcType=VARCHAR},
+        occurrence_frequency = #{occurrenceFrequency,jdbcType=VARCHAR},
+        bad_quantity = #{badQuantity,jdbcType=VARCHAR},
+        batch = #{batch,jdbcType=VARCHAR},
+        happen_shift = #{happenShift,jdbcType=VARCHAR},
+        responsible_department = #{responsibleDepartment,jdbcType=VARCHAR},
+        record_ppm = #{recordPpm,jdbcType=VARCHAR},
+        record_num = #{recordNum,jdbcType=VARCHAR},
+        temporary = #{temporary,jdbcType=VARCHAR},
+        root_cause = #{rootCause,jdbcType=VARCHAR},
+        permanent_game = #{permanentGame,jdbcType=VARCHAR},
+        effect_verification = #{effectVerification,jdbcType=VARCHAR},
+        serial_number = #{serialNumber,jdbcType=VARCHAR},
+        quality_warning_card_number = #{qualityWarningCardNumber,jdbcType=VARCHAR},
+        product_scale = #{productScale,jdbcType=VARCHAR},
+        pfmea = #{pfmea,jdbcType=VARCHAR},
+        cp = #{cp,jdbcType=VARCHAR},
+        standard_book = #{standardBook,jdbcType=VARCHAR},
+        equipment_checklist = #{equipmentChecklist,jdbcType=VARCHAR},
+        always_list = #{alwaysList,jdbcType=VARCHAR},
+        inspection_reference_book = #{inspectionReferenceBook,jdbcType=VARCHAR},
+        inspection_book = #{inspectionBook,jdbcType=VARCHAR},
+        education = #{education,jdbcType=VARCHAR},
+        change_point = #{changePoint,jdbcType=VARCHAR},
+        expand_trace = #{expandTrace,jdbcType=VARCHAR},
+        artificial = #{artificial,jdbcType=VARCHAR},
+        materiel = #{materiel,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <select id="selectProblemNoMax" resultType="Integer" parameterType="String">
+        <![CDATA[
+			select MAX(SUBSTRING(problem_no,10)+0)
+			from dpcoi_rr_problem
+			where problem_no like CONCAT(#{problemNo},'%');
+		]]>
+    </select>
+
+    <sql id="WHERE_SQL">
+        <where>
+            <if test="badContent != null and badContent != ''" >
+                and `bad_content` like CONCAT('%',#{badContent,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="problemProgress != null and problemProgress != ''" >
+                and `problem_progress` = #{problemProgress,jdbcType=VARCHAR}
+            </if>
+            <if test="speedOfProgress != null and speedOfProgress != ''" >
+                and `speed_of_progress` = #{speedOfProgress,jdbcType=VARCHAR}
+            </if>
+            <if test="ids != null and ids != ''" >
+                and id in (${ids})
+            </if>
+            <if test="problemStatus != null and problemStatus != ''" >
+                and problem_status = #{problemStatus,jdbcType=VARCHAR}
+            </if>
+            <if test="problemType != null and problemType != ''" >
+                and problem_type = #{problemType,jdbcType=VARCHAR}
+            </if>
+            <if test="engineering != null and engineering != ''" >
+                and engineering = #{engineering,jdbcType=VARCHAR}
+            </if>
+            <if test="customer != null and customer != ''" >
+                and customer = #{customer,jdbcType=VARCHAR}
+            </if>
+            <if test="vehicle != null and vehicle != ''" >
+                and vehicle like concat('%',#{vehicle,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="productNo != null and productNo != ''" >
+                and product_no = #{productNo,jdbcType=VARCHAR}
+            </if>
+            <if test="happenDateBegin != null and happenDateBegin != ''" >
+                and DATE_FORMAT(happen_date,'%Y-%m-%d') &gt;= #{happenDateBegin,jdbcType=VARCHAR}
+            </if>
+            <if test="happenDateEnd != null and happenDateEnd != ''" >
+                and DATE_FORMAT(happen_date,'%Y-%m-%d') &lt;= #{happenDateEnd,jdbcType=VARCHAR}
+            </if>
+            <if test="persionLiable != null and persionLiable != ''" >
+                and persion_liable like concat('%',#{persionLiable,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="productLine != null and productLine != ''" >
+                and product_line like concat('%',#{productLine,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="severity != null and severity != ''" >
+                and severity = #{severity,jdbcType=VARCHAR}
+            </if>
+            <if test="responsibleDepartment != null and responsibleDepartment != ''" >
+                and responsible_department = #{responsibleDepartment,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </sql>
+
+    <select id="selectRRProblemListPage" resultType="java.util.HashMap" parameterType="RRProblemQuery">
+      select id, problem_status as problemStatus, problem_no as problemNo, problem_type as problemType, engineering, problem_progress as problemProgress, tracking_level as trackingLevel,
+        happen_date as happenDate, customer, vehicle, product_no as productNo, bad_content as badContent, persion_liable as persionLiable,
+        report_date as reportDate,
+        Speed_of_progress as speedOfProgress, reason_for_delay as reasonForDelay, first_date as firstDate, second_date as secondDate, third_date as thirdDate, fourth_date as fourthDate,
+        close_confirm as closeConfirm, close_confirm_id, close_confirm_time, product_line as productLine, severity, occurrence_frequency as occurrenceFrequency,
+        bad_quantity as badQuantity, batch, happen_shift as happenShift, responsible_department as responsibleDepartment, record_ppm as recordPpm, record_num as recordNum,
+        temporary, root_cause as rootCause, permanent_game as permanentGame, effect_verification as effectVerification, serial_number as serialNumber, quality_warning_card_number as qualityWarningCardNumber,
+        product_scale as productScale, pfmea, cp, standard_book as standardBook, equipment_checklist as equipmentChecklist, always_list as alwaysList, inspection_reference_book as inspectionReferenceBook,
+        inspection_book as inspectionBook, education, change_point as changePoint, expand_trace as expandTrace, artificial, materiel, state, is_delay as isDelay
+        from dpcoi_rr_problem
+        <include refid="WHERE_SQL"></include>
+        order by id desc limit #{start},#{size}
+    </select>
+
+    <select id="selectRRProblemCount" resultType="java.lang.Integer" parameterType="RRProblemQuery">
+        SELECT count(1)
+        from dpcoi_rr_problem
+        <include refid="WHERE_SQL"></include>
+    </select>
+
+    <select id="selectRRProblemList" resultType="java.util.HashMap" parameterType="RRProblemQuery">
+        select id, problem_status as problemStatus, problem_no as problemNo, problem_type as problemType, engineering, problem_progress as problemProgress, tracking_level as trackingLevel,
+        happen_date as happenDate, customer, vehicle, product_no as productNo, bad_content as badContent, persion_liable as persionLiable,
+        report_date as reportDate,
+        Speed_of_progress as speedOfProgress, reason_for_delay as reasonForDelay, first_date as firstDate, second_date as secondDate, third_date as thirdDate, fourth_date as fourthDate,
+        close_confirm as closeConfirm, close_confirm_id, close_confirm_time, product_line as productLine, severity, occurrence_frequency as occurrenceFrequency,
+        bad_quantity as badQuantity, batch, happen_shift as happenShift, responsible_department as responsibleDepartment, record_ppm as recordPpm, record_num as recordNum,
+        temporary, root_cause as rootCause, permanent_game as permanentGame, effect_verification as effectVerification, serial_number as serialNumber, quality_warning_card_number as qualityWarningCardNumber,
+        product_scale as productScale, pfmea, cp, standard_book as standardBook, equipment_checklist as equipmentChecklist, always_list as alwaysList, inspection_reference_book as inspectionReferenceBook,
+        inspection_book as inspectionBook, education, change_point as changePoint, expand_trace as expandTrace, artificial, materiel, state, is_delay as isDelay
+        from dpcoi_rr_problem
+        <include refid="WHERE_SQL"></include>
+    </select>
+
+    <select id="selectJobRRProblemList" resultMap="BaseResultMap" >
+        select
+        <include refid="Base_Column_List" />
+        from dpcoi_rr_problem
+        where state=1
+    </select>
+
+    <select id="selectDelayEmails" parameterType="RRProblem" resultType="java.lang.String">
+        SELECT GROUP_CONCAT(users.`EMAIL`)
+        FROM sys_users users
+        WHERE users.`DELETE_STATE` = 0
+        AND  FIND_IN_SET(users.`USER_NAME`,(SELECT GROUP_CONCAT(problem.`persion_liable`)
+        FROM dpcoi_rr_problem problem WHERE problem.`id` = #{id,jdbcType=INTEGER})) &gt; 0
+    </select>
+
+    <select id="selectRRProblemScreenShowList" resultType="java.util.HashMap">
+        select id, problem_status as problemStatus, problem_no as problemNo, problem_type as problemType, engineering, problem_progress as problemProgress, tracking_level as trackingLevel,
+        happen_date as happenDate, customer, vehicle, product_no as productNo, bad_content as badContent, persion_liable as persionLiable,
+        report_date as reportDate,
+        Speed_of_progress as speedOfProgress, reason_for_delay as reasonForDelay, first_date as firstDate, second_date as secondDate, third_date as thirdDate, fourth_date as fourthDate,
+        close_confirm as closeConfirm, close_confirm_id, close_confirm_time, product_line as productLine, severity, occurrence_frequency as occurrenceFrequency,
+        bad_quantity as badQuantity, batch, happen_shift as happenShift, responsible_department as responsibleDepartment, record_ppm as recordPpm, record_num as recordNum,
+        temporary, root_cause as rootCause, permanent_game as permanentGame, effect_verification as effectVerification, serial_number as serialNumber, quality_warning_card_number as qualityWarningCardNumber,
+        product_scale as productScale, pfmea, cp, standard_book as standardBook, equipment_checklist as equipmentChecklist, always_list as alwaysList, inspection_reference_book as inspectionReferenceBook,
+        inspection_book as inspectionBook, education, change_point as changePoint, expand_trace as expandTrace, artificial, materiel, state, is_delay as isDelay
+        from dpcoi_rr_problem
+        where state = 1
+        order by id desc
+    </select>
+</mapper>
