@@ -14,7 +14,7 @@
 	if(isIEBrower){
 		var params = "fullscreen=yes,toolbar=no,menubar=no,scrollbars=no,resizable=yes,location=no,status=no,menubar=no,left=0,top=0,height="
 			+ (window.screen.availHeight-30) +",width="+ (window.screen.availWidth-10);
-		var newWin = window.open(url,"高田汽配工作流系统",params);		
+		var newWin = window.open(url,"均胜工作流系统",params);
 		closewin();
 		newWin.focus();
 	}else{

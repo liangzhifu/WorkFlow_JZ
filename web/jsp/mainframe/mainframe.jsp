@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>高田汽配工作流系统Web主页面</title>
+<title>均胜工作流系统Web主页面</title>
 <link rel="stylesheet" type="text/css" href="<c:url value='/js/jquery/easyui/themes/bootstrap/easyui.css'/>">
 <link rel="stylesheet" type="text/css" href="<c:url value='/js/jquery/easyui/themes/icon.css'/>">
 <link rel="stylesheet" type="text/css" href="<c:url value='/style/mainframe/mainframe.css?version=53'/>">
