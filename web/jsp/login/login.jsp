@@ -4,7 +4,7 @@
 <html >
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>均胜汽车安全系统（天津）有限公司</title>
+<title>均胜汽车安全系统（荆州）有限公司</title>
 <link rel="stylesheet" href="<c:url value='/jsp/login/css/login.css?version=2'/>">
 <script type="text/javascript" src="<c:url value='/js/jquery/easyui/jquery.min.js'/>"></script>
 <script type="text/javascript"> 
