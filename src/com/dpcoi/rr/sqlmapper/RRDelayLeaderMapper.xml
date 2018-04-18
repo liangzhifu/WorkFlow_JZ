@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="RRDelayLeaderMapper" >
+    <resultMap id="BaseResultMap" type="RRDelayLeader" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="user_id" property="userId" jdbcType="INTEGER" />
+        <result column="leader_id" property="leaderId" jdbcType="INTEGER" />
+        <result column="leader_type" property="leaderType" jdbcType="INTEGER" />
+        <result column="delete_state" property="deleteState" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        id, user_id, leader_id, leader_type, delete_state
+    </sql>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="RRDelayLeader" >
+        select
+        <include refid="Base_Column_List" />
+        from dpcoi_rr_delay_leader
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <insert id="insertSelective" parameterType="RRDelayLeader" >
+        insert into dpcoi_rr_delay_leader
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                id,
+            </if>
+            <if test="userId != null" >
+                user_id,
+            </if>
+            <if test="leaderId != null" >
+                leader_id,
+            </if>
+            <if test="leaderType != null" >
+                leader_type,
+            </if>
+            <if test="deleteState != null" >
+                delete_state,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="userId != null" >
+                #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="leaderId != null" >
+                #{leaderId,jdbcType=INTEGER},
+            </if>
+            <if test="leaderType != null" >
+                #{leaderType,jdbcType=INTEGER},
+            </if>
+            <if test="deleteState != null" >
+                #{deleteState,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="RRDelayLeader" >
+        update dpcoi_rr_delay_leader
+        <set >
+            <if test="userId != null" >
+                user_id = #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="leaderId != null" >
+                leader_id = #{leaderId,jdbcType=INTEGER},
+            </if>
+            <if test="leaderType != null" >
+                leader_type = #{leaderType,jdbcType=INTEGER},
+            </if>
+            <if test="deleteState != null" >
+                delete_state = #{deleteState,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <sql id="WHERE_SQL">
+        <where>
+            leader.`user_id` = users1.`USER_ID`
+            AND leader.`leader_id` = users2.`USER_ID`
+            AND leader.`delete_state` = '0'
+            AND users1.`DELETE_STATE` = '0'
+            AND users2.`DELETE_STATE` = '0'
+            <if test="userName != null and userName != '' ">
+                and users1.`USER_NAME` like concat('%',#{userName},'%')
+            </if>
+            <if test="leaderName != null and leaderName != '' ">
+                and users2.`USER_NAME` like concat('%',#{leaderName},'%')
+            </if>
+            <if test="leaderType != null and leaderType != '' ">
+              and leader.leader_type = #{leaderType}
+            </if>
+        </where>
+    </sql>
+
+    <select id="selectRRDelayLeaderPageList" parameterType="RRDelayLeaderQuery" resultType="java.util.HashMap">
+        select leader.`id` as id,
+        users1.`USER_NAME` as userName,
+        users2.`USER_NAME` as leaderName,
+        leader.leader_type as leaderType
+        from dpcoi_rr_delay_leader leader, sys_users users1, sys_users users2
+        <include refid="WHERE_SQL"></include>
+        order by convert(users1.user_name using gbk) asc limit #{start},#{size}
+    </select>
+
+    <select id="selectRRDelayLeaderCount" resultType="java.lang.Integer" parameterType="RRDelayLeaderQuery">
+        SELECT count(1)
+        FROM dpcoi_rr_delay_leader leader, sys_users users1, sys_users users2
+        <include refid="WHERE_SQL"></include>
+    </select>
+
+    <select id="selectDelay2Email" resultType="java.lang.String" parameterType="java.lang.String">
+        SELECT GROUP_CONCAT(CASE WHEN users.`EMAIL` IS NULL OR users.`EMAIL` = '' THEN users.`EMAIL2` ELSE users.`EMAIL` END)
+        FROM sys_users users
+        WHERE users.`USER_ID` IN
+        (SELECT users.`USER_ID`
+        FROM sys_users users
+        WHERE users.`DELETE_STATE` = '0'
+        AND FIND_IN_SET(users.`USER_NAME`, #{userName})
+        UNION
+        SELECT user2.`USER_ID`
+        FROM dpcoi_rr_delay_leader leader, sys_users user1, sys_users user2
+        WHERE leader.`user_id` = user1.`USER_ID`
+        AND leader.`leader_id` = user2.`USER_ID`
+        AND leader.`delete_state` = '0'
+        AND user1.`DELETE_STATE` = '0'
+        AND user2.`DELETE_STATE` = '0'
+        AND leader.`leader_type` = '1'
+        AND FIND_IN_SET(user1.`USER_NAME`, #{userName}))
+    </select>
+
+    <select id="selectDelay3Email" resultType="java.lang.String" parameterType="java.lang.String">
+        select group_concat(CASE WHEN users.`EMAIL` IS NULL OR users.`EMAIL` = '' THEN users.`EMAIL2` ELSE users.`EMAIL` END)
+        from sys_users users
+        where users.`USER_ID` in
+        (select users.`USER_ID`
+        from sys_users users
+        where users.`DELETE_STATE` = '0'
+        and find_in_set(users.`USER_NAME`, #{userName})
+        union
+        SELECT user2.`USER_ID`
+        FROM dpcoi_rr_delay_leader leader, sys_users user1, sys_users user2
+        WHERE leader.`user_id` = user1.`USER_ID`
+        AND leader.`leader_id` = user2.`USER_ID`
+        AND leader.`delete_state` = '0'
+        AND user1.`DELETE_STATE` = '0'
+        AND user2.`DELETE_STATE` = '0'
+        AND leader.`leader_type` = '1'
+        AND FIND_IN_SET(user1.`USER_NAME`, #{userName})
+        union
+        SELECT user2.`USER_ID`
+        FROM dpcoi_rr_delay_leader leader1, dpcoi_rr_delay_leader leader2, sys_users user1, sys_users user2
+        WHERE leader1.`user_id` = user1.`USER_ID`
+        AND leader1.`leader_id` = leader2.`user_id`
+        AND leader2.`leader_id` = user2.`USER_ID`
+        AND leader1.`delete_state` = '0'
+        AND leader2.`delete_state` = '0'
+        AND user1.`DELETE_STATE` = '0'
+        AND user2.`DELETE_STATE` = '0'
+        AND leader1.`leader_type` = '1'
+        AND leader2.`leader_type` = '2'
+        AND FIND_IN_SET(user1.`USER_NAME`, #{userName}))
+    </select>
+
+    <select id="selectDelay4Email" resultType="java.lang.String" parameterType="java.lang.String">
+        select group_concat(CASE WHEN users.`EMAIL` IS NULL OR users.`EMAIL` = '' THEN users.`EMAIL2` ELSE users.`EMAIL` END)
+        from sys_users users
+        where users.`USER_ID` in
+        (select users.`USER_ID`
+        from sys_users users
+        where users.`DELETE_STATE` = '0'
+        and find_in_set(users.`USER_NAME`, #{userName})
+        union
+        SELECT user2.`USER_ID`
+        FROM dpcoi_rr_delay_leader leader, sys_users user1, sys_users user2
+        WHERE leader.`user_id` = user1.`USER_ID`
+        AND leader.`leader_id` = user2.`USER_ID`
+        AND leader.`delete_state` = '0'
+        AND user1.`DELETE_STATE` = '0'
+        AND user2.`DELETE_STATE` = '0'
+        AND leader.`leader_type` = '1'
+        AND FIND_IN_SET(user1.`USER_NAME`, #{userName})
+        union
+        SELECT user2.`USER_ID`
+        FROM dpcoi_rr_delay_leader leader1, dpcoi_rr_delay_leader leader2, sys_users user1, sys_users user2
+        WHERE leader1.`user_id` = user1.`USER_ID`
+        AND leader1.`leader_id` = leader2.`user_id`
+        AND leader2.`leader_id` = user2.`USER_ID`
+        AND leader1.`delete_state` = '0'
+        AND leader2.`delete_state` = '0'
+        AND user1.`DELETE_STATE` = '0'
+        AND user2.`DELETE_STATE` = '0'
+        AND leader1.`leader_type` = '1'
+        AND leader2.`leader_type` = '2'
+        AND FIND_IN_SET(user1.`USER_NAME`, #{userName})
+        union
+        SELECT user2.`USER_ID`
+        FROM dpcoi_rr_delay_leader leader1, dpcoi_rr_delay_leader leader2, dpcoi_rr_delay_leader leader3, sys_users user1, sys_users user2
+        WHERE leader1.`user_id` = user1.`USER_ID`
+        and leader1.`leader_id` = leader2.`user_id`
+        and leader2.`leader_id` = leader3.`user_id`
+        AND leader3.`leader_id` = user2.`USER_ID`
+        AND leader1.`delete_state` = '0'
+        and leader2.`delete_state` = '0'
+        and leader3.`delete_state` = '0'
+        AND user1.`DELETE_STATE` = '0'
+        AND user2.`DELETE_STATE` = '0'
+        AND leader1.`leader_type` = '1'
+        and leader2.`leader_type` = '2'
+        and leader3.`leader_type` = '3'
+        AND FIND_IN_SET(user1.`USER_NAME`, #{userName}))
+    </select>
+
+    <select id="selectMinisteEmail" resultType="java.lang.String">
+        select group_concat(CASE WHEN users.`EMAIL` IS NULL OR users.`EMAIL` = '' THEN users.`EMAIL2` ELSE users.`EMAIL` END)
+        from sys_users users
+        where users.`USER_ID` in
+        (select drdl.`leader_id`
+        from dpcoi_rr_delay_leader drdl
+        where drdl.`delete_state` = '0'
+        and drdl.`leader_type` = '3'
+        )
+        and users.`delete_state` = '0'
+    </select>
+</mapper>

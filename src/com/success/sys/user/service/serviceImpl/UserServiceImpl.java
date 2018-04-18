@@ -2,6 +2,7 @@ package com.success.sys.user.service.serviceImpl;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -136,5 +137,10 @@ public class UserServiceImpl implements UserService {
 	public List<User> queryUserByCode(UserQuery query) throws ServiceException {
 		// TODO Auto-generated method stub
 		return this.userDao.selectUserByCode(query);
+	}
+
+	@Override
+	public List<Map<String, Object>> queryUserList(UserQuery query) {
+		return this.userDao.selectUserList(query);
 	}
 }

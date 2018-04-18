@@ -35,4 +35,9 @@ public class RRProblemOrderServiceImpl implements RRProblemOrderService {
     public Integer queryRRProblemOrderCount(RRProblemOrderQuery rrProblemOrderQuery) throws ServiceException {
         return this.rRProblemOrderDao.selectRRProblemOrderCount(rrProblemOrderQuery);
     }
+
+    @Override
+    public List<Map<String, Object>> queryDpcoiWoOrderFileList(Map<String, Object> map) throws ServiceException {
+        return this.rRProblemOrderDao.selectDpcoiWoOrderFileList(map);
+    }
 }

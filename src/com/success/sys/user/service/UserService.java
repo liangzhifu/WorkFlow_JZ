@@ -1,6 +1,7 @@
 package com.success.sys.user.service;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import com.success.sys.user.domain.User;
@@ -31,4 +32,12 @@ public interface UserService {
 	public UserQuery setUserQueryData(HttpServletRequest request);
 	
 	public List<User> queryUserByCode(UserQuery query) throws ServiceException;
+
+	/**
+	 * 查询用户列表
+	 * @param query 查询条件
+	 * @return 返回结果
+	 */
+	public List<Map<String, Object>> queryUserList(UserQuery query);
+
 }

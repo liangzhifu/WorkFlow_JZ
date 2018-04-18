@@ -158,7 +158,7 @@ public class MainframeController {
 		for(UserMenu userMenu : menuList){
 			Integer menuId = userMenu.getMenuId();
 			Integer number = 0;
-			if(menuId == 29){//RR代办
+			if(menuId == 28){//RR代办
 				RRProblemWoOrderQuery rrProblemWoOrderQuery = new RRProblemWoOrderQuery();
 				rrProblemWoOrderQuery.setDpcoiUserId(user.getUserId());
 				number = this.rRProblemWoOrderService.queryRRProblemWoOrderCount(rrProblemWoOrderQuery);

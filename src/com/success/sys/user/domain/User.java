@@ -19,6 +19,7 @@ public class User {
 	private String orgName;
 	// email
 	private String email;
+	private String email2;
 	// 手机
 	private String mobileTel;
 	// 是否领导
@@ -160,5 +161,13 @@ public class User {
 
 	public void setRrMinister(String rrMinister) {
 		this.rrMinister = rrMinister;
+	}
+
+	public String getEmail2() {
+		return email2;
+	}
+
+	public void setEmail2(String email2) {
+		this.email2 = email2;
 	}
 }

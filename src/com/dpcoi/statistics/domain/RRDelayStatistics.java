@@ -29,6 +29,8 @@ public class RRDelayStatistics {
 
     private String problemStatus;
 
+    private String trackingLevel;
+
     public Integer getId() {
         return id;
     }
@@ -91,5 +93,13 @@ public class RRDelayStatistics {
 
     public void setProblemStatus(String problemStatus) {
         this.problemStatus = problemStatus;
+    }
+
+    public String getTrackingLevel() {
+        return trackingLevel;
+    }
+
+    public void setTrackingLevel(String trackingLevel) {
+        this.trackingLevel = trackingLevel;
     }
 }

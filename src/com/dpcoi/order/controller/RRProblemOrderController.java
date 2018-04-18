@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.List;
@@ -100,4 +101,31 @@ public class RRProblemOrderController {
         model.put("operateHistoryList", operateHistoryList);
         return "dpcoi/rrProblemOrderDetail";
     }
+
+
+    /**
+     * 获取RRprobel对应dpcoi工单的文件列表
+     * @param request 参数
+     * @param response 参数
+     * @param rrProblemId RR问题点ID
+     * @param dpcoiWoOrderType 工单类型cp、pfmea、作业标准书
+     */
+    @RequestMapping("getDpcoiWoOrderFileList.do")
+    public void getDpcoiWoOrderFileList(HttpServletRequest request, HttpServletResponse response, Integer rrProblemId, Integer dpcoiWoOrderType){
+        Map<String, Object> map = new HashMap<String, Object>();
+        try{
+            Map<String, Object> filterMap = new HashMap<String, Object>();
+            filterMap.put("rrProblemId", rrProblemId);
+            filterMap.put("dpcoiWoOrderType", dpcoiWoOrderType);
+            List<Map<String, Object>> dpcoiWoOrderFileList = this.rRProblemOrderService.queryDpcoiWoOrderFileList(filterMap);
+            map.put("dpcoiWoOrderFileList", dpcoiWoOrderFileList);
+            map.put("success", true);
+        }catch (Exception e){
+            e.printStackTrace();
+            map.put("success", false);
+            map.put("message", e.getMessage());
+        }
+        AjaxUtil.ajaxResponse(response, new JSONObject(map).toString(), AjaxUtil.RESPONCE_TYPE_JSON);
+    }
+
 }

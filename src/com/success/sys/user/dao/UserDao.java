@@ -1,6 +1,7 @@
 package com.success.sys.user.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
@@ -88,4 +89,14 @@ public class UserDao extends BaseDao {
 	public Integer selectMinisterJurisdiction(User user){
 		return this.sqlSession.selectOne("user.selectMinisterJurisdiction", user);
 	}
+
+	/**
+	 * 查询用户列表
+	 * @param userQuery 查询条件
+	 * @return 返回结果
+	 */
+	public List<Map<String, Object>> selectUserList(UserQuery userQuery){
+		return this.sqlSession.selectList("user.selectUserList", userQuery);
+	}
+
 }

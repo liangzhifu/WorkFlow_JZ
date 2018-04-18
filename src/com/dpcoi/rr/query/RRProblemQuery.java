@@ -47,6 +47,12 @@ public class RRProblemQuery {
 
     private String responsibleDepartment;
 
+    private String trackingLevel;
+
+    private String dpcoi4M;
+
+    private Integer isHide;
+
     public Integer getStart() {
         return start;
     }
@@ -189,5 +195,29 @@ public class RRProblemQuery {
 
     public void setResponsibleDepartment(String responsibleDepartment) {
         this.responsibleDepartment = responsibleDepartment;
+    }
+
+    public Integer getIsHide() {
+        return isHide;
+    }
+
+    public void setIsHide(Integer isHide) {
+        this.isHide = isHide;
+    }
+
+    public String getTrackingLevel() {
+        return trackingLevel;
+    }
+
+    public void setTrackingLevel(String trackingLevel) {
+        this.trackingLevel = trackingLevel;
+    }
+
+    public String getDpcoi4M() {
+        return dpcoi4M;
+    }
+
+    public void setDpcoi4M(String dpcoi4M) {
+        this.dpcoi4M = dpcoi4M;
     }
 }

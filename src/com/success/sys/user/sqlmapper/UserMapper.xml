@@ -8,6 +8,7 @@
 		<result property="password" column="password" />
 		<result property="userCode" column="user_code" />
 		<result property="email" column="email" />
+		<result property="email2" column="email2" />
 		<result property="orgId" column="org_id" />
 		<result property="orgName" column="orgName" />
 		<result property="mobileTel" column="mobile_tel" />
@@ -62,6 +63,7 @@
 			s.password,
 			s.org_id,
 			s.email,
+			s.email2,
 			s.mobile_tel,
 			s.user_work_id,
 			s.user_sex,
@@ -163,6 +165,7 @@
 			PASSWORD,
 			ORG_ID,
 			EMAIL,
+			EMAIL2,
 			MOBILE_TEL,
 			USER_MARK,
 			DELETE_STATE,
@@ -174,6 +177,7 @@
 							 '111111',
 							 #{orgId,jdbcType=VARCHAR},
 							 #{email,jdbcType=VARCHAR},
+							 #{email2,jdbcType=VARCHAR},
 							 #{mobileTel,jdbcType=VARCHAR},
 							 #{userMark,jdbcType=VARCHAR},
 							 0,
@@ -191,6 +195,7 @@
 			<if test="password != null">PASSWORD = #{password,jdbcType=VARCHAR},</if>
 			<if test="orgId != null">ORG_ID = #{orgId,jdbcType=VARCHAR},</if>
 			<if test="email != null">EMAIL = #{email,jdbcType=VARCHAR},</if>
+			<if test="email2 != null">EMAIL2 = #{email2,jdbcType=VARCHAR},</if>
 			<if test="mobileTel != null">MOBILE_TEL = #{mobileTel,jdbcType=VARCHAR},</if>
 			<if test="userMark != null">USER_MARK = #{userMark,jdbcType=VARCHAR},</if>
 			<if test="deleteState != null">DELETE_STATE = #{deleteState,jdbcType=VARCHAR},</if>
@@ -264,4 +269,12 @@
 		AND users.`rr_minister` = 1
 		AND users.`USER_ID` = #{userId}
 	</select>
+
+	<select id="selectUserList" parameterType="UserQuery" resultType="java.util.HashMap">
+		SELECT users.`USER_ID` AS `value`,
+		users.`USER_NAME` AS `label`
+		FROM sys_users users
+		WHERE users.`DELETE_STATE` = 0
+	</select>
+
 </mapper>

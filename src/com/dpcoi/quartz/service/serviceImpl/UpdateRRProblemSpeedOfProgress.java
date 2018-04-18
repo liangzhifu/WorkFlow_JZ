@@ -4,6 +4,7 @@ package com.dpcoi.quartz.service.serviceImpl;/**
  */
 
 import com.dpcoi.rr.domain.RRProblem;
+import com.dpcoi.rr.service.RRDelayLeaderService;
 import com.dpcoi.rr.service.RRProblemService;
 import com.dpcoi.statistics.domain.RRDelayStatistics;
 import com.dpcoi.statistics.service.RRDelayStatisticsService;
@@ -33,19 +34,26 @@ public class UpdateRRProblemSpeedOfProgress {
     @Resource(name = "rRProblemService")
     private RRProblemService rRProblemService;
 
+    @Resource(name = "rRDelayLeaderService")
+    private RRDelayLeaderService rRDelayLeaderService;
+
     @Resource(name = "rRDelayStatisticsService")
     private RRDelayStatisticsService rRDelayStatisticsService;
 
-    @Scheduled(cron = "0 30 2 * * ?")
+    //@Scheduled(cron = "0 30 2 * * ?")
+    @Scheduled(cron = "0 0/1 * * * ?")
     public void job() {
         try {
             List<RRProblem> rrProblemList = this.rRProblemService.queryJobRRProblemList();
             for (RRProblem rrProblem : rrProblemList){
-                String oldSpeedOfProgress = rrProblem.getSpeedOfProgress();
+                String oldTrackingLevel = rrProblem.getTrackingLevel();
                 this.rRProblemService.updateSpeedOfProgress(rrProblem);
+                this.rRProblemService.updateTrackingLevel(rrProblem);
                 String speedOfProgress = rrProblem.getSpeedOfProgress();
-                if("delayI".equals(speedOfProgress) || "delayII".equals(speedOfProgress) || "delayIII".equals(speedOfProgress) || "delayIV".equals(speedOfProgress)){
-                    if("follow".equals(oldSpeedOfProgress)){
+                String trackingLevel =  rrProblem.getTrackingLevel();
+                Integer delayApplication = rrProblem.getDelayApplication();
+                if("I".equals(trackingLevel) || "II".equals(trackingLevel) || "III".equals(trackingLevel) || "IV".equals(trackingLevel)){
+                    if(oldTrackingLevel == null || "".equals(oldTrackingLevel) || "V".equals(oldTrackingLevel)){
                         String persionLiable = rrProblem.getPersionLiable();
                         String[] persionLiableArray = persionLiable.split(",");
                         for(int i = 0; i < persionLiableArray.length; i++){
@@ -57,6 +65,37 @@ public class UpdateRRProblemSpeedOfProgress {
                             rrDelayStatistics.setRrProblemId(rrProblem.getId());
                             rrDelayStatistics.setProblemStatus(rrProblem.getProblemStatus());
                             rrDelayStatistics.setProblemProgress(rrProblem.getProblemProgress());
+                            rrDelayStatistics.setTrackingLevel(trackingLevel);
+                            this.rRDelayStatisticsService.addRRDelayStatistics(rrDelayStatistics);
+                        }
+                    }else if("IV".equals(oldTrackingLevel) && "III".equals(trackingLevel) && delayApplication.intValue() == 0){
+                        String persionLiable = rrProblem.getPersionLiable();
+                        String[] persionLiableArray = persionLiable.split(",");
+                        for(int i = 0; i < persionLiableArray.length; i++){
+                            RRDelayStatistics rrDelayStatistics = new RRDelayStatistics();
+                            rrDelayStatistics.setSpeedOfProgress(speedOfProgress);
+                            rrDelayStatistics.setDelayDate(new Date());
+                            rrDelayStatistics.setDelayType(1);
+                            rrDelayStatistics.setPersionLiable(persionLiableArray[i]);
+                            rrDelayStatistics.setRrProblemId(rrProblem.getId());
+                            rrDelayStatistics.setProblemStatus(rrProblem.getProblemStatus());
+                            rrDelayStatistics.setProblemProgress(rrProblem.getProblemProgress());
+                            rrDelayStatistics.setTrackingLevel(trackingLevel);
+                            this.rRDelayStatisticsService.addRRDelayStatistics(rrDelayStatistics);
+                        }
+                    }else if("III".equals(oldTrackingLevel) && "II".equals(trackingLevel) && delayApplication.intValue() == 1){
+                        String persionLiable = rrProblem.getPersionLiable();
+                        String[] persionLiableArray = persionLiable.split(",");
+                        for(int i = 0; i < persionLiableArray.length; i++){
+                            RRDelayStatistics rrDelayStatistics = new RRDelayStatistics();
+                            rrDelayStatistics.setSpeedOfProgress(speedOfProgress);
+                            rrDelayStatistics.setDelayDate(new Date());
+                            rrDelayStatistics.setDelayType(1);
+                            rrDelayStatistics.setPersionLiable(persionLiableArray[i]);
+                            rrDelayStatistics.setRrProblemId(rrProblem.getId());
+                            rrDelayStatistics.setProblemStatus(rrProblem.getProblemStatus());
+                            rrDelayStatistics.setProblemProgress(rrProblem.getProblemProgress());
+                            rrDelayStatistics.setTrackingLevel(trackingLevel);
                             this.rRDelayStatisticsService.addRRDelayStatistics(rrDelayStatistics);
                         }
                     }
@@ -77,7 +116,15 @@ public class UpdateRRProblemSpeedOfProgress {
                             .append("<br>").append("永久对策:").append(rrProblem.getPermanentGame())
                             .append("<br>").append("进度").append(speedOfProgress);
                     timeTask.setComment(comment.toString());
-                    String emailUser = this.rRProblemService.queryDelayEmails(rrProblem);
+                    String emailUser = "";
+                    if("IV".equals(trackingLevel)){
+                        emailUser = this.rRDelayLeaderService.queryDelay2Email(rrProblem.getPersionLiable());
+                    }else if("III".equals(trackingLevel)){
+                        emailUser = this.rRDelayLeaderService.queryDelay3Email(rrProblem.getPersionLiable());
+                    }else {
+                        emailUser = this.rRDelayLeaderService.queryDelay4Email(rrProblem.getPersionLiable());
+                    }
+                    //String emailUser = this.rRProblemService.queryDelayEmails(rrProblem);
                     timeTask.setUserEmail(emailUser);
                     timeTask.setDeleteState(0);
                     timeTask.setEmailTitle(rrProblem.getProblemNo());

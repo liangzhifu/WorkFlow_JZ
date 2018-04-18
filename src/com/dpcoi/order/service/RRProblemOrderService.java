@@ -33,4 +33,12 @@ public interface RRProblemOrderService {
      */
     public Integer queryRRProblemOrderCount(RRProblemOrderQuery rrProblemOrderQuery) throws ServiceException;
 
+    /**
+     * 获取RRproblem对应的DPCOI上传的文件
+     * @param map 参数
+     * @return 返回结果
+     * @throws ServiceException 异常
+     */
+    public List<Map<String, Object>> queryDpcoiWoOrderFileList(Map<String, Object> map) throws ServiceException;
+
 }

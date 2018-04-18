@@ -159,6 +159,7 @@ public class UserController {
 				    		user.setUserName(account_name);
 				    		user.setMobileTel(account_mobile);
 				    		user.setEmail(account_email);
+							user.setEmail2(account_email);
 				    		user.setOrgId(Integer.valueOf(orgId));
 				    		user.setUserWorkId(userCode);
 				    		Integer r_i = userService.insertUser(user);
@@ -333,12 +334,33 @@ public class UserController {
 		user.setPassword(request.getParameter("password")==null||request.getParameter("password").equals("")?"111111":request.getParameter("password"));
 		user.setOrgId(Integer.parseInt(request.getParameter("orgId")));
 		user.setEmail(request.getParameter("email"));
+		user.setEmail2(request.getParameter("email2"));
 		user.setMobileTel(request.getParameter("mobileTel"));
 		user.setUserMark(request.getParameter("userMark"));	
 		user.setIsHeader(request.getParameter("isHeader"));
 		user.setRrProblemPersionliable(request.getParameter("rrProblemPersionliable"));
 		user.setRrMinister(request.getParameter("rrMinister"));
 		return user;
+	}
+
+	/**
+	 * 查询车型选项列表
+	 * @param response 参数
+	 * @param userQuery 查询条件
+	 */
+	@RequestMapping("/getUserList.do")
+	public void getUserList(HttpServletResponse response, UserQuery userQuery){
+		Map<String, Object> map = new HashMap<String, Object>();
+		try{
+			List<Map<String, Object>> userList = this.userService.queryUserList(userQuery);
+			map.put("userList", userList);
+			map.put("success", true);
+		}catch (Exception e){
+			e.printStackTrace();
+			map.put("success", false);
+			map.put("message", e.getMessage());
+		}
+		AjaxUtil.ajaxResponse(response, new JSONObject(map).toString(), AjaxUtil.RESPONCE_TYPE_JSON);
 	}
 
 }

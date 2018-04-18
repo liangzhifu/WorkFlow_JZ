@@ -36,4 +36,13 @@ public class RRProblemOrderDao extends BaseDao {
         return this.sqlSession.selectOne("RRProblemOrderMapper.selectRRProblemOrderCount", rrProblemOrderQuery);
     }
 
+    /**
+     * 获取dpcoiWoOrder对应的文件列表
+     * @param map 查询条件
+     * @return 返回结果
+     */
+    public List<Map<String, Object>> selectDpcoiWoOrderFileList(Map<String, Object> map){
+        return this.sqlSession.selectList("RRProblemOrderMapper.selectDpcoiWoOrderFileList", map);
+    }
+
 }

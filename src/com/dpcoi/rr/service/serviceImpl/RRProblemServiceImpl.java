@@ -5,18 +5,25 @@ package com.dpcoi.rr.service.serviceImpl;/**
 
 import com.dpcoi.config.dao.DpcoiConfigVehicleDao;
 import com.dpcoi.config.query.DpcoiConfigVehicleQuery;
+import com.dpcoi.file.dao.FileUploadDao;
+import com.dpcoi.file.domain.FileUpload;
 import com.dpcoi.holiday.dao.HolidayDao;
+import com.dpcoi.rr.dao.RRDelayLeaderDao;
 import com.dpcoi.rr.domain.RRProblem;
 import com.dpcoi.rr.dao.RRProblemDao;
 import com.dpcoi.rr.query.RRProblemQuery;
 import com.dpcoi.rr.service.RRProblemService;
+import com.success.sys.email.dao.TimeTaskDao;
+import com.success.sys.email.domain.TimeTask;
 import com.success.sys.user.dao.UserDao;
 import com.success.sys.user.domain.User;
 import com.success.web.framework.exception.ServiceException;
 import org.apache.commons.collections.map.HashedMap;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -38,8 +45,17 @@ public class RRProblemServiceImpl implements RRProblemService {
     @Resource(name = "userDao")
     private UserDao userDao;
 
+    @Resource(name="fileUploadDao")
+    private FileUploadDao fileUploadDao;
+
     @Resource(name = "dpcoiConfigVehicleDao")
     private DpcoiConfigVehicleDao dpcoiConfigVehicleDao;
+
+    @Resource(name="timeTaskDao")
+    private TimeTaskDao timeTaskDao;
+
+    @Resource(name="rRDelayLeaderDao")
+    private RRDelayLeaderDao rRDelayLeaderDao;
 
     @Override
     public Integer addRRProblem(RRProblem rrProblem) throws Exception {
@@ -62,6 +78,8 @@ public class RRProblemServiceImpl implements RRProblemService {
             problemNo = "TT-GC-"+shortYear+"-";
         }else if("市场投诉".equals(problemType)) {
             problemNo = "TT-SC-"+shortYear+"-";
+        }else if("部品".equals(problemType)) {
+            problemNo = "TT-BP-"+shortYear+"-";
         }else{
             throw new ServiceException("问题类型不存在！");
         }
@@ -94,7 +112,8 @@ public class RRProblemServiceImpl implements RRProblemService {
         }
 
         Date happenDate = rrProblem.getHappenDate();
-        List<Calendar> calendarList = this.queryHolidayList(null);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        List<Calendar> calendarList = this.queryHolidayList(formatter.format(happenDate));
         //第一次
         Date date = this.calculationWorkingDay(happenDate, 2, calendarList);
         rrProblem.setFirstDate(date);
@@ -113,6 +132,9 @@ public class RRProblemServiceImpl implements RRProblemService {
 
         //问题进度
         this.updateSpeedOfProgress(rrProblem);
+
+        //追踪等级
+        this.updateTrackingLevel(rrProblem);
 
         return this.rRProblemDao.insertRRProblem(rrProblem);
     }
@@ -188,7 +210,7 @@ public class RRProblemServiceImpl implements RRProblemService {
         String reportDateStr = df.format(reportDate);
         Date nowDate = new Date();
         String nowDateStr = df.format(nowDate);
-        if("1/4".equals(problemProgress)){
+        if("2/5".equals(problemProgress)){
             Date firstDate = rrProblem.getFirstDate();
             String firstDateStr = df.format(firstDate);
             if(reportDateStr.compareTo(nowDateStr) < 0){
@@ -202,7 +224,7 @@ public class RRProblemServiceImpl implements RRProblemService {
                     speedOfProgress = "delayII";
                 }
             }
-        }else if("2/4".equals(problemProgress)){
+        }else if("3/5".equals(problemProgress)){
             Date secondDate = rrProblem.getSecondDate();
             String secondDateStr = df.format(secondDate);
             if(reportDateStr.compareTo(nowDateStr) < 0){
@@ -220,7 +242,7 @@ public class RRProblemServiceImpl implements RRProblemService {
                     speedOfProgress = "delayIV";
                 }
             }
-        }else if("3/4".equals(problemProgress)){
+        }else if("4/5".equals(problemProgress)){
             Date thirdDate = rrProblem.getThirdDate();
             String thirdDateStr = df.format(thirdDate);
             if(reportDateStr.compareTo(nowDateStr) < 0){
@@ -229,7 +251,7 @@ public class RRProblemServiceImpl implements RRProblemService {
             if(reportDateStr.compareTo(thirdDateStr) > 0){
                 speedOfProgress = "delayII";
             }
-        }else if("4/4".equals(problemProgress)){
+        }else if("5/5".equals(problemProgress)){
             Date fourthDate = rrProblem.getFourthDate();
             String fourthDateStr = df.format(fourthDate);
             if(reportDateStr.compareTo(nowDateStr) < 0){
@@ -242,6 +264,126 @@ public class RRProblemServiceImpl implements RRProblemService {
 
         }
         rrProblem.setSpeedOfProgress(speedOfProgress);
+    }
+
+    @Override
+    public void updateTrackingLevel(RRProblem rrProblem) throws Exception {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        String problemProgress = rrProblem.getProblemProgress();
+        Date nowDate = new Date();
+        String nowDateStr = df.format(nowDate);
+        Date hanppenDate = rrProblem.getHappenDate();
+        String hanppenDateStr = df.format(hanppenDate);
+        List<Calendar> calendarList = this.queryHolidayList(hanppenDateStr);
+        String trackingLevel = "V";
+        int day = this.daysBetween(hanppenDateStr, nowDateStr, calendarList);
+        Integer isDelay = rrProblem.getIsDelay();
+        day = day - 1;
+        if("1/5".equals(problemProgress)){
+            Date createTime = null;
+            Integer rrProblemId = rrProblem.getId();
+            if(rrProblemId == null){
+                createTime = rrProblem.getCreateTime();
+            }else {
+                RRProblem oldRRProblem = new RRProblem();
+                oldRRProblem.setId(rrProblemId);
+                oldRRProblem = this.queryRRProblem(oldRRProblem);
+                createTime = oldRRProblem.getCreateTime();
+            }
+            if(createTime == null){
+                String oldTrackingLevel = rrProblem.getTrackingLevel();
+                if(oldTrackingLevel == null){
+
+                }else {
+                    trackingLevel = oldTrackingLevel;
+                }
+            }else {
+               Long intervalHour = (nowDate.getTime() - createTime.getTime())/1000/60/60;
+               if(intervalHour.intValue() > 24){
+                   trackingLevel = "II";
+               }else if(intervalHour.intValue() > 12){
+                   trackingLevel = "III";
+               }else if(intervalHour.intValue() > 4){
+                   trackingLevel = "IV";
+               }else {
+                   trackingLevel = "V";
+               }
+            }
+        }else if("2/5".equals(problemProgress)){
+            if(isDelay == 1){
+                if(day <= 7){
+                    trackingLevel = "V";
+                }else {
+                    trackingLevel = "II";
+                }
+            }else {
+                if(day <= 2){
+                    trackingLevel = "V";
+                }else if(day <= 4){
+                    trackingLevel = "IV";
+                }else if(day <= 7){
+                    trackingLevel = "III";
+                }else {
+                    trackingLevel = "II";
+                }
+            }
+
+        }else if("3/5".equals(problemProgress)){
+            if(isDelay == 1){
+                if(day <= 14){
+                    trackingLevel = "V";
+                }else {
+                    trackingLevel = "II";
+                }
+            }else {
+                if(day <= 7){
+                    trackingLevel = "V";
+                }else if(day <= 9){
+                    trackingLevel = "IV";
+                }else if(day <= 14){
+                    trackingLevel = "III";
+                }else {
+                    trackingLevel = "II";
+                }
+            }
+        }else if("4/5".equals(problemProgress)){
+            if(isDelay == 1){
+                if(day <= 34){
+                    trackingLevel = "V";
+                }else {
+                    trackingLevel = "II";
+                }
+            }else {
+                if(day <= 17){
+                    trackingLevel = "V";
+                }else if(day <= 21){
+                    trackingLevel = "IV";
+                }else if(day <= 34){
+                    trackingLevel = "III";
+                }else {
+                    trackingLevel = "II";
+                }
+            }
+        }else if("5/5".equals(problemProgress)){
+            if(isDelay == 1){
+                if(day <= 40){
+                    trackingLevel = "V";
+                }else {
+                    trackingLevel = "I";
+                }
+            }else {
+                if(day <= 20){
+                    trackingLevel = "V";
+                }else if(day <= 24){
+                    trackingLevel = "IV";
+                }else if(day <= 40){
+                    trackingLevel = "III";
+                }else {
+                    trackingLevel = "I";
+                }
+            }
+        }
+        rrProblem.setTrackingLevel(trackingLevel);
     }
 
     /**
@@ -275,6 +417,128 @@ public class RRProblemServiceImpl implements RRProblemService {
     @Override
     public List<Map<String, Object>> queryRRProblemScreenShowList() throws ServiceException {
         return this.rRProblemDao.selectRRProblemScreenShowList();
+    }
+
+    @Override
+    public FileUpload addUploadFile(Integer rrProblemId, String fileAttr, MultipartFile file, String path, User user) throws Exception {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String fileName = file.getOriginalFilename();
+        String fileType = file.getContentType();
+        int index = fileName.lastIndexOf(".");
+        String fileSuffix = fileName.substring(index);
+        String fileAlias = UUID.randomUUID().toString() + fileSuffix;
+        String filePath = path + "fileupload/" + fileAlias;
+        file.transferTo(new File(filePath));
+
+        FileUpload fileUpload = new FileUpload();
+        fileUpload.setFileName(fileName);
+        fileUpload.setFileAlias(fileAlias);
+        fileUpload.setFileType(fileType);
+        fileUpload.setExcelPdfName("");
+        fileUpload.setCreateDate(new Date());
+        fileUpload.setCreateBy(user.getUserId());
+        this.fileUploadDao.insertFileUpload(fileUpload);
+
+        if(rrProblemId != null){
+            RRProblem rrProblem = new RRProblem();
+            rrProblem.setId(rrProblemId);
+            if("serialNumber".equals(fileAttr)){//品情联编号
+                rrProblem.setSerialNumberFileId(fileUpload.getFileId());
+                rrProblem.setSerialNumber(formatter.format(new Date()));
+            }else if("qualityWarningCardNumber".equals(fileAttr)){
+                rrProblem.setQualityWarningCardNumber(formatter.format(new Date()));
+                rrProblem.setQualityWarningCardNumberFileId(fileUpload.getFileId());
+            }else if("productScale".equals(fileAttr)){
+                rrProblem.setProductScale(formatter.format(new Date()));
+                rrProblem.setProductScaleFileId(fileUpload.getFileId());
+            }else if("equipmentChecklist".equals(fileAttr)){
+                rrProblem.setEquipmentChecklist(formatter.format(new Date()));
+                rrProblem.setEquipmentChecklistFileId(fileUpload.getFileId());
+            }else if("inspectionReferenceBook".equals(fileAttr)){
+                rrProblem.setInspectionReferenceBook(formatter.format(new Date()));
+                rrProblem.setInspectionReferenceBookFileId(fileUpload.getFileId());
+            }else if("inspectionBook".equals(fileAttr)){
+                rrProblem.setInspectionBook(formatter.format(new Date()));
+                rrProblem.setInspectionBookFileId(fileUpload.getFileId());
+            }else if("education".equals(fileAttr)){
+                rrProblem.setEducation(formatter.format(new Date()));
+                rrProblem.setEducationFileId(fileUpload.getFileId());
+            }else if("analyticReport".equals(fileAttr)){
+                rrProblem.setAnalyticReport(formatter.format(new Date()));
+                rrProblem.setAnalyticReportFileId(fileUpload.getFileId());
+            }else if("layeredAudit".equals(fileAttr)){
+                rrProblem.setLayeredAudit(formatter.format(new Date()));
+                rrProblem.setLayeredAuditFileId(fileUpload.getFileId());
+            }else if("checkResult".equals(fileAttr)){
+                rrProblem.setCheckResult(formatter.format(new Date()));
+                rrProblem.setCheckResultFileId(fileUpload.getFileId());
+            }else if("naPending".equals(fileAttr)){
+                rrProblem.setNaPending(formatter.format(new Date()));
+                rrProblem.setNaPendingFileId(fileUpload.getFileId());
+            }else if("otherInformation".equals(fileAttr)){
+                rrProblem.setOtherInformation(formatter.format(new Date()));
+                rrProblem.setOtherInformationFileId(fileUpload.getFileId());
+            }else if("containmentWorksheet".equals(fileAttr)){
+                rrProblem.setContainmentWorksheet(formatter.format(new Date()));
+                rrProblem.setContainmentWorksheetFileId(fileUpload.getFileId());
+            }
+            this.rRProblemDao.updateRRProblem(rrProblem);
+        }
+        return fileUpload;
+    }
+
+    @Override
+    public void addSendMinisterEmail(RRProblem rrProblem) throws ServiceException {
+        TimeTask timeTask = new TimeTask();
+        timeTask.setNoticeType(39);
+        StringBuffer comment = new StringBuffer();
+        comment.append("状态:").append(rrProblem.getProblemStatus())
+                .append("<br>").append("问题编号:").append(rrProblem.getProblemNo())
+                .append("<br>").append("问题类型:").append(rrProblem.getProblemType())
+                .append("<br>").append("工程:").append(rrProblem.getEngineering())
+                .append("<br>").append("客户:").append(rrProblem.getCustomer())
+                .append("<br>").append("车型:").append(rrProblem.getVehicle())
+                .append("<br>").append("品名:").append(rrProblem.getProductNo())
+                .append("<br>").append("不良内容:").append(rrProblem.getBadContent())
+                .append("<br>").append("生产线:").append(rrProblem.getProductLine())
+                .append("<br>").append("严重度:").append(rrProblem.getSeverity())
+                .append("<br>").append("根本原因:").append(rrProblem.getRootCause())
+                .append("<br>").append("永久对策:").append(rrProblem.getPermanentGame())
+                .append("<br>").append("进度").append(rrProblem.getSpeedOfProgress());
+        timeTask.setComment(comment.toString());
+        String emailUser = this.rRDelayLeaderDao.selectMinisteEmail();
+        timeTask.setUserEmail(emailUser);
+        timeTask.setDeleteState(0);
+        timeTask.setEmailTitle(rrProblem.getProblemNo());
+        this.timeTaskDao.insertTimeTask(timeTask);
+    }
+
+    @Override
+    public List<RRProblem> queryJobRRProblemTrackingLevelList() throws ServiceException {
+        return this.rRProblemDao.selectJobRRProblemTrackingLevelList();
+    }
+
+    @Override
+    public Map<String, Object> getFourDate(String happenDate) throws Exception {
+        Map<String, Object> map = new HashMap<String, Object>();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        List<Calendar> calendarList = this.queryHolidayList(happenDate);
+        //第一次
+        Date date = this.calculationWorkingDay(formatter.parse(happenDate), 2, calendarList);
+        map.put("firstDate", formatter.format(date));
+
+        //第二次
+        date = this.calculationWorkingDay(formatter.parse(happenDate), 14, calendarList);
+        map.put("secondDate", formatter.format(date));
+
+        //第三次
+        date = this.calculationWorkingDay(formatter.parse(happenDate), 34, calendarList);
+        map.put("thirdDate", formatter.format(date));
+
+        //第四次
+        date = this.calculationWorkingDay(formatter.parse(happenDate), 40, calendarList);
+        map.put("fourthDate", formatter.format(date));
+        return map;
     }
 
 

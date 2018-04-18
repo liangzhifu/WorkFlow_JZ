@@ -20,7 +20,9 @@
 		<typeAlias type="com.dpcoi.order.query.RRProblemOrderQuery" alias="RRProblemOrderQuery" />
 
 		<typeAlias type="com.dpcoi.rr.domain.RRProblem" alias="RRProblem" />
+		<typeAlias type="com.dpcoi.rr.domain.RRDelayLeader" alias="RRDelayLeader" />
 		<typeAlias type="com.dpcoi.rr.query.RRProblemQuery" alias="RRProblemQuery" />
+		<typeAlias type="com.dpcoi.rr.query.RRDelayLeaderQuery" alias="RRDelayLeaderQuery" />
 
 		<typeAlias type="com.dpcoi.statistics.domain.RRDelayStatistics" alias="RRDelayStatistics" />
 		<typeAlias type="com.dpcoi.statistics.query.DpcoiStatisticsQuery" alias="DpcoiStatisticsQuery" />

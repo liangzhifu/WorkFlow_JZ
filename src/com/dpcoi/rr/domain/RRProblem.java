@@ -109,9 +109,15 @@ public class RRProblem {
 
     private String serialNumber;
 
+    private Integer serialNumberFileId;
+
     private String qualityWarningCardNumber;
 
+    private Integer qualityWarningCardNumberFileId;
+
     private String productScale;
+
+    private Integer productScaleFileId;
 
     private String pfmea;
 
@@ -121,13 +127,21 @@ public class RRProblem {
 
     private String equipmentChecklist;
 
+    private Integer equipmentChecklistFileId;
+
     private String alwaysList;
 
     private String inspectionReferenceBook;
 
+    private Integer inspectionReferenceBookFileId;
+
     private String inspectionBook;
 
+    private Integer inspectionBookFileId;
+
     private String education;
+
+    private Integer educationFileId;
 
     private String changePoint;
 
@@ -140,6 +154,40 @@ public class RRProblem {
     private Integer state;
 
     private Integer isDelay;
+
+    private Integer isHide;
+
+    private String dpcoi4M;
+
+    private String analyticReport;
+
+    private Integer analyticReportFileId;
+
+    private String layeredAudit;
+
+    private Integer layeredAuditFileId;
+
+    private String checkResult;
+
+    private Integer checkResultFileId;
+
+    private String naPending;
+
+    private Integer naPendingFileId;
+
+    private String otherInformation;
+
+    private Integer otherInformationFileId;
+
+    private Integer delayApplication;
+
+    private Date createTime;
+
+    private Integer createBy;
+
+    private String containmentWorksheet;
+
+    private Integer containmentWorksheetFileId;
 
     public Integer getId() {
         return id;
@@ -618,5 +666,197 @@ public class RRProblem {
 
     public void setIsDelay(Integer isDelay) {
         this.isDelay = isDelay;
+    }
+
+    public Integer getIsHide() {
+        return isHide;
+    }
+
+    public void setIsHide(Integer isHide) {
+        this.isHide = isHide;
+    }
+
+    public Integer getSerialNumberFileId() {
+        return serialNumberFileId;
+    }
+
+    public void setSerialNumberFileId(Integer serialNumberFileId) {
+        this.serialNumberFileId = serialNumberFileId;
+    }
+
+    public Integer getQualityWarningCardNumberFileId() {
+        return qualityWarningCardNumberFileId;
+    }
+
+    public void setQualityWarningCardNumberFileId(Integer qualityWarningCardNumberFileId) {
+        this.qualityWarningCardNumberFileId = qualityWarningCardNumberFileId;
+    }
+
+    public Integer getProductScaleFileId() {
+        return productScaleFileId;
+    }
+
+    public void setProductScaleFileId(Integer productScaleFileId) {
+        this.productScaleFileId = productScaleFileId;
+    }
+
+    public Integer getEquipmentChecklistFileId() {
+        return equipmentChecklistFileId;
+    }
+
+    public void setEquipmentChecklistFileId(Integer equipmentChecklistFileId) {
+        this.equipmentChecklistFileId = equipmentChecklistFileId;
+    }
+
+    public Integer getInspectionReferenceBookFileId() {
+        return inspectionReferenceBookFileId;
+    }
+
+    public void setInspectionReferenceBookFileId(Integer inspectionReferenceBookFileId) {
+        this.inspectionReferenceBookFileId = inspectionReferenceBookFileId;
+    }
+
+    public Integer getInspectionBookFileId() {
+        return inspectionBookFileId;
+    }
+
+    public void setInspectionBookFileId(Integer inspectionBookFileId) {
+        this.inspectionBookFileId = inspectionBookFileId;
+    }
+
+    public Integer getEducationFileId() {
+        return educationFileId;
+    }
+
+    public void setEducationFileId(Integer educationFileId) {
+        this.educationFileId = educationFileId;
+    }
+
+    public String getDpcoi4M() {
+        return dpcoi4M;
+    }
+
+    public void setDpcoi4M(String dpcoi4M) {
+        this.dpcoi4M = dpcoi4M;
+    }
+
+    public String getAnalyticReport() {
+        return analyticReport;
+    }
+
+    public void setAnalyticReport(String analyticReport) {
+        this.analyticReport = analyticReport;
+    }
+
+    public Integer getAnalyticReportFileId() {
+        return analyticReportFileId;
+    }
+
+    public void setAnalyticReportFileId(Integer analyticReportFileId) {
+        this.analyticReportFileId = analyticReportFileId;
+    }
+
+    public String getLayeredAudit() {
+        return layeredAudit;
+    }
+
+    public void setLayeredAudit(String layeredAudit) {
+        this.layeredAudit = layeredAudit;
+    }
+
+    public Integer getLayeredAuditFileId() {
+        return layeredAuditFileId;
+    }
+
+    public void setLayeredAuditFileId(Integer layeredAuditFileId) {
+        this.layeredAuditFileId = layeredAuditFileId;
+    }
+
+    public String getCheckResult() {
+        return checkResult;
+    }
+
+    public void setCheckResult(String checkResult) {
+        this.checkResult = checkResult;
+    }
+
+    public Integer getCheckResultFileId() {
+        return checkResultFileId;
+    }
+
+    public void setCheckResultFileId(Integer checkResultFileId) {
+        this.checkResultFileId = checkResultFileId;
+    }
+
+    public String getNaPending() {
+        return naPending;
+    }
+
+    public void setNaPending(String naPending) {
+        this.naPending = naPending;
+    }
+
+    public Integer getNaPendingFileId() {
+        return naPendingFileId;
+    }
+
+    public void setNaPendingFileId(Integer naPendingFileId) {
+        this.naPendingFileId = naPendingFileId;
+    }
+
+    public String getOtherInformation() {
+        return otherInformation;
+    }
+
+    public void setOtherInformation(String otherInformation) {
+        this.otherInformation = otherInformation;
+    }
+
+    public Integer getOtherInformationFileId() {
+        return otherInformationFileId;
+    }
+
+    public void setOtherInformationFileId(Integer otherInformationFileId) {
+        this.otherInformationFileId = otherInformationFileId;
+    }
+
+    public Integer getDelayApplication() {
+        return delayApplication;
+    }
+
+    public void setDelayApplication(Integer delayApplication) {
+        this.delayApplication = delayApplication;
+    }
+
+    public Integer getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(Integer createBy) {
+        this.createBy = createBy;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getContainmentWorksheet() {
+        return containmentWorksheet;
+    }
+
+    public void setContainmentWorksheet(String containmentWorksheet) {
+        this.containmentWorksheet = containmentWorksheet;
+    }
+
+    public Integer getContainmentWorksheetFileId() {
+        return containmentWorksheetFileId;
+    }
+
+    public void setContainmentWorksheetFileId(Integer containmentWorksheetFileId) {
+        this.containmentWorksheetFileId = containmentWorksheetFileId;
     }
 }

@@ -54,6 +54,31 @@
         <result column="artificial" property="artificial" jdbcType="VARCHAR" />
         <result column="materiel" property="materiel" jdbcType="VARCHAR" />
         <result column="state" property="state" jdbcType="INTEGER" />
+        <result column="is_delay" property="isDelay" jdbcType="INTEGER" />
+        <result column="is_hide" property="isHide" jdbcType="INTEGER" />
+        <result column="serial_number_file_id" property="serialNumberFileId" jdbcType="INTEGER" />
+        <result column="quality_warning_card_number_file_id" property="qualityWarningCardNumberFileId" jdbcType="INTEGER" />
+        <result column="product_scale_file_id" property="productScaleFileId" jdbcType="INTEGER" />
+        <result column="equipment_checklist_file_id" property="equipmentChecklistFileId" jdbcType="INTEGER" />
+        <result column="inspection_reference_book_file_id" property="inspectionReferenceBookFileId" jdbcType="INTEGER" />
+        <result column="inspection_book_file_id" property="inspectionBookFileId" jdbcType="INTEGER" />
+        <result column="education_file_id" property="educationFileId" jdbcType="INTEGER" />
+        <result column="dpcoi4M" property="dpcoi4M" jdbcType="VARCHAR" />
+        <result column="analytic_report" property="analyticReport" jdbcType="VARCHAR" />
+        <result column="analytic_report_file_id" property="analyticReportFileId" jdbcType="INTEGER" />
+        <result column="layered_audit" property="layeredAudit" jdbcType="VARCHAR" />
+        <result column="layered_audit_file_id" property="layeredAuditFileId" jdbcType="INTEGER" />
+        <result column="check_result" property="checkResult" jdbcType="VARCHAR" />
+        <result column="check_result_file_id" property="checkResultFileId" jdbcType="INTEGER" />
+        <result column="na_pending" property="naPending" jdbcType="VARCHAR" />
+        <result column="na_pending_file_id" property="naPendingFileId" jdbcType="INTEGER" />
+        <result column="other_information" property="otherInformation" jdbcType="VARCHAR" />
+        <result column="other_information_file_id" property="otherInformationFileId" jdbcType="INTEGER" />
+        <result column="delay_application" property="delayApplication" jdbcType="INTEGER" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="create_by" property="createBy" jdbcType="INTEGER" />
+        <result column="containment_worksheet" property="containmentWorksheet" jdbcType="VARCHAR" />
+        <result column="containment_worksheet_file_id" property="containmentWorksheetFileId" jdbcType="INTEGER" />
     </resultMap>
     <sql id="Base_Column_List" >
         id, problem_status, problem_no, problem_type, engineering, problem_progress, tracking_level,
@@ -63,7 +88,12 @@
         bad_quantity, batch, happen_shift, responsible_department, record_ppm, record_num,
         temporary, root_cause, permanent_game, effect_verification, serial_number, quality_warning_card_number,
         product_scale, pfmea, cp, standard_book, equipment_checklist, always_list, inspection_reference_book,
-        inspection_book, education, change_point, expand_trace, artificial, materiel, state
+        inspection_book, education, change_point, expand_trace, artificial, materiel, state, is_hide,
+        serial_number_file_id, quality_warning_card_number_file_id, product_scale_file_id,
+        equipment_checklist_file_id, inspection_reference_book_file_id, inspection_book_file_id, education_file_id,
+        dpcoi4M, analytic_report, analytic_report_file_id, layered_audit, layered_audit_file_id, check_result,
+        check_result_file_id, na_pending, na_pending_file_id, other_information, other_information_file_id,
+        delay_application, is_delay, create_time, create_by, containment_worksheet_file_id, containment_worksheet
     </sql>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="RRProblem" >
         select
@@ -275,6 +305,78 @@
             <if test="isDelay != null" >
                 is_delay,
             </if>
+            <if test="isHide != null" >
+                is_hide,
+            </if>
+            <if test="serialNumberFileId != null" >
+                serial_number_file_id,
+            </if>
+            <if test="qualityWarningCardNumberFileId != null" >
+                quality_warning_card_number_file_id,
+            </if>
+            <if test="productScaleFileId != null" >
+                product_scale_file_id,
+            </if>
+            <if test="equipmentChecklistFileId != null" >
+                equipment_checklist_file_id,
+            </if>
+            <if test="inspectionReferenceBookFileId != null" >
+                inspection_reference_book_file_id,
+            </if>
+            <if test="inspectionBookFileId != null" >
+                inspection_book_file_id,
+            </if>
+            <if test="educationFileId != null" >
+                education_file_id,
+            </if>
+            <if test="dpcoi4M != null" >
+                dpcoi4M,
+            </if>
+            <if test="analyticReport != null" >
+                analytic_report,
+            </if>
+            <if test="analyticReportFileId != null" >
+                analytic_report_file_id,
+            </if>
+            <if test="layeredAudit != null" >
+                layered_audit,
+            </if>
+            <if test="layeredAuditFileId != null" >
+                layered_audit_file_id,
+            </if>
+            <if test="checkResult != null" >
+                check_result,
+            </if>
+            <if test="checkResultFileId != null" >
+                check_result_file_id,
+            </if>
+            <if test="naPending != null" >
+                na_pending,
+            </if>
+            <if test="naPendingFileId != null" >
+                na_pending_file_id,
+            </if>
+            <if test="otherInformation != null" >
+                other_information,
+            </if>
+            <if test="otherInformationFileId != null" >
+                other_information_file_id,
+            </if>
+            <if test="delayApplication != null" >
+                delay_application,
+            </if>
+            <if test="createTime != null" >
+                create_time,
+            </if>
+            <if test="createBy != null" >
+                create_by,
+            </if>
+            <if test="containmentWorksheet != null" >
+                containment_worksheet,
+            </if>
+            <if test="containmentWorksheetFileId != null" >
+                containment_worksheet_file_id,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides="," >
             <if test="id != null" >
@@ -436,6 +538,78 @@
             <if test="isDelay != null" >
                 #{isDelay,jdbcType=INTEGER},
             </if>
+            <if test="isHide != null" >
+                #{isHide,jdbcType=INTEGER},
+            </if>
+            <if test="serialNumberFileId != null" >
+                #{serialNumberFileId,jdbcType=INTEGER},
+            </if>
+            <if test="qualityWarningCardNumberFileId != null" >
+                #{qualityWarningCardNumberFileId,jdbcType=INTEGER},
+            </if>
+            <if test="productScaleFileId != null" >
+                #{productScaleFileId,jdbcType=INTEGER},
+            </if>
+            <if test="equipmentChecklistFileId != null" >
+                #{equipmentChecklistFileId,jdbcType=INTEGER},
+            </if>
+            <if test="inspectionReferenceBookFileId != null" >
+                #{inspectionReferenceBookFileId,jdbcType=INTEGER},
+            </if>
+            <if test="inspectionBookFileId != null" >
+                #{inspectionBookFileId,jdbcType=INTEGER},
+            </if>
+            <if test="educationFileId != null" >
+                #{educationFileId,jdbcType=INTEGER},
+            </if>
+            <if test="dpcoi4M != null" >
+                #{dpcoi4M,jdbcType=VARCHAR},
+            </if>
+            <if test="analyticReport != null" >
+                #{analyticReport,jdbcType=VARCHAR},
+            </if>
+            <if test="analyticReportFileId != null" >
+                #{analyticReportFileId,jdbcType=INTEGER},
+            </if>
+            <if test="layeredAudit != null" >
+                #{layeredAudit,jdbcType=VARCHAR},
+            </if>
+            <if test="layeredAuditFileId != null" >
+                #{layeredAuditFileId,jdbcType=INTEGER},
+            </if>
+            <if test="checkResult != null" >
+                #{checkResult,jdbcType=VARCHAR},
+            </if>
+            <if test="checkResultFileId != null" >
+                #{checkResultFileId,jdbcType=INTEGER},
+            </if>
+            <if test="naPending != null" >
+                #{naPending,jdbcType=VARCHAR},
+            </if>
+            <if test="naPendingFileId != null" >
+                #{naPendingFileId,jdbcType=INTEGER},
+            </if>
+            <if test="otherInformation != null" >
+                #{otherInformation,jdbcType=VARCHAR},
+            </if>
+            <if test="otherInformationFileId != null" >
+                #{otherInformationFileId,jdbcType=INTEGER},
+            </if>
+            <if test="delayApplication != null" >
+                #{delayApplication,jdbcType=INTEGER},
+            </if>
+            <if test="createTime != null" >
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null" >
+                #{createBy,jdbcType=INTEGER},
+            </if>
+            <if test="containmentWorksheet != null" >
+                #{containmentWorksheet,jdbcType=VARCHAR},
+            </if>
+            <if test="containmentWorksheetFileId != null" >
+                #{containmentWorksheetFileId,jdbcType=INTEGER},
+            </if>
         </trim>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="RRProblem" >
@@ -546,6 +720,9 @@
             <if test="effectVerification != null" >
                 effect_verification = #{effectVerification,jdbcType=VARCHAR},
             </if>
+            <if test="serialNumberFileId != null" >
+                serial_number_file_id = #{serialNumberFileId,jdbcType=INTEGER},
+            </if>
             <if test="serialNumber != null" >
                 serial_number = #{serialNumber,jdbcType=VARCHAR},
             </if>
@@ -596,6 +773,69 @@
             </if>
             <if test="isDelay != null" >
                 is_delay = #{isDelay,jdbcType=INTEGER},
+            </if>
+            <if test="isHide != null" >
+                is_hide = #{isHide,jdbcType=INTEGER},
+            </if>
+            <if test="qualityWarningCardNumberFileId != null" >
+                quality_warning_card_number_file_id = #{qualityWarningCardNumberFileId,jdbcType=INTEGER},
+            </if>
+            <if test="productScaleFileId != null" >
+                product_scale_file_id = #{productScaleFileId,jdbcType=INTEGER},
+            </if>
+            <if test="equipmentChecklistFileId != null" >
+                equipment_checklist_file_id = #{equipmentChecklistFileId,jdbcType=INTEGER},
+            </if>
+            <if test="inspectionReferenceBookFileId != null" >
+                inspection_reference_book_file_id = #{inspectionReferenceBookFileId,jdbcType=INTEGER},
+            </if>
+            <if test="inspectionBookFileId != null" >
+                inspection_book_file_id = #{inspectionBookFileId,jdbcType=INTEGER},
+            </if>
+            <if test="educationFileId != null" >
+                education_file_id = #{educationFileId,jdbcType=INTEGER},
+            </if>
+            <if test="dpcoi4M != null" >
+                dpcoi4M = #{dpcoi4M,jdbcType=VARCHAR},
+            </if>
+            <if test="analyticReport != null" >
+                analytic_report = #{analyticReport,jdbcType=VARCHAR},
+            </if>
+            <if test="analyticReportFileId != null" >
+                analytic_report_file_id = #{analyticReportFileId,jdbcType=INTEGER},
+            </if>
+            <if test="layeredAudit != null" >
+                layered_audit = #{layeredAudit,jdbcType=VARCHAR},
+            </if>
+            <if test="layeredAuditFileId != null" >
+                layered_audit_file_id = #{layeredAuditFileId,jdbcType=INTEGER},
+            </if>
+            <if test="checkResult != null" >
+                check_result = #{checkResult,jdbcType=VARCHAR},
+            </if>
+            <if test="checkResultFileId != null" >
+                check_result_file_id = #{checkResultFileId,jdbcType=INTEGER},
+            </if>
+            <if test="naPending != null" >
+                na_pending = #{naPending,jdbcType=VARCHAR},
+            </if>
+            <if test="naPendingFileId != null" >
+                na_pending_file_id = #{naPendingFileId,jdbcType=INTEGER},
+            </if>
+            <if test="otherInformation != null" >
+                other_information = #{otherInformation,jdbcType=VARCHAR},
+            </if>
+            <if test="otherInformationFileId != null" >
+                other_information_file_id = #{otherInformationFileId,jdbcType=INTEGER},
+            </if>
+            <if test="delayApplication != null" >
+                delay_application = #{delayApplication,jdbcType=INTEGER},
+            </if>
+            <if test="containmentWorksheet != null" >
+                containment_worksheet = #{containmentWorksheet,jdbcType=INTEGER},
+            </if>
+            <if test="containmentWorksheetFileId != null" >
+                containment_worksheet_file_id = #{containmentWorksheetFileId,jdbcType=INTEGER},
             </if>
         </set>
         where id = #{id,jdbcType=INTEGER}
@@ -669,10 +909,10 @@
                 and `bad_content` like CONCAT('%',#{badContent,jdbcType=VARCHAR},'%')
             </if>
             <if test="problemProgress != null and problemProgress != ''" >
-                and `problem_progress` = #{problemProgress,jdbcType=VARCHAR}
+                and find_in_set(`problem_progress`, #{problemProgress,jdbcType=VARCHAR})
             </if>
             <if test="speedOfProgress != null and speedOfProgress != ''" >
-                and `speed_of_progress` = #{speedOfProgress,jdbcType=VARCHAR}
+                and find_in_set(`speed_of_progress`, #{speedOfProgress,jdbcType=VARCHAR})
             </if>
             <if test="ids != null and ids != ''" >
                 and id in (${ids})
@@ -681,10 +921,10 @@
                 and problem_status = #{problemStatus,jdbcType=VARCHAR}
             </if>
             <if test="problemType != null and problemType != ''" >
-                and problem_type = #{problemType,jdbcType=VARCHAR}
+                and find_in_set(`problem_type`, #{problemType,jdbcType=VARCHAR})
             </if>
             <if test="engineering != null and engineering != ''" >
-                and engineering = #{engineering,jdbcType=VARCHAR}
+                and find_in_set(`engineering`, #{engineering,jdbcType=VARCHAR})
             </if>
             <if test="customer != null and customer != ''" >
                 and customer = #{customer,jdbcType=VARCHAR}
@@ -693,7 +933,7 @@
                 and vehicle like concat('%',#{vehicle,jdbcType=VARCHAR},'%')
             </if>
             <if test="productNo != null and productNo != ''" >
-                and product_no = #{productNo,jdbcType=VARCHAR}
+                and product_no like concat('%',#{productNo,jdbcType=VARCHAR},'%')
             </if>
             <if test="happenDateBegin != null and happenDateBegin != ''" >
                 and DATE_FORMAT(happen_date,'%Y-%m-%d') &gt;= #{happenDateBegin,jdbcType=VARCHAR}
@@ -713,6 +953,15 @@
             <if test="responsibleDepartment != null and responsibleDepartment != ''" >
                 and responsible_department = #{responsibleDepartment,jdbcType=VARCHAR}
             </if>
+            <if test="isHide != null" >
+                and is_hide = #{isHide,jdbcType=INTEGER}
+            </if>
+            <if test="trackingLevel != null and trackingLevel != ''" >
+                and find_in_set(`tracking_level`, #{trackingLevel,jdbcType=VARCHAR})
+            </if>
+            <if test="dpcoi4M != null and dpcoi4M != ''" >
+                and find_in_set(`dpcoi4M`, #{dpcoi4M,jdbcType=VARCHAR})
+            </if>
         </where>
     </sql>
 
@@ -725,7 +974,13 @@
         bad_quantity as badQuantity, batch, happen_shift as happenShift, responsible_department as responsibleDepartment, record_ppm as recordPpm, record_num as recordNum,
         temporary, root_cause as rootCause, permanent_game as permanentGame, effect_verification as effectVerification, serial_number as serialNumber, quality_warning_card_number as qualityWarningCardNumber,
         product_scale as productScale, pfmea, cp, standard_book as standardBook, equipment_checklist as equipmentChecklist, always_list as alwaysList, inspection_reference_book as inspectionReferenceBook,
-        inspection_book as inspectionBook, education, change_point as changePoint, expand_trace as expandTrace, artificial, materiel, state, is_delay as isDelay
+        inspection_book as inspectionBook, education, change_point as changePoint, expand_trace as expandTrace, artificial, materiel, state, is_delay as isDelay, is_hide as isHide,
+        serial_number_file_id as serialNumberFileId, product_scale_file_id as productScaleFileId, equipment_checklist_file_id as equipmentChecklistFileId,
+        inspection_reference_book_file_id as inspectionReferenceBookFileId, quality_warning_card_number_file_id as qualityWarningCardNumberFileId,
+        inspection_book_file_id as inspectionBookFileId, education_file_id as educationFileId, dpcoi4M, analytic_report as analyticReport,
+        analytic_report_file_id as analyticReportFileId, layered_audit as layeredAudit, layered_audit_file_id as layeredAuditFileId, check_result as checkResult,
+        check_result_file_id as checkResultFileId, na_pending as naPending, na_pending_file_id as naPendingFileId, other_information as otherInformation,
+        other_information_file_id as otherInformationFileId, containment_worksheet as containmentWorksheet, containment_worksheet_file_id as containmentWorksheetFileId
         from dpcoi_rr_problem
         <include refid="WHERE_SQL"></include>
         order by id desc limit #{start},#{size}
@@ -746,7 +1001,13 @@
         bad_quantity as badQuantity, batch, happen_shift as happenShift, responsible_department as responsibleDepartment, record_ppm as recordPpm, record_num as recordNum,
         temporary, root_cause as rootCause, permanent_game as permanentGame, effect_verification as effectVerification, serial_number as serialNumber, quality_warning_card_number as qualityWarningCardNumber,
         product_scale as productScale, pfmea, cp, standard_book as standardBook, equipment_checklist as equipmentChecklist, always_list as alwaysList, inspection_reference_book as inspectionReferenceBook,
-        inspection_book as inspectionBook, education, change_point as changePoint, expand_trace as expandTrace, artificial, materiel, state, is_delay as isDelay
+        inspection_book as inspectionBook, education, change_point as changePoint, expand_trace as expandTrace, artificial, materiel, state, is_delay as isDelay, is_hide as isHide,
+        serial_number_file_id as serialNumberFileId, product_scale_file_id as productScaleFileId, equipment_checklist_file_id as equipmentChecklistFileId,
+        inspection_reference_book_file_id as inspectionReferenceBookFileId, quality_warning_card_number_file_id as qualityWarningCardNumberFileId,
+        inspection_book_file_id as inspectionBookFileId, education_file_id as educationFileId, dpcoi4M, analytic_report as analyticReport,
+        analytic_report_file_id as analyticReportFileId, layered_audit as layeredAudit, layered_audit_file_id as layeredAuditFileId, check_result as checkResult,
+        check_result_file_id as checkResultFileId, na_pending as naPending, na_pending_file_id as naPendingFileId, other_information as otherInformation,
+        other_information_file_id as otherInformationFileId, containment_worksheet as containmentWorksheet, containment_worksheet_file_id as containmentWorksheetFileId
         from dpcoi_rr_problem
         <include refid="WHERE_SQL"></include>
     </select>
@@ -775,9 +1036,41 @@
         bad_quantity as badQuantity, batch, happen_shift as happenShift, responsible_department as responsibleDepartment, record_ppm as recordPpm, record_num as recordNum,
         temporary, root_cause as rootCause, permanent_game as permanentGame, effect_verification as effectVerification, serial_number as serialNumber, quality_warning_card_number as qualityWarningCardNumber,
         product_scale as productScale, pfmea, cp, standard_book as standardBook, equipment_checklist as equipmentChecklist, always_list as alwaysList, inspection_reference_book as inspectionReferenceBook,
-        inspection_book as inspectionBook, education, change_point as changePoint, expand_trace as expandTrace, artificial, materiel, state, is_delay as isDelay
+        inspection_book as inspectionBook, education, change_point as changePoint, expand_trace as expandTrace, artificial, materiel, state, is_delay as isDelay, containment_worksheet as containmentWorksheet,
+        containment_worksheet_file_id as containmentWorksheetFileId
         from dpcoi_rr_problem
         where state = 1
+        and is_hide = 0
         order by id desc
+    </select>
+
+    <update id="updateRollBackRRProblem" parameterType="java.util.HashMap">
+        update dpcoi_rr_problem
+        <set>
+            <if test="dpcoiWoOrderType == 1" >
+                pfmea = null,
+                cp = null,
+                standard_book = null,
+                always_list = null,
+            </if>
+            <if test="dpcoiWoOrderType == 2" >
+                cp = null,
+                standard_book = null,
+                always_list = null,
+            </if>
+            <if test="dpcoiWoOrderType == 3" >
+                standard_book = null,
+                always_list = null,
+            </if>
+        </set>
+        where id = #{rrProblemId, jdbcType=INTEGER}
+    </update>
+
+    <select id="selectJobRRProblemTrackingLevelList" resultMap="BaseResultMap" >
+        select
+        <include refid="Base_Column_List" />
+        from dpcoi_rr_problem
+        where state=1
+        and problem_progress = '1/5'
     </select>
 </mapper>

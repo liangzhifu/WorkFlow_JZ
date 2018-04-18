@@ -65,7 +65,9 @@ public class FileUploadController implements ServletContextAware {
             while (b != -1){
                 b = inputStream.read(buffer);
                 //4.写到输出流(out)中
-                out.write(buffer,0,b);
+                if(b != -1) {
+                    out.write(buffer,0,b);
+                }
             }
             inputStream.close();
             out.close();

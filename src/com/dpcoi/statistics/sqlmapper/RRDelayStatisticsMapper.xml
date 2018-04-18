@@ -10,9 +10,10 @@
         <result column="delay_type" property="delayType" jdbcType="INTEGER" />
         <result column="speed_of_progress" property="speedOfProgress" jdbcType="VARCHAR" />
         <result column="problem_status" property="problemStatus" jdbcType="VARCHAR" />
+        <result column="tracking_level" property="trackingLevel" jdbcType="VARCHAR" />
     </resultMap>
     <sql id="Base_Column_List" >
-        id, rr_problem_id, persion_liable, delay_date, problem_progress, delay_type, speed_of_progress, problem_status
+        id, rr_problem_id, persion_liable, delay_date, problem_progress, delay_type, speed_of_progress, problem_status, tracking_level
     </sql>
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
         select
@@ -47,6 +48,9 @@
             <if test="problemStatus != null" >
                 problem_status,
             </if>
+            <if test="trackingLevel != null" >
+                tracking_level,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides="," >
             <if test="id != null" >
@@ -73,6 +77,9 @@
             <if test="problemStatus != null" >
                 #{problemStatus,jdbcType=VARCHAR},
             </if>
+            <if test="trackingLevel != null" >
+                #{trackingLevel,jdbcType=VARCHAR},
+            </if>
         </trim>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="RRDelayStatistics" >
@@ -98,6 +105,9 @@
             </if>
             <if test="problemStatus != null" >
                 problem_status = #{problemStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="trackingLevel != null" >
+                tracking_level = #{trackingLevel,jdbcType=VARCHAR},
             </if>
         </set>
         where id = #{id,jdbcType=INTEGER}
@@ -136,6 +146,7 @@
         select statis.`problem_progress` as problemProgress,
         statis.`speed_of_progress` as speedOfPorgress,
         statis.`problem_status` as problemStatus,
+        statis.tracking_level as trackingLevel,
         DATE_FORMAT(statis.`delay_date`, '%Y-%m-%d') as delayDate,
         rr.`problem_no` as problemNo
         FROM dpcoi_rr_delay_statistics statis, dpcoi_rr_problem rr
