@@ -51,7 +51,7 @@
                                 <td style="width:23%;font-size:25px;background-color : #808080;color: #FFFFFF;!important;">不良内容</td>
                                 <td style="width:10%;font-size:25px;background-color : #808080;color: #FFFFFF;!important;">责任人</td>
                                 <td style="width:8%;font-size:25px;background-color : #808080;color: #FFFFFF;!important;">下次<br>汇报</td>
-                                <td style="width:10%;font-size:25px;background-color : #808080;color: #FFFFFF;!important;">进度</td>
+                                <td style="width:10%;font-size:25px;background-color : #808080;color: #FFFFFF;!important;">等级</td>
                             </tr>
                         </tbody>
                     </table>
@@ -73,7 +73,7 @@
                                     <td style="width:8%;font-size:25px;white-space:normal;word-wrap:break-word;word-break:break-all;padding: 5px;display:table-cell; vertical-align:middle;">
                                         <fmt:formatDate value="${item.reportDate}" pattern="yy-MM-dd"/>
                                     </td>
-                                    <td style="width:10%;font-size:25px;white-space:normal;word-wrap:break-word;word-break:break-all;padding: 5px;display:table-cell; vertical-align:middle;">${item.speedOfProgress}</td>
+                                    <td style="width:10%;font-size:25px;white-space:normal;word-wrap:break-word;word-break:break-all;padding: 5px;display:table-cell; vertical-align:middle;">${item.trackingLevel}</td>
                                 </tr>
                             </c:forEach>
                         </tbody>

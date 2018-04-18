@@ -37,14 +37,14 @@
                     <div class="col-md-2" style="padding-right: 1px;padding-left: 1px;">
                         <label  class="control-label" for="speedOfProgress">进度：</label>
                         <select id="speedOfProgress" name="speedOfProgress" class="form-control-order form-control" required="required"
-                                ng-model="rrProblemWoOrderList.searchForm.speedOfProgress" style="width: 60%;margin-left: 0%;padding: 1px 1px;font-size: 12px;margin-right: 15px;height: 25px;">
-                            <option value="">请选择</option>
+                                ng-model="rrProblemWoOrderList.searchForm.speedOfProgress" multiple="multiple" style="width: 60%;margin-left: 0%;padding: 1px 1px;font-size: 12px;margin-right: 15px;height: 25px;">
                             <option value="delayI">delayI</option>
                             <option value="delayII">delayII</option>
                             <option value="delayIII">delayIII</option>
                             <option value="delayIV">delayIV</option>
                             <option value="close">close</option>
                             <option value="follow">follow</option>
+                            <option value="deleted">deleted</option>
                         </select>
                     </div>
                     <div class="col-md-2" style="padding-right: 1px;padding-left: 1px;">
@@ -167,10 +167,11 @@
                         <th width="7%" class="x-grid3-header" style="padding: 0px">问题编号</th>
                         <th width="4%" class="x-grid3-header" style="padding: 0px">问题类型</th>
                         <th width="2%" class="x-grid3-header" style="padding: 0px">工程</th>
+                        <th width="2%" class="x-grid3-header" style="padding: 0px">进展</th>
                         <th width="4%" class="x-grid3-header" style="padding: 0px">客户</th>
                         <th width="4%" class="x-grid3-header" style="padding: 0px">车型</th>
                         <th width="6%" class="x-grid3-header" style="padding: 0px">品名</th>
-                        <th width="14%" class="x-grid3-header" style="padding: 0px">不良内容</th>
+                        <th width="12%" class="x-grid3-header" style="padding: 0px">不良内容</th>
                         <th width="6%" class="x-grid3-header" style="padding: 0px">生产线</th>
                         <th width="3%" class="x-grid3-header" style="padding: 0px">严重度</th>
                         <th width="9%" class="x-grid3-header" style="padding: 0px">根本原因</th>
@@ -192,6 +193,9 @@
                         </td>
                         <td style="white-space:normal;word-wrap:break-word;word-break:break-all;padding: 0px;display:table-cell; vertical-align:middle;">
                             {{rrProblemWoOrderDate.engineering}}
+                        </td>
+                        <td style="white-space:normal;word-wrap:break-word;word-break:break-all;padding: 0px;display:table-cell; vertical-align:middle;">
+                            {{rrProblemWoOrderDate.problemProgress}}
                         </td>
                         <td style="white-space:normal;word-wrap:break-word;word-break:break-all;padding: 0px;display:table-cell; vertical-align:middle;">
                             {{rrProblemWoOrderDate.customer}}

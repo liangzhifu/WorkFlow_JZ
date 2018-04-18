@@ -60,7 +60,7 @@ rrDelayStatisticsApp.controller("rrDelayStatisticsController", function ($scope)
         "problemStatus" : "",
         "problemProgress" : "",
         "delayDate" : "",
-        "speedOfPorgress" : ""
+        "trackingLevel" : ""
     }];
 
     $scope.showRRDelayStatisticsList = function(userName){

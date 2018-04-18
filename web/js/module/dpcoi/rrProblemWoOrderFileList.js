@@ -8,6 +8,7 @@ rrProblemWoOrderFileListApp.controller("rrProblemWoOrderFileListController", fun
         "dpcoiWoOrderType" : "",
         "dpcoiWoOrderState" : "",
         "taskOrderNo" : "",
+        "problemProgress" : "",
         "fileId" : "",
         "fileName" : "",
         "fileType" : "",
@@ -49,6 +50,7 @@ rrProblemWoOrderFileListApp.controller("rrProblemWoOrderFileListController", fun
         "responsibleDepartment" : ""
     }
     $scope.rrProblemWoOrderFileList.Search = function () {
+        $scope.rrProblemWoOrderFileList.searchForm.speedOfProgress = $("#speedOfProgress").multiselect("MyValues");
         $scope.rrProblemWoOrderFileList.searchForm.happenDateBegin = $("#happenDateBegin").val();
         $scope.rrProblemWoOrderFileList.searchForm.happenDateEnd = $("#happenDateEnd").val();
         $scope.rrProblemWoOrderFileList.searchForm.pagenum = $scope.rrProblemWoOrderFileList.pageInfo.page-1;
@@ -109,6 +111,13 @@ rrProblemWoOrderFileListApp.controller("rrProblemWoOrderFileListController", fun
                 timepicker: false,
                 format: 'Y-m-d'
             });
+        });
+
+        $("#speedOfProgress").multiselect({
+            checkAllText: "全选",
+            uncheckAllText: '全不选',
+            header: false,
+            selectedList:4
         });
 
         $.ajax({

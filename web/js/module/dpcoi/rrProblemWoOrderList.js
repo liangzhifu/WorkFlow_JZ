@@ -25,6 +25,7 @@ rrProblemWoOrderListApp.controller("rrProblemWoOrderListController", function ($
         "problemNo" : "",
         "problemType" : "",
         "engineering" : "",
+        "problemProgress" : "",
         "customer" : "",
         "vehicle" : "",
         "productNo" : "",
@@ -74,6 +75,7 @@ rrProblemWoOrderListApp.controller("rrProblemWoOrderListController", function ($
         "responsibleDepartment" : ""
     }
     $scope.rrProblemWoOrderList.Search = function () {
+        $scope.rrProblemWoOrderList.searchForm.speedOfProgress = $("#speedOfProgress").multiselect("MyValues");
         $scope.rrProblemWoOrderList.searchForm.happenDateBegin = $("#happenDateBegin").val();
         $scope.rrProblemWoOrderList.searchForm.happenDateEnd = $("#happenDateEnd").val();
         $scope.rrProblemWoOrderList.searchForm.pagenum = $scope.rrProblemWoOrderList.pageInfo.page-1;
@@ -288,6 +290,13 @@ rrProblemWoOrderListApp.controller("rrProblemWoOrderListController", function ($
                 timepicker: false,
                 format: 'Y-m-d'
             });
+        });
+
+        $("#speedOfProgress").multiselect({
+            checkAllText: "全选",
+            uncheckAllText: '全不选',
+            header: false,
+            selectedList:4
         });
 
         $.ajax({

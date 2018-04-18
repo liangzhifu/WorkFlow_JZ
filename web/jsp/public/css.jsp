@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="/WorkFlow/style/assets/css/bootstrap/datetimepicker-xdan/jquery.datetimepicker.css" />
 <link rel="stylesheet" href="/WorkFlow/style/assets/css/jBox/jBox.css" />
 <link rel="stylesheet" href="/WorkFlow/style/assets/js/treeTable/themes/vsStyle/treeTable.min.css"/>
+<link rel="stylesheet" href="/WorkFlow/style/chosen/chosen.css" />
 
 <link rel="stylesheet" href="/WorkFlow/style/back-end/style.css" >
 <link rel="stylesheet" href="/WorkFlow/style/common/common.css" />

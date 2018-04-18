@@ -196,6 +196,10 @@ var userManger = (function() {
 					title : '邮箱',
 					width : '20%'
 				}, {
+                    field : 'email2',
+                    title : '邮箱2',
+                    width : '20%'
+                }, {
 					field : 'mobileTel',
 					title : '手机',
 					width : '20%'
@@ -711,6 +715,7 @@ function userFormPanel(action, id, parentId) {
 	var v_password = '';
 	var v_orgId = '';
 	var v_email = '';
+    var v_email2 = '';
 	var v_mobileTel = '';
 	var v_userMark = '';
 	var v_isHdeaer = '';
@@ -725,6 +730,7 @@ function userFormPanel(action, id, parentId) {
 		var v_password = rows[0].password;
 		var v_orgId = rows[0].orgId;
 		var v_email = rows[0].email;
+        var v_email2 = rows[0].email2;
 		var v_mobileTel = rows[0].mobileTel;
 		var v_userMark = rows[0].userMark;
 		var v_isHeader = rows[0].isHeader;
@@ -815,6 +821,17 @@ function userFormPanel(action, id, parentId) {
 				value : v_email,
 				anchor : '95%'
 			}, {
+                columnWidth : .40,
+                xtype : 'textfield',
+                fieldLabel : '邮箱2',
+                name : 'email2',
+                id : 'email2',
+                vtype : "email",
+                regexText : '必须是正确的邮件地址',
+                allowBlank : true,
+                value : v_email2,
+                anchor : '95%'
+            }, {
 				columnWidth : .40,
 				xtype : 'textfield',
 				fieldLabel : '手机',

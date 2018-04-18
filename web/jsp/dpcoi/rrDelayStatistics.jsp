@@ -87,7 +87,7 @@
                             <th width="20%">状态</th>
                             <th width="20%">延迟日期</th>
                             <th width="20%">问题进展</th>
-                            <th width="20%">进度</th>
+                            <th width="20%">追踪等级</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -96,7 +96,7 @@
                             <td>{{delayDate.problemStatus}}</td>
                             <td>{{delayDate.delayDate}}</td>
                             <td>{{delayDate.problemProgress}}</td>
-                            <td>{{delayDate.speedOfPorgress}}</td>
+                            <td>{{delayDate.trackingLevel}}</td>
                         </tr>
                         </tbody>
                     </table>
