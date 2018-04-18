@@ -40,8 +40,7 @@ public class UpdateRRProblemSpeedOfProgress {
     @Resource(name = "rRDelayStatisticsService")
     private RRDelayStatisticsService rRDelayStatisticsService;
 
-    //@Scheduled(cron = "0 30 2 * * ?")
-    @Scheduled(cron = "0 0/1 * * * ?")
+    @Scheduled(cron = "0 30 2 * * ?")
     public void job() {
         try {
             List<RRProblem> rrProblemList = this.rRProblemService.queryJobRRProblemList();

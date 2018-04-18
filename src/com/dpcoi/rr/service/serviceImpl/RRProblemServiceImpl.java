@@ -69,17 +69,17 @@ public class RRProblemServiceImpl implements RRProblemService {
         String shortYear = String.valueOf(year).substring(2);
         cal.setTime(nowDate);
         if("客诉".equals(problemType)){
-            problemNo = "TT-KS-"+shortYear+"-";
+            problemNo = "TJ-KS-"+shortYear+"-";
         }else if("内诉（全检）".equals(problemType)) {
-            problemNo = "TT-NS-"+shortYear+"-";
+            problemNo = "TJ-NS-"+shortYear+"-";
         }else if("内诉（抽检）".equals(problemType)) {
-            problemNo = "TT-NS-"+shortYear+"-";
+            problemNo = "TJ-NS-"+shortYear+"-";
         }else if("工程".equals(problemType)) {
-            problemNo = "TT-GC-"+shortYear+"-";
+            problemNo = "TJ-GC-"+shortYear+"-";
         }else if("市场投诉".equals(problemType)) {
-            problemNo = "TT-SC-"+shortYear+"-";
+            problemNo = "TJ-SC-"+shortYear+"-";
         }else if("部品".equals(problemType)) {
-            problemNo = "TT-BP-"+shortYear+"-";
+            problemNo = "TJ-BP-"+shortYear+"-";
         }else{
             throw new ServiceException("问题类型不存在！");
         }
