@@ -22,7 +22,7 @@
 <body>
 
 <div class="top">
-    均胜品质4M变化管理
+    均胜品质管理系统
 </div>
 <div class="middle">
 	<div class="content">
