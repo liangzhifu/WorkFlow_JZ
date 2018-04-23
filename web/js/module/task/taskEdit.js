@@ -206,8 +206,10 @@ var taskDetail = (function() {
 function generBasicObj(infoTypeId, taskTypeInfo, taskOrderInfoArray){
 	var taskTypeInfoId = taskTypeInfo.taskTypeInfoId;
 	var taskInfoValue = "";
+	var taskOrderId = 0;
 	for(var i = 0; i < taskOrderInfoArray.length; i++){
 		var taskOrderInfo = taskOrderInfoArray[i];
+        taskOrderId = taskOrderInfo.orderId;
 		if(taskTypeInfoId == taskOrderInfo.taskTypeInfoId){
 			taskInfoValue = taskOrderInfo.taskInfoValue;
 		}
@@ -310,19 +312,36 @@ function generBasicObj(infoTypeId, taskTypeInfo, taskOrderInfoArray){
                 }]
             };
         }else {
-            obj = {
-                columnWidth:taskTypeInfo.infoLength,
-                layout:'form',
-                items:[{
-                    xtype:'checkboxgroup',
-                    readOnly: false,
-                    fieldLabel:taskTypeInfo.infoName,
-                    name: 'order_'+taskTypeInfo.taskTypeInfoId,
-                    id: 'order_'+taskTypeInfo.taskTypeInfoId,
-                    items : items,
-                    anchor:'100%'
-                }]
-            };
+            if (taskTypeInfo.taskTypeInfoId == 13 && taskOrderId > 746) {
+                obj = {
+                    columnWidth:taskTypeInfo.infoLength,
+                    layout:'form',
+                    bodyStyle: "display:none;",
+                    items:[{
+                        xtype:'checkboxgroup',
+                        readOnly: false,
+                        fieldLabel:taskTypeInfo.infoName,
+                        name: 'order_'+taskTypeInfo.taskTypeInfoId,
+                        id: 'order_'+taskTypeInfo.taskTypeInfoId,
+                        items : items,
+                        anchor:'100%'
+                    }]
+                };
+            } else {
+                obj = {
+                    columnWidth: taskTypeInfo.infoLength,
+                    layout: 'form',
+                    items: [{
+                        xtype: 'checkboxgroup',
+                        readOnly: false,
+                        fieldLabel: taskTypeInfo.infoName,
+                        name: 'order_' + taskTypeInfo.taskTypeInfoId,
+                        id: 'order_' + taskTypeInfo.taskTypeInfoId,
+                        items: items,
+                        anchor: '100%'
+                    }]
+                };
+            }
         }
 	}else if(infoTypeId == 4 && taskTypeInfo.infoSeq == 7){
 		obj = { 

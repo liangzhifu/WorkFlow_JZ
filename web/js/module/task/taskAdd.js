@@ -358,19 +358,36 @@ function generBasicObj(infoTypeId, taskTypeInfo){
                 }]
             };
 		}else {
-            obj = {
-                columnWidth:taskTypeInfo.infoLength,
-                layout:'form',
-                items:[{
-                    xtype:'checkboxgroup',
-                    readOnly: false,
-                    fieldLabel:taskTypeInfo.infoName,
-                    name: 'order_'+taskTypeInfo.taskTypeInfoId,
-                    id: 'order_'+taskTypeInfo.taskTypeInfoId,
-                    items : items,
-                    anchor:'100%'
-                }]
-            };
+			if (taskTypeInfo.taskTypeInfoId == 13) {
+                obj = {
+                    columnWidth:taskTypeInfo.infoLength,
+                    layout:'form',
+                    bodyStyle: "display:none;",
+                    items:[{
+                        xtype:'checkboxgroup',
+                        readOnly: false,
+                        fieldLabel:taskTypeInfo.infoName,
+                        name: 'order_'+taskTypeInfo.taskTypeInfoId,
+                        id: 'order_'+taskTypeInfo.taskTypeInfoId,
+                        items : items,
+                        anchor:'100%'
+                    }]
+                };
+			} else {
+                obj = {
+                    columnWidth:taskTypeInfo.infoLength,
+                    layout:'form',
+                    items:[{
+                        xtype:'checkboxgroup',
+                        readOnly: false,
+                        fieldLabel:taskTypeInfo.infoName,
+                        name: 'order_'+taskTypeInfo.taskTypeInfoId,
+                        id: 'order_'+taskTypeInfo.taskTypeInfoId,
+                        items : items,
+                        anchor:'100%'
+                    }]
+                };
+			}
 		}
 	}else if(infoTypeId == 4){
 		if(taskTypeInfo.taskTypeInfoId == 11){

@@ -15,7 +15,7 @@
 			var taskOrderJSON = '${taskOrderJSON}';
 			var orderId = '${orderId}';
 		</script>
-		<script type="text/javascript" src="<c:url value='/js/module/task/taskEdit.js?version=56'/>"></script>
+		<script type="text/javascript" src="<c:url value='/js/module/task/taskEdit.js?version=57'/>"></script>
 	</head>
 	<body>
 		<div id="mainDiv" ></div>
