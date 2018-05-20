@@ -195,7 +195,7 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <label  class="control-label" for="productLine"><span style="color:red;">*</span>生产线：</label>
-                                <input class="form-control-order form-control clean" style="width: 60%" required="required" pattern="^T[a-zA-Z][a-zA-Z]\-[0-9][0-9]$"
+                                <input class="form-control-order form-control clean" style="width: 60%" required="required" pattern="^[TJ][a-zA-Z][a-zA-Z]\-[0-9]{2,4}$"
                                        id="productLine" name="productLine" ng-model="rrProblemEdit.rrProblem.productLine">
                             </div>
                             <div class="col-md-3">

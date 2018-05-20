@@ -837,9 +837,7 @@ function userFormPanel(action, id, parentId) {
 				fieldLabel : '手机',
 				name : 'mobileTel',
 				id : 'mobileTel',
-				regex : /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/,
-				regexText : '必须是11位手机号',
-				allowBlank : false,
+				allowBlank : true,
 				value : v_mobileTel,
 				anchor : '95%'
 			}, {

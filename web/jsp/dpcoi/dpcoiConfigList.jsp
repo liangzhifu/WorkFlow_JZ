@@ -11,6 +11,45 @@
     <title>Dpcoi下拉菜单配置</title>
     <%@include file="../public/js.jsp"%>
     <%@include file="../public/css.jsp"%>
+    <script type="text/javascript">
+        var contextPath = "${pageContext.request.contextPath}";
+
+        function impExcel(){
+            var html="<form method='post' id='excelForm' enctype='multipart/form-data' action='/WorkFlow/dpcoiConfig/updateFileExcel.do'>" +
+                "<a class='uploadFile button button-primary button-rounded button-small' href='#'>" +
+                "<input type='file' accept='application/vnd.ms-excel' onchange='updateFileExcelChange()' name='excelFile' id='excelFile'/><i class='glyphicon glyphicon-search'></i>浏览" +
+                "</a>"+
+                "</form>";
+            var myModal = new jBox('Modal', {
+                width: 150,
+                title: 'Excel导入数据',
+                content: html,
+                onCloseComplete:function(){
+                    myModal.destroy();
+                }
+            }).open();
+        }
+
+        function updateFileExcelChange(){
+            if($("#excelFile").val()){
+                $("#excelForm").ajaxSubmit({
+                    success:function(data){
+                        if(data&&data.success){
+                            alert(data.success);
+                        }else if(data&&data.error){
+                            alert(data.error);
+                        }
+                        location.reload();
+                    }
+                });
+                $("#excelFile").val('');
+            }
+        }
+
+        function downExcel(){
+            window.open("/WorkFlow/templet/DpcoiConfig.xls");
+        }
+    </script>
 </head>
 <body ng-controller="dpcoiConfigListController" ng-cloak>
 <div class="main-container container-fluid" style="padding-right: 1px;padding-left: 1px;">
@@ -35,6 +74,10 @@
 
                         <button class="btn btn-small btn-purple" type="button" id="dpcoiConfigAdd">
                             <i class="icon-plus-sign icon-on-right bigger-110"></i>新增
+                        </button>
+
+                        <button class="btn btn-small btn-purple" type="button" onclick="impExcel()">
+                            <i class="icon-plus-sign icon-on-right bigger-110"></i>导入
                         </button>
                     </div>
                 </div>
@@ -69,6 +112,12 @@
                 </table>
             </div>
             <div class = "tfoot" id="footTable">
+                <div class="table-foot-left">
+                    <button onclick="downExcel();" class=""><i class="glyphicon glyphicon-open-file"></i>模板下载</button>
+                    <span class="separator"></span>
+                    <button ng-click="downDataExcel();" class=""><i class="glyphicon glyphicon-open-file"></i>数据下载</button>
+                    <span class="separator"></span>
+                </div>
                 <div class="table-foot-center">
                     <button class="" ng-disabled="dpcoiConfigList.pageInfo.firstPageDisabled"
                             ng-click="dpcoiConfigList.firstPage();">

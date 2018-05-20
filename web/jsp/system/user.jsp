@@ -18,7 +18,7 @@
 		<script type="text/javascript">
 			var contextPath = "${pageContext.request.contextPath}";
 		</script>
-		<script type="text/javascript" src="<c:url value='/js/module/system/user.js?version=34'/>"></script>
+		<script type="text/javascript" src="<c:url value='/js/module/system/user.js?version=35'/>"></script>
 	</head>
 	<body class="easyui-layout">
 		<div data-options="region:'west',collapsible:true, width:250, border:false, title:'组织树'" style="background:#F3F5F8;">

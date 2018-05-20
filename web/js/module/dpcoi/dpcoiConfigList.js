@@ -124,6 +124,23 @@ dpcoiConfigListApp.controller("dpcoiConfigListController", function ($scope) {
         });
     };
 
+    $scope.downDataExcel = function () {
+        $.ajax({
+            method: 'post',
+            url: "/WorkFlow/dpcoiConfig/downExcel.do",
+            data: $scope.dpcoiConfigList.searchForm,
+            success: function (resultJson) {
+                var result = angular.fromJson(resultJson);
+                if (result.success) {
+                    var fileUrl = contextPath + result.path;
+                    window.open(fileUrl);
+                } else {
+                    alert('导出Excel失败！');
+                }
+            }
+        });
+    };
+
     $(document).ready(function() {
         $.ajax({
             method: 'post',
