@@ -117,6 +117,7 @@ public class DpcoiWoOrderServiceImpl implements DpcoiWoOrderService {
                     rrProblem.setCp("N/A");
                 }else if(dpcoiWoOrderType == 3){
                     rrProblem.setStandardBook("N/A");
+                    rrProblem.setAlwaysList("N/A");
                 }
                 this.rRProblemDao.updateRRProblem(rrProblem);
             }
@@ -345,6 +346,7 @@ public class DpcoiWoOrderServiceImpl implements DpcoiWoOrderService {
                     rrProblem.setCp(formatter.format(new Date()));
                 }else if(dpcoiWoOrderType == 3){
                     rrProblem.setStandardBook(formatter.format(new Date()));
+                    rrProblem.setAlwaysList(formatter.format(new Date()));
                 }
                 this.rRProblemDao.updateRRProblem(rrProblem);
             }
