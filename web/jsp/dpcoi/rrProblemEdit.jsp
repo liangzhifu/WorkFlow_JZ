@@ -12,6 +12,7 @@
     <%@include file="../public/js.jsp"%>
     <%@include file="../public/css.jsp"%>
     <script type="text/javascript">
+        var userName = '${userName}';
         var action = '${action}';
         var startDate = '${startDate}';
         var endDate = '${endDate}';
@@ -429,5 +430,5 @@
     </div>
 </div>
 </body>
-<script src="/WorkFlow/js/module/dpcoi/rrProblemEdit.js?version=5"></script>
+<script src="/WorkFlow/js/module/dpcoi/rrProblemEdit.js?version=7"></script>
 </html>

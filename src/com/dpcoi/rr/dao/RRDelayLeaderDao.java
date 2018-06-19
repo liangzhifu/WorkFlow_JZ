@@ -6,6 +6,7 @@ package com.dpcoi.rr.dao;/**
 import com.dpcoi.rr.domain.RRDelayLeader;
 import com.dpcoi.rr.query.RRDelayLeaderQuery;
 import com.success.web.framework.mybatis.BaseDao;
+import org.apache.commons.collections.map.HashedMap;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -88,5 +89,18 @@ public class RRDelayLeaderDao extends BaseDao {
      */
     public String selectMinisteEmail(){
         return this.sqlSession.selectOne("RRDelayLeaderMapper.selectMinisteEmail");
+    }
+
+    /**
+     * RR问题点新增时，需要发邮件人员
+     * @param userId 用户ID
+     * @param userNames 责任人名字（多个）
+     * @return 返回结果
+     */
+    public String selectAddRREmail(Integer userId, String userNames){
+        Map<String, Object> map = new HashedMap();
+        map.put("userId", userId);
+        map.put("userNames", userNames);
+        return this.sqlSession.selectOne("RRDelayLeaderMapper.selectAddRREmail", map);
     }
 }

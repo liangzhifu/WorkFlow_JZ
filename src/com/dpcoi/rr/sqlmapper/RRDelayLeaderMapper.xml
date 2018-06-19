@@ -224,4 +224,23 @@
         )
         and users.`delete_state` = '0'
     </select>
+
+    <select id="selectAddRREmail" resultType="java.lang.String" parameterType="java.util.HashMap">
+        SELECT GROUP_CONCAT(CASE WHEN su.`EMAIL` IS NULL OR su.`EMAIL` = '' THEN su.`EMAIL2` ELSE su.`EMAIL` END)
+        FROM sys_users su
+        WHERE su.`USER_ID` IN
+        (SELECT su.`USER_ID`
+        FROM sys_users su
+        WHERE FIND_IN_SET(su.`USER_NAME`, #{userNames})
+        AND su.`DELETE_STATE` = '0'
+        UNION ALL
+        SELECT drdl.`leader_id` AS USER_ID
+        FROM sys_users su, dpcoi_rr_delay_leader drdl
+        WHERE su.user_id = drdl.`user_id`
+        AND FIND_IN_SET(su.`USER_NAME`, #{userNames})
+        AND drdl.delete_state = '0')
+        AND su.`USER_ID` &lt;&gt; #{userId}
+        AND su.`DELETE_STATE` = '0'
+    </select>
+
 </mapper>

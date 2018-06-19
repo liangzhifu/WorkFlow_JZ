@@ -136,6 +136,30 @@ public class RRProblemServiceImpl implements RRProblemService {
         //追踪等级
         this.updateTrackingLevel(rrProblem);
 
+        // 发邮件--通知除发起人之外的责任人，以及所有责任人的一级领导
+        TimeTask timeTask = new TimeTask();
+        timeTask.setNoticeType(45);
+        StringBuffer comment = new StringBuffer();
+        comment.append("状态:").append(rrProblem.getProblemStatus())
+                .append("<br>").append("问题编号:").append(rrProblem.getProblemNo())
+                .append("<br>").append("问题类型:").append(rrProblem.getProblemType())
+                .append("<br>").append("工程:").append(rrProblem.getEngineering())
+                .append("<br>").append("客户:").append(rrProblem.getCustomer())
+                .append("<br>").append("车型:").append(rrProblem.getVehicle())
+                .append("<br>").append("品名:").append(rrProblem.getProductNo())
+                .append("<br>").append("不良内容:").append(rrProblem.getBadContent())
+                .append("<br>").append("生产线:").append(rrProblem.getProductLine())
+                .append("<br>").append("严重度:").append(rrProblem.getSeverity())
+                .append("<br>").append("根本原因:").append(rrProblem.getRootCause())
+                .append("<br>").append("永久对策:").append(rrProblem.getPermanentGame())
+                .append("<br>").append("进度").append(rrProblem.getSpeedOfProgress());
+        timeTask.setComment(comment.toString());
+        String emailUser = this.rRDelayLeaderDao.selectAddRREmail(rrProblem.getCreateBy(), rrProblem.getPersionLiable());
+        timeTask.setUserEmail(emailUser);
+        timeTask.setDeleteState(0);
+        timeTask.setEmailTitle(rrProblem.getProblemNo());
+        this.timeTaskDao.insertTimeTask(timeTask);
+
         return this.rRProblemDao.insertRRProblem(rrProblem);
     }
 

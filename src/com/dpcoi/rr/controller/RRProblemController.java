@@ -56,22 +56,26 @@ public class RRProblemController {
     private RRDelayStatisticsService rRDelayStatisticsService;
 
     @RequestMapping("/getRRProblemAddDlg.do")
-    public String getRRProblemAddDlg(Map<String, Object> model) throws Exception{
+    public String getRRProblemAddDlg(HttpServletRequest request, Map<String, Object> model) throws Exception{
+        User user = (User)request.getSession().getAttribute(Constant.STAFF_KEY);
         model.put("action", "add");
         Map<String, Object> map = this.rRProblemService.getHappenDateRandom();
         model.put("startDate", map.get("startDate"));
         model.put("endDate", map.get("endDate"));
+        model.put("userName", user.getUserName());
         return "dpcoi/rrProblemEdit";
     }
 
     @RequestMapping("/getRRProblemEditDlg.do")
-    public String getRRProblemEditDlg(Map<String, Object> model, RRProblem rrProblem, RRProblemQuery rrProblemQuery) throws Exception{
+    public String getRRProblemEditDlg(HttpServletRequest request, Map<String, Object> model, RRProblem rrProblem, RRProblemQuery rrProblemQuery) throws Exception{
+        User user = (User)request.getSession().getAttribute(Constant.STAFF_KEY);
         model.put("action", "edit");
         Map<String, Object> map = this.rRProblemService.getHappenDateRandom();
         model.put("startDate", map.get("startDate"));
         model.put("endDate", map.get("endDate"));
         model.put("rrProblemId", rrProblem.getId());
         model.put("rrProblemQuery", rrProblemQuery);
+        model.put("userName", user.getUserName());
         return "dpcoi/rrProblemEdit";
     }
 
