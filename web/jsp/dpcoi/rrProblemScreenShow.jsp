@@ -108,7 +108,7 @@
 
     function toOtherJsp(){
         var getTimestamp=new Date().getTime();
-        window.location.href = "http://10.234.11.21:9007/pub/problem1.aspx"+"?timestamp="+getTimestamp;
+        window.location.href = "/WorkFlow/rrProblem/getRRProblemScreenShowDlg.do"+"?timestamp="+getTimestamp;
     }
 </script>
 </html>
