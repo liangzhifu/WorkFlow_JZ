@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="DpcoiOrderRollBackMapper" >
+
+    <sql id="RR_WHERE_SQL">
+        <where>
+            dor.`DPCOI_ORDER_ID` = dwo.`DPCOI_ORDER_ID`
+            and dor.`rr_problem_id` = rr.`id`
+            AND dor.`DEL_FLAG` = '0'
+            AND dwo.`DEL_FLAG` = '0'
+            and dor.`DPCOI_ORDER_STATE` = '1'
+            and dwo.`DPCOI_WO_ORDER_STATE` IN (1,2,3)
+            <if test="problemNo != null and problemNo != ''" >
+                and rr.`problem_no` like CONCAT('%',#{problemNo},'%')
+            </if>
+        </where>
+    </sql>
+
+    <select id="selectRRProblemOrderRollBackllListPage" resultType="java.util.HashMap" parameterType="DpcoiOrderRollBackQuery">
+        select rr.`problem_no` as problemNo,
+        dor.`DPCOI_ORDER_ID` as dpcoiOrderId,
+        dor.`DPCOI_ORDER_STATE` as dpcoiOrderState,
+        dwo.`DPCOI_WO_ORDER_TYPE` as dpcoiWoOrderType
+        from dpcoi_order dor, dpcoi_wo_order dwo, dpcoi_rr_problem rr
+        <include refid="RR_WHERE_SQL"></include>
+        order by dor.`DPCOI_ORDER_ID` desc limit #{start},#{size}
+    </select>
+
+    <select id="selectRRProblemOrderRollBackCount" resultType="java.lang.Integer" parameterType="DpcoiOrderRollBackQuery">
+        select count(1)
+        from dpcoi_order dor, dpcoi_wo_order dwo, dpcoi_rr_problem rr
+        <include refid="RR_WHERE_SQL"></include>
+    </select>
+
+    <sql id="WHERE_SQL">
+      <where>
+          dor.`DPCOI_ORDER_ID` = dwo.`DPCOI_ORDER_ID`
+          AND dor.`DEL_FLAG` = '0'
+          AND dwo.`DEL_FLAG` = '0'
+          and dor.`DPCOI_ORDER_STATE` = '1'
+          and dwo.`DPCOI_WO_ORDER_STATE` IN (1,2,3)
+          and (dor.`rr_problem_id` is null or dor.`rr_problem_id` = '')
+          <if test="productNo != null and productNo != ''" >
+              and dor.`PRODUCT_NO` like CONCAT('%',#{productNo},'%')
+          </if>
+          <if test="vehicleName != null and vehicleName != ''" >
+              and dor.`VEHICLE_NAME` like CONCAT('%',#{vehicleName},'%')
+          </if>
+          <if test="designChangeNo != null and designChangeNo != ''" >
+              and dor.`DESIGN_CHANGE_NO` like CONCAT('%',#{designChangeNo},'%')
+          </if>
+          <if test="productLine != null and productLine != ''" >
+              and dor.`product_line` like CONCAT('%',#{productLine},'%')
+          </if>
+      </where>
+    </sql>
+
+    <select id="selectDpcoiOrderRollBackllListPage" resultType="java.util.HashMap" parameterType="DpcoiOrderRollBackQuery">
+        select dor.`DPCOI_ORDER_ID` as dpcoiOrderId,
+        dor.ISSUED_NO as issuedNo,
+        dor.`DESIGN_CHANGE_NO` as designChangeNo,
+        dor.`VEHICLE_NAME` as vehicleName,
+        dor.`PRODUCT_NO` as productNo,
+        dor.`product_line` as productLine,
+        dor.`CHANGE_CONTENT` as changeContent,
+        dor.`DPCOI_ORDER_STATE` as dpcoiOrderState,
+        dwo.`DPCOI_WO_ORDER_TYPE` as dpcoiWoOrderType
+        from dpcoi_order dor, dpcoi_wo_order dwo
+        <include refid="WHERE_SQL"></include>
+        order by dor.`DPCOI_ORDER_ID` desc limit #{start},#{size}
+    </select>
+
+    <select id="selectDpcoiOrderRollBackCount" resultType="java.lang.Integer" parameterType="DpcoiOrderRollBackQuery">
+        select count(1)
+        from dpcoi_order dor, dpcoi_wo_order dwo
+        <include refid="WHERE_SQL"></include>
+    </select>
+
+    <delete id="deleteDpcoiRollBackWoOrderFile" parameterType="java.util.HashMap">
+        delete from dpcoi_wo_order_file
+        where DEL_FLAG = '0'
+        and DPCOI_WO_ORDER_ID in
+        (select DPCOI_WO_ORDER_ID
+        from dpcoi_wo_order
+        where del_flag = '0'
+        and DPCOI_ORDER_ID = #{dpcoiOrderId, jdbcType=BIGINT}
+        and DPCOI_WO_ORDER_TYPE &gt;= #{dpcoiWoOrderType, jdbcType=BIGINT})
+    </delete>
+
+    <delete id="deleteDpcoiRollBackWoOrder" parameterType="java.util.HashMap">
+        delete from dpcoi_wo_order
+        where DEL_FLAG = '0'
+        and DPCOI_ORDER_ID = #{dpcoiOrderId, jdbcType=BIGINT}
+        AND DPCOI_WO_ORDER_TYPE &gt; #{dpcoiWoOrderType, jdbcType=BIGINT}
+    </delete>
+
+    <update id="updateDpcoiWoOrder" parameterType="java.util.HashMap">
+        update dpcoi_wo_order
+        set DPCOI_WO_ORDER_STATE = '1'
+        where DEL_FLAG = '0'
+        and DPCOI_WO_ORDER_STATE in (1,2,3,4,7)
+        and DPCOI_ORDER_ID = #{dpcoiOrderId, jdbcType=BIGINT}
+        AND DPCOI_WO_ORDER_TYPE = #{dpcoiWoOrderType, jdbcType=BIGINT}
+    </update>
+</mapper>

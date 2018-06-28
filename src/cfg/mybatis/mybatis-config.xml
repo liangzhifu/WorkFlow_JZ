@@ -17,6 +17,7 @@
 
 		<typeAlias type="com.dpcoi.order.domain.DpcoiOrder" alias="DpcoiOrder" />
 		<typeAlias type="com.dpcoi.order.query.DpcoiOrderQuery" alias="DpcoiOrderQuery" />
+		<typeAlias type="com.dpcoi.order.query.DpcoiOrderRollBackQuery" alias="DpcoiOrderRollBackQuery" />
 		<typeAlias type="com.dpcoi.order.query.RRProblemOrderQuery" alias="RRProblemOrderQuery" />
 
 		<typeAlias type="com.dpcoi.rr.domain.RRProblem" alias="RRProblem" />
