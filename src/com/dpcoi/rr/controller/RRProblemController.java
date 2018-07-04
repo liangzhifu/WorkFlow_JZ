@@ -172,6 +172,9 @@ public class RRProblemController {
             if(speedOfProgress == null || "".equals(speedOfProgress)){
                 speedOfProgress = "delayI,delayII,delayIII,delayIV,follow";
                 rrProblemQuery.setSpeedOfProgress(speedOfProgress);
+            } else if (speedOfProgress.indexOf("open") >= 0) {
+                speedOfProgress += ",delayI,delayII,delayIII,delayIV,follow";
+                rrProblemQuery.setSpeedOfProgress(speedOfProgress);
             }
             String path = request.getSession().getServletContext().getRealPath("/");
             String fileName = this.exportExcelService.excelRRProblem(path, rrProblemQuery);
@@ -202,6 +205,9 @@ public class RRProblemController {
             String speedOfProgress = rrProblemQuery.getSpeedOfProgress();
             if(speedOfProgress == null || "".equals(speedOfProgress)){
                 speedOfProgress = "delayI,delayII,delayIII,delayIV,follow";
+                rrProblemQuery.setSpeedOfProgress(speedOfProgress);
+            } else if (speedOfProgress.indexOf("open") >= 0) {
+                speedOfProgress += ",delayI,delayII,delayIII,delayIV,follow";
                 rrProblemQuery.setSpeedOfProgress(speedOfProgress);
             }
             List<Map<String, Object>> rrProblemList = this.rRProblemService.queryRRProblemPageList(rrProblemQuery);

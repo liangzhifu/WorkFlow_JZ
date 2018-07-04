@@ -215,6 +215,7 @@
                         <label  class="control-label" for="speedOfProgress">进度：</label>
                         <select id="speedOfProgress" name="speedOfProgress" class="form-control-order form-control" required="required"
                                 multiple="multiple" style="width: 60%;margin-left: 0%;padding: 1px 1px;font-size: 12px;margin-right: 15px;height: 25px;">
+                            <option value="open">open</option>
                             <option value="close">close</option>
                             <option value="deleted">deleted</option>
                         </select>
