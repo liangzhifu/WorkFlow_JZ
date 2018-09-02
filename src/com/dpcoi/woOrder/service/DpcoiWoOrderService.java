@@ -69,7 +69,7 @@ public interface DpcoiWoOrderService {
      * @user 操作员
      * @param confirmResult 确认结果
      */
-    public void editWoOrderConfirm(DpcoiWoOrder dpcoiWoOrder, Integer confirmResult, User user) throws ServiceException;
+    public void editWoOrderConfirm(DpcoiWoOrder dpcoiWoOrder, Integer confirmResult, User user) throws Exception;
 
     /**
      * 上传文件完成

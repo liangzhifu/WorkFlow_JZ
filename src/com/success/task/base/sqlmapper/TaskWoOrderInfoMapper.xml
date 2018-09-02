@@ -22,4 +22,11 @@
 		</set>
 		where id=#{id, jdbcType=NUMERIC}
 	</update>
+
+	<select id="selectTaskWoOrderInfoListByOrderId" resultType="TaskWoOrderInfo" parameterType="java.lang.Integer">
+		SELECT twoi.id, twoi.`WO_ORDER_ID` AS woOrderId
+		FROM task_wo_order two, task_wo_order_info twoi
+		WHERE two.`WO_ORDER_ID` = twoi.`WO_ORDER_ID`
+		AND two.`ORDER_ID` = #{orderId, jdbcType=NUMERIC}
+	</select>
 </mapper>

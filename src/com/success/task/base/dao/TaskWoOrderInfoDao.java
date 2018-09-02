@@ -6,6 +6,8 @@ import com.success.task.base.domain.TaskWoOrderInfo;
 import com.success.web.framework.exception.DaoException;
 import com.success.web.framework.mybatis.BaseDao;
 
+import java.util.List;
+
 @Repository("taskWoOrderInfoDao")
 public class TaskWoOrderInfoDao extends BaseDao {
 
@@ -23,5 +25,13 @@ public class TaskWoOrderInfoDao extends BaseDao {
 		if(taskWoOrderInfo == null) return null;
 		return this.sqlSession.update("taskWoOrderInfo.updateTaskWoOrderInfo", taskWoOrderInfo);
 	}
-	
+
+	/**
+	 * 获取订单的工单列表信息
+	 * @param orderId 订单ID
+	 * @return 返回结果
+	 */
+	public List<TaskWoOrderInfo> selectTaskWoOrderInfoListByOrderId(Integer orderId) {
+		return this.sqlSession.selectList("taskWoOrderInfo.selectTaskWoOrderInfoListByOrderId", orderId);
+	}
 }

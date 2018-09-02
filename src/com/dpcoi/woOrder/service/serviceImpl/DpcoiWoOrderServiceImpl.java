@@ -16,6 +16,7 @@ import com.dpcoi.woOrder.service.DpcoiWoOrderService;
 import com.success.sys.email.dao.TimeTaskDao;
 import com.success.sys.email.domain.TimeTask;
 import com.success.sys.user.domain.User;
+import com.success.task.detail.service.TaskWoOrderDpcoiService;
 import com.success.web.framework.exception.ServiceException;
 import org.apache.commons.collections.map.HashedMap;
 import org.springframework.stereotype.Service;
@@ -48,6 +49,9 @@ public class DpcoiWoOrderServiceImpl implements DpcoiWoOrderService {
     @Resource(name="rRProblemDao")
     private RRProblemDao rRProblemDao;
 
+    @Resource(name = "taskWoOrderDpcoiService")
+    private TaskWoOrderDpcoiService taskWoOrderDpcoiService;
+
     @Override
     public Integer addDpcoiWoOrder(DpcoiWoOrder dpcoiWoOrder) throws ServiceException {
         return this.dpcoiWoOrderDao.insertDpcoiWoOrder(dpcoiWoOrder);
@@ -79,7 +83,7 @@ public class DpcoiWoOrderServiceImpl implements DpcoiWoOrderService {
     }
 
     @Override
-    public void editWoOrderConfirm(DpcoiWoOrder dpcoiWoOrder, Integer confirmResult, User user) throws ServiceException {
+    public void editWoOrderConfirm(DpcoiWoOrder dpcoiWoOrder, Integer confirmResult, User user) throws Exception {
         dpcoiWoOrder = this.queryDpcoiWoOrder(dpcoiWoOrder);
         int dpcoiWoOrderType = dpcoiWoOrder.getDpcoiWoOrderType().intValue();
 
@@ -125,6 +129,32 @@ public class DpcoiWoOrderServiceImpl implements DpcoiWoOrderService {
             if(dpcoiWoOrderType == 3){
                 //定单完成
                 dpcoiOrder.setDpcoiOrderState(2);
+                Integer taskOrderId = dpcoiOrder.getTaskOrderId();
+                if (taskOrderId != null) {
+                    DpcoiWoOrderQuery dpcoiWoOrderQuery = new DpcoiWoOrderQuery();
+                    dpcoiWoOrderQuery.setDpcoiOrderId(dpcoiOrder.getDpcoiOrderId());
+                    List<DpcoiWoOrder> dpcoiWoOrderList = this.dpcoiWoOrderDao.selectDpcoiWoOrderOfDpcoiOrder(dpcoiWoOrderQuery);
+                    String woOrderValue = "";
+                    for (DpcoiWoOrder dpcoiWoOrderTemp : dpcoiWoOrderList){
+                        Integer dpcoiWoOrderState = dpcoiWoOrderTemp.getDpcoiWoOrderState();
+                        if (dpcoiWoOrderState == 4) {
+                            Integer dpcoiWoOrderTypeTemp = dpcoiWoOrderTemp.getDpcoiWoOrderType();
+                            if (dpcoiWoOrderTypeTemp == 1){
+                                woOrderValue += "," + "1070";
+                            } else if (dpcoiWoOrderTypeTemp == 2) {
+                                woOrderValue += "," + "1071";
+                            } else if (dpcoiWoOrderTypeTemp == 3) {
+                                woOrderValue += "," + "1072";
+                            }
+                        }
+                    }
+                    if ("".equals(woOrderValue)) {
+                        woOrderValue = "1069";
+                    } else {
+                        woOrderValue = woOrderValue.substring(1);
+                    }
+                    this.taskWoOrderDpcoiService.complateTaskWoOrder(taskOrderId, woOrderValue, user);
+                }
             }else {
                 DpcoiWoOrder newDpcoiWoOrder = new DpcoiWoOrder();
                 newDpcoiWoOrder.setDpcoiOrderId(dpcoiWoOrder.getDpcoiOrderId());
@@ -183,6 +213,29 @@ public class DpcoiWoOrderServiceImpl implements DpcoiWoOrderService {
 //                noticeType = 26;
 //            }
             dpcoiWoOrder.setDpcoiWoOrderState(2);
+            Integer taskOrderId = dpcoiOrder.getTaskOrderId();
+            if (taskOrderId != null) {
+                DpcoiWoOrderQuery dpcoiWoOrderQuery = new DpcoiWoOrderQuery();
+                dpcoiWoOrderQuery.setDpcoiOrderId(dpcoiOrder.getDpcoiOrderId());
+                List<DpcoiWoOrder> dpcoiWoOrderList = this.dpcoiWoOrderDao.selectDpcoiWoOrderOfDpcoiOrder(dpcoiWoOrderQuery);
+                String woOrderValue = "";
+                for (DpcoiWoOrder dpcoiWoOrderTemp : dpcoiWoOrderList){
+                    Integer dpcoiWoOrderState = dpcoiWoOrderTemp.getDpcoiWoOrderState();
+                    if (dpcoiWoOrderState == 4) {
+                        Integer dpcoiWoOrderTypeTemp = dpcoiWoOrderTemp.getDpcoiWoOrderType();
+                        if (dpcoiWoOrderTypeTemp == 1){
+                            woOrderValue += "," + "1070";
+                        } else if (dpcoiWoOrderTypeTemp == 2) {
+                            woOrderValue += "," + "1071";
+                        } else if (dpcoiWoOrderTypeTemp == 3) {
+                            woOrderValue += "," + "1072";
+                        }
+                    }
+                }
+                woOrderValue += "," + "1069";
+                woOrderValue = woOrderValue.substring(1);
+                this.taskWoOrderDpcoiService.complateTaskWoOrder(taskOrderId, woOrderValue, user);
+            }
 //            DpcoiWoOrderQuery dpcoiWoOrderQery = new DpcoiWoOrderQuery();
 //            dpcoiWoOrderQery.setDpcoiWoOrderState(dpcoiWoOrder.getDpcoiWoOrderState());
 //            dpcoiWoOrderQery.setDpcoiWoOrderType(dpcoiWoOrder.getDpcoiWoOrderType());
