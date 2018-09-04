@@ -2,9 +2,17 @@ function updateFileExcelChange(){
     if($("#uploadFile").val()){
         $("#excelForm").ajaxSubmit({
             success:function(data){
+                data = data.replace("<PRE>", "");
+                data = data.replace("</PRE>", "");
+                var jsonObj = {};
+                if (typeof(JSON) == 'undefined'){
+                    jsonObj = eval("("+data+")");
+                }else{
+                    jsonObj = JSON.parse(data);
+                }
                 var returnValue = {
-                    fileId : data.fileId,
-                    fileName : data.fileName
+                    fileId : jsonObj.fileId,
+                    fileName : jsonObj.fileName
                 };
                 window.returnValue = returnValue;
                 doClose();

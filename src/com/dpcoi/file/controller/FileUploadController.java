@@ -124,7 +124,7 @@ public class FileUploadController implements ServletContextAware {
             map.put("success", false);
             map.put("message", e.getMessage());
         }
-        AjaxUtil.ajaxResponse(response, new JSONObject(map).toString(), AjaxUtil.RESPONCE_TYPE_JSON);
+        AjaxUtil.ajaxResponse(response, new JSONObject(map).toString(), AjaxUtil.RESPONCE_TYPE_TEXT);
     }
 
     @RequestMapping(value="/taskOrderUploadFile.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
@@ -156,6 +156,6 @@ public class FileUploadController implements ServletContextAware {
             map.put("success", false);
             map.put("message", e.getMessage());
         }
-        AjaxUtil.ajaxResponse(response, new JSONObject(map).toString(), AjaxUtil.RESPONCE_TYPE_JSON);
+        AjaxUtil.ajaxResponse(response, new JSONObject(map).toString(), AjaxUtil.RESPONCE_TYPE_TEXT);
     }
 }
