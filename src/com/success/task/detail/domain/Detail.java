@@ -60,6 +60,14 @@ public class Detail {
 
 	private String agreementState;
 
+	private Integer fileId;
+
+	private Integer materialFileId;
+
+	private String fileName;
+
+	private String materialFileName;
+
 	public Integer getOrderId() {
 		return orderId;
 	}
@@ -290,5 +298,37 @@ public class Detail {
 
 	public void setAgreementState(String agreementState) {
 		this.agreementState = agreementState;
+	}
+
+	public Integer getFileId() {
+		return fileId;
+	}
+
+	public void setFileId(Integer fileId) {
+		this.fileId = fileId;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public Integer getMaterialFileId() {
+		return materialFileId;
+	}
+
+	public void setMaterialFileId(Integer materialFileId) {
+		this.materialFileId = materialFileId;
+	}
+
+	public String getMaterialFileName() {
+		return materialFileName;
+	}
+
+	public void setMaterialFileName(String materialFileName) {
+		this.materialFileName = materialFileName;
 	}
 }

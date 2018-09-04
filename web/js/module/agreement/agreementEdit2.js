@@ -144,19 +144,49 @@ var agreementContent = (function() {
     	                value: agreement.conclusionState,
     	                emptyText:'-----请选择-----'
     	            }] 
-    	    	},{ 
-    	            columnWidth:.25,
-    	            layout:'form',
-    	            items:[{   
-    	            	xtype:'textfield',
-    	                fieldLabel:'详细说明',
-    	                name: 'agreement_conclusion_message',
-    	                id: 'agreement_conclusion_message',         
-    	                anchor:'95%',
-    	                value: agreement.conclusionMessage,
-    	                emptyText:'-----请输入-----'
-    	            }] 
-    	    	},{ 
+    	    	},{
+                columnWidth:.25,
+                layout:'column',
+                items:[{
+                    columnWidth:.7,
+                    layout:'form',
+                    items:[{
+                        xtype:'textfield',
+                        fieldLabel:'详细说明',
+                        name: 'agreement_conclusion_message',
+                        id: 'agreement_conclusion_message',
+                        value: agreement.conclusionMessage,
+                        readOnly: true,
+                        anchor:'100%'
+                    }]
+                },{
+                    columnWidth:.01,
+                    layout:'form',
+                    items:[{
+                        xtype:'textfield',
+                        readOnly: true,
+                        fieldLabel:'详细说明文件ID',
+                        name: 'agreement_conclusion_message_file_id',
+                        id: 'agreement_conclusion_message_file_id',
+                        value: agreement.conclusionMessageFileId,
+                        hidden:true,//默认是false
+                        hideLabel:true//默认是false
+                    }]
+                },{
+                    columnWidth:.25,
+                    layout:'form',
+                    items:[{
+                        xtype:'button',
+                        text:'上传',
+                        name: 'button_order_file_upload',
+                        id: 'button_order_file_upload',
+                        anchor:'95%',
+                        listeners:{
+                            "click":function(){fileUpload();}
+                        }
+                    }]
+                }]
+            },{
     	            columnWidth:.25,
     	            layout:'form',
     	            items:[{               

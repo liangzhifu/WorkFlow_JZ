@@ -55,6 +55,10 @@ public class TaskOrder {
 
 	private String agreementState;
 
+	private Integer fileId;
+
+	private Integer materialFileId;
+
 	public Integer getOrderId() {
 		return orderId;
 	}
@@ -237,5 +241,21 @@ public class TaskOrder {
 
 	public void setAgreementState(String agreementState) {
 		this.agreementState = agreementState;
+	}
+
+	public Integer getFileId() {
+		return fileId;
+	}
+
+	public void setFileId(Integer fileId) {
+		this.fileId = fileId;
+	}
+
+	public Integer getMaterialFileId() {
+		return materialFileId;
+	}
+
+	public void setMaterialFileId(Integer materialFileId) {
+		this.materialFileId = materialFileId;
 	}
 }

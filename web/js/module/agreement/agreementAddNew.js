@@ -111,14 +111,43 @@ var agreementAdd = (function() {
                 }]
             },{
                 columnWidth:.33,
-                layout:'form',
+                layout:'column',
                 items:[{
-                    xtype:'textfield',
-                    fieldLabel:'详细说明',
-                    name: 'agreement_conclusion_message',
-                    id: 'agreement_conclusion_message',
-                    anchor:'95%',
-                    emptyText:''
+                    columnWidth:.7,
+                    layout:'form',
+                    items:[{
+                        xtype:'textfield',
+                        fieldLabel:'详细说明',
+                        name: 'agreement_conclusion_message',
+                        id: 'agreement_conclusion_message',
+                        readOnly: true,
+                        anchor:'100%'
+                    }]
+                },{
+                    columnWidth:.01,
+                    layout:'form',
+                    items:[{
+                        xtype:'textfield',
+                        readOnly: true,
+                        fieldLabel:'详细说明文件ID',
+                        name: 'agreement_conclusion_message_file_id',
+                        id: 'agreement_conclusion_message_file_id',
+                        hidden:true,//默认是false
+                        hideLabel:true//默认是false
+                    }]
+                },{
+                    columnWidth:.25,
+                    layout:'form',
+                    items:[{
+                        xtype:'button',
+                        text:'上传',
+                        name: 'button_order_file_upload',
+                        id: 'button_order_file_upload',
+                        anchor:'95%',
+                        listeners:{
+                            "click":function(){fileUpload();}
+                        }
+                    }]
                 }]
             },{
                 columnWidth:.33,
@@ -385,6 +414,14 @@ function doSubmit(){
             Ext.Msg.alert('提示', responseText.message);
         }
     });
+}
+
+function fileUpload() {
+    var returnValue = window.showModalDialog(contextPath + "/jsp/system/fileUpload.jsp", null, "dialogHeight=100px;dialogwidth=400px;help=no;scrollbars=no;");
+    if(returnValue){
+        Ext.getCmp("agreement_conclusion_message_file_id").setValue(returnValue.fileId);
+        Ext.getCmp("agreement_conclusion_message").setValue(returnValue.fileName);
+    }
 }
 
 function doClose(){

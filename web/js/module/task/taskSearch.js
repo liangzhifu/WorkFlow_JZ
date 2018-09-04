@@ -9,6 +9,11 @@ var orderStateStore = new Ext.data.JsonStore({
 });
 orderStateStore.load();
 
+var orderTypeStore = new Ext.data.JsonStore({
+    data:[{name: '1', value: '工程变更'},{name: '2', value: '设计变更'}],
+    fields:['name','value']
+});
+
 var isDelayStore = new Ext.data.JsonStore({
 	fields : ['isDelayCode', 'isDelayName'],
 	proxy: new Ext.data.HttpProxy({
@@ -242,8 +247,26 @@ var taskSearch = (function() {
 	                        anchor:'95%',
 	                        emptyText:'-----请输入-----'
 			            }] 
-	            	},{ 
-			            columnWidth:0.5,
+	            	},{
+                    columnWidth:.25,
+                    layout:'form',
+                    items:[{
+                        xtype:'combo',
+                        fieldLabel:'变更单类型',
+                        name: 'search_order_type_code',
+                        id: 'search_order_type_code',
+                        valueField: 'name',
+                        displayField: 'value',
+                        triggerAction:'all',
+                        editable: false,
+                        mode: 'local',
+                        store: orderTypeStore,
+                        anchor:'95%',
+                        emptyText:'-----请选择-----',
+                        showSelectAll:true
+                    }]
+                },{
+			            columnWidth:0.25,
 			            layout:'form',
 			            items:[{               
 			            	layout:'column',
@@ -340,7 +363,11 @@ var taskSearch = (function() {
 	                { name: 'completeTime' },
 	                { name: 'isDelay' },
 	                { name: 'agreementState'},
-	                { name: 'invalidateText'}
+	                { name: 'invalidateText'},
+					{ name: 'fileId'},
+                    { name: 'fileName'},
+                    { name: 'materialFileId'},
+                    { name: 'materialFileName'}
 	            ]
 	        );
 
@@ -368,6 +395,14 @@ var taskSearch = (function() {
 			         return value;     
 			    }
 			}, {
+                    header : "变更内容描述",
+                    dataIndex : "fileName",
+                    width : Ext.getBody().getSize().width * 0.05,
+                    renderer: function(value, meta, record) {
+                        meta.attr = 'style="white-space:normal;"';
+                        return "<a href='/WorkFlow/fileUpload/download.do?fileId="+record.data.fileId+"'>"+value+"</a>";
+                    }
+                }, {
 				header : "变更时间",
 				dataIndex : "changeTime",
 				width : Ext.getBody().getSize().width * 0.1
@@ -402,6 +437,14 @@ var taskSearch = (function() {
 				dataIndex : "mountingMat",
 				width : Ext.getBody().getSize().width * 0.1
 			}, {
+                    header : "初物管理",
+                    dataIndex : "materialFileName",
+                    width : Ext.getBody().getSize().width * 0.1,
+                    renderer: function(value, meta, record) {
+                        meta.attr = 'style="white-space:normal;"';
+                        return "<a href='/WorkFlow/fileUpload/download.do?fileId="+record.data.materialFileId+"'>"+value+"</a>";
+                    }
+                }, {
 				header : "定单状态",
 				dataIndex : "orderStateCode",
 				width : Ext.getBody().getSize().width * 0.1,

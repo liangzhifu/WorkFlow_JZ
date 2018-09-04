@@ -16,7 +16,7 @@
             var managerConfirmUser = '${manager_confirm_user}';
 			var runCode = '${runCode}';
 		</script>
-		<script type="text/javascript" src="<c:url value='/js/module/task/taskConfirm.js?version=41'/>"></script>
+		<script type="text/javascript" src="<c:url value='/js/module/task/taskConfirm.js?version=42'/>"></script>
 	</head>
 	<body>
 		<div id="mainDiv" ></div>

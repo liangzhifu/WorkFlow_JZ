@@ -38,7 +38,8 @@
 						order_state_code,
 						confirm_order_state_code,
 						alarm_time,
-						version)
+						version,
+						file_id)
   					 values (#{taskTypeId,jdbcType=VARCHAR},
   					 		 #{cycleId,jdbcType=NUMERIC},
   					 		 0,
@@ -49,7 +50,8 @@
   					 		 #{orderStateCode,jdbcType=VARCHAR},
   					 		 #{confirmOrderStateCode,jdbcType=VARCHAR},
   					 		 #{alarmTime,jdbcType=TIMESTAMP},
-  					 		 #{version,jdbcType=NUMERIC})
+  					 		 #{version,jdbcType=NUMERIC},
+  					 		 #{fileId,jdbcType=NUMERIC})
 		]]>
 	</insert>
 	
@@ -65,6 +67,7 @@
 			<if test="alarmTime != null">alarm_time = #{alarmTime,jdbcType=TIMESTAMP},</if>
 			<if test="delayNoticeTime != null">delay_notice_time = #{delayNoticeTime,jdbcType=VARCHAR},</if>
 			<if test="agreementState != null">agreement_state = #{agreementState,jdbcType=VARCHAR},</if>
+			<if test="materialFileId != null">material_file_id = #{materialFileId,jdbcType=NUMERIC},</if>
 		</set>
 		where order_id=#{orderId, jdbcType=NUMERIC}
 	</update>

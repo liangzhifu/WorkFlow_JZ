@@ -18,7 +18,7 @@
         var taskTacheListJson = '${taskTacheList}';
         var tacheUserListJson = '${tacheUserList}';
     </script>
-    <script type="text/javascript" src="<c:url value='/js/module/agreement/agreementAddNew.js?version=1'/>"></script>
+    <script type="text/javascript" src="<c:url value='/js/module/agreement/agreementAddNew.js?version=2'/>"></script>
 </head>
 <body>
 <div id="mainDiv" ></div>

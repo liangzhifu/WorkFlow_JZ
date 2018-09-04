@@ -47,8 +47,49 @@ var taskAdd = (function() {
 				var obj = generBasicObj(infoTypeId, taskTypeInfo);
 				items[i] = obj;
 			}
-			items[len] = { 
-		            columnWidth:.33,
+            items[len] = {
+                columnWidth:.25,
+                layout:'column',
+                items:[{
+                    columnWidth:.7,
+                    layout:'form',
+                    items:[{
+                        xtype:'textfield',
+                        fieldLabel:'文件名',
+                        name: 'order_file_name',
+                        id: 'order_file_name',
+                        readOnly: true,
+                        anchor:'100%'
+                    }]
+                },{
+                    columnWidth:.01,
+                    layout:'form',
+                    items:[{
+                        xtype:'textfield',
+                        readOnly: true,
+                        fieldLabel:'文件ID',
+                        name: 'order_file_id',
+                        id: 'order_file_id',
+                        hidden:true,//默认是false
+                        hideLabel:true//默认是false
+                    }]
+                },{
+                    columnWidth:.25,
+                    layout:'form',
+                    items:[{
+                        xtype:'button',
+                        text:'上传',
+                        name: 'button_order_file_upload',
+                        id: 'button_order_file_upload',
+                        anchor:'95%',
+                        listeners:{
+                            "click":function(){fileUpload();}
+                        }
+                    }]
+                }]
+            };
+			items[len + 1] = {
+		            columnWidth:.25,
 		            layout:'column',
 		            items:[{    
 		            	columnWidth:.7,
@@ -88,8 +129,8 @@ var taskAdd = (function() {
 			            }]
 			        }] 
             	};
-			items[len+1] = { 
-		            columnWidth:.33,
+			items[len+2] = {
+		            columnWidth:.25,
 		            layout:'column',
 		            items:[{    
 		            	columnWidth:.7,
@@ -129,8 +170,8 @@ var taskAdd = (function() {
 			            }]
 			        }] 
             	};
-			items[len+2] = { 
-		            columnWidth:.33,
+			items[len+3] = {
+		            columnWidth:.25,
 		            layout:'column',
 		            items:[{    
 		            	columnWidth:.7,
@@ -628,6 +669,14 @@ function doQryStaff(id, type){
 			document.getElementById("tache_staff_name_"+id).innerHTML = returnValue.name;
 		}
 	}
+}
+
+function fileUpload() {
+    var returnValue = window.showModalDialog(contextPath + "/jsp/system/fileUpload.jsp", null, "dialogHeight=100px;dialogwidth=400px;help=no;scrollbars=no;");
+    if(returnValue){
+        Ext.getCmp("order_file_id").setValue(returnValue.fileId);
+        Ext.getCmp("order_file_name").setValue(returnValue.fileName);
+    }
 }
 
 function doClose(){

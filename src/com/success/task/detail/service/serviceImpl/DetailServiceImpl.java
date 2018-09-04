@@ -162,6 +162,8 @@ public class DetailServiceImpl implements DetailService {
 		Date alarmTime = calendar.getTime();
 		taskOrder.setAlarmTime(alarmTime);
 		taskOrder.setVersion(taskType.getVersion());
+		Integer fileId = ServletAPIUtil.getIntegerParameter("order_file_id", request, null);
+		taskOrder.setFileId(fileId);
 		this.taskOrderService.addTaskOrder(taskOrder);
 			
 		//插入task_order_info表

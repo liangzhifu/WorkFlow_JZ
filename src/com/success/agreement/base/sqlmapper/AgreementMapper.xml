@@ -36,6 +36,7 @@
 		<result property="conclusionMessage" column="conclusion_message" />
 		<result property="invalidateText" column="invalidate_text" />
 		<result property="isClose" column="is_close" />
+		<result property="fileId" column="file_id" />
 	</resultMap>
 	
 	<select id="selectPageAgreement" resultMap="agreementResultMap" parameterType="AgreementQuery">
@@ -117,7 +118,7 @@
 	<insert id="insertAgreement" parameterType="Agreement" useGeneratedKeys="true" keyProperty="agreementId"> 
 		<![CDATA[
 		insert into agreement_manage(order_id, agreement_state, delete_state, agreement_name, 
-			create_time, create_user, track_id, project, cut_lot, num, conclusion_state, conclusion_message, is_close)
+			create_time, create_user, track_id, project, cut_lot, num, conclusion_state, conclusion_message, is_close, file_id)
 			values(#{orderId,jdbcType=NUMERIC},
 			#{agreementState,jdbcType=VARCHAR},
 			0,
@@ -130,7 +131,8 @@
 			#{num,jdbcType=NUMERIC},
 			#{conclusionState,jdbcType=VARCHAR},
 			#{conclusionMessage,jdbcType=VARCHAR},
-			#{isClose,jdbcType=NUMERIC}
+			#{isClose,jdbcType=NUMERIC},
+			#{fileId,jdbcType=NUMERIC}
 			)
 		]]>
 	</insert>
@@ -139,6 +141,7 @@
 		update agreement_manage
 		<set>
 			<if test="isClose != null">is_close = #{isClose,jdbcType=NUMERIC},</if>
+			<if test="fileId != null">file_id = #{fileId,jdbcType=NUMERIC},</if>
 			<if test="trackId != null">track_id = #{trackId,jdbcType=NUMERIC},</if>
 			<if test="num != null">num = #{num,jdbcType=NUMERIC},</if>
 			<if test="project != null">project = #{project,jdbcType=VARCHAR},</if>
@@ -220,7 +223,8 @@
 			a.conclusion_message as conclusionMessage,a.invalidate_text as invalidateText,
 			a.agreement_state as agreementState,d.user_name as createUser,
 			DATE_FORMAT(a.create_time,'%Y-%m-%d') as createTime,a.agreement_name as agreementName,
-			a.create_user as createUserId, a.track_id as trackId, g.user_name as trackName, a.is_close as isClose
+			a.create_user as createUserId, a.track_id as trackId, g.user_name as trackName, a.is_close as isClose,
+			a.file_id as fileId
 			from agreement_manage a
 			left join task_order b on a.order_id = b.ORDER_ID  
 			left join task_order_info c on b.ORDER_ID = c.ORDER_ID and c.TASK_TYPE_INFO_ID = 1

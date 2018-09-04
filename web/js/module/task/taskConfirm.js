@@ -293,6 +293,17 @@ var taskConfirm = (function() {
  							columnWidth:0.4,
  							html:'&nbsp;&nbsp;'
  						},{
+                            xtype: 'button',
+                            text:'上传初物管理资料',
+                            columnWidth:0.05,
+                            listeners:{
+                                "click":fileUpload
+                            }
+                        },{
+                            xtype:'label',
+                            columnWidth:0.05,
+                            html:'&nbsp;&nbsp;'
+                        },{
  		            		 xtype: 'button',                       
  	                         text:'作废',
  	                         columnWidth:0.05,
@@ -792,4 +803,8 @@ function doRefuse2(){
 			}
 		});
 	},this,50);
+}
+
+function fileUpload() {
+    window.showModalDialog(contextPath + "/jsp/system/orderMaterialFileUpload.jsp?taskOrderId="+taskOrderId, null, "dialogHeight=100px;dialogwidth=400px;help=no;scrollbars=no;");
 }

@@ -39,6 +39,8 @@ public class Agreement {
 	private String invalidateText;
 	
 	private Integer isClose;
+
+	private Integer fileId;
 	
 	private List<AgreementContent> agreementContentList;
 	
@@ -204,4 +206,11 @@ public class Agreement {
 		this.isClose = isClose;
 	}
 
+	public Integer getFileId() {
+		return fileId;
+	}
+
+	public void setFileId(Integer fileId) {
+		this.fileId = fileId;
+	}
 }

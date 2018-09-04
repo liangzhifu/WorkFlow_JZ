@@ -130,6 +130,8 @@ public class AgreementServiceImpl implements AgreementService {
 		agreement.setTrackId(trackId);
 		agreement.setConclusionState(conclusionState);
 		agreement.setConclusionMessage(conclusionMessage);
+		Integer fileId = ServletAPIUtil.getIntegerParameter("agreement_conclusion_message_file_id", request, null);
+		agreement.setFileId(fileId);
 		this.agreementDao.insertAgreement(agreement);
 
 		//更改订单立合状态
@@ -710,6 +712,8 @@ public class AgreementServiceImpl implements AgreementService {
 		Integer trackId =  ServletAPIUtil.getIntegerParameter("agreement_track_id", request);
 		String conclusionState = ServletAPIUtil.getStringParameter("agreement_project_result", request, "");
 		String conclusionMessage = ServletAPIUtil.getStringParameter("agreement_conclusion_message", request, "");
+		Integer fileId = ServletAPIUtil.getIntegerParameter("agreement_conclusion_message_file_Id", request, null);
+		agreement.setFileId(fileId);
 		agreement.setProject(project);
 		agreement.setCutLOT(cutLOT);
 		agreement.setNum(num);

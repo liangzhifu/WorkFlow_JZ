@@ -31,6 +31,10 @@
 		<result property="agreementId" column="agreement_id" />
 		<result property="agreementName" column="agreement_name" />
 		<result property="agreementState" column="agreement_state" />
+		<result property="fileId" column="file_id" />
+		<result property="fileName" column="file_name" />
+		<result property="materialFileId" column="material_file_id" />
+		<result property="materialFileName" column="material_file_name" />
 	</resultMap>
 	
 	<select id="selectDetail" resultMap="detailResultMap" parameterType="DetailQuery">
@@ -166,7 +170,11 @@
 				f.delay_cycle,
 				h.org_name as create_org,
 				p.agreement_id,
-				p.agreement_name
+				p.agreement_name,
+				upload.file_id,
+				upload.file_name,
+				upload2.file_id as material_file_id,
+				upload2.file_name as material_file_name
 				from task_order a
 				left join task_type b on a.TASK_TYPE_ID = b.TASK_TYPE_ID
 				left join task_order_info c on c.ORDER_ID = a.ORDER_ID and c.TASK_TYPE_INFO_ID = 1
@@ -180,6 +188,8 @@
 				left join task_order_info g4 on g4.ORDER_ID = a.ORDER_ID and g4.TASK_TYPE_INFO_ID = 3 
 				left join task_order_info g5 on g5.ORDER_ID = a.ORDER_ID and g5.TASK_TYPE_INFO_ID = 4 
 				left join agreement_manage p on p.order_id = a.order_id and (STRCMP(p.agreement_state, '10B') = 0 or STRCMP(p.agreement_state, '10C') = 0)
+				left join file_upload upload on upload.file_id = a.file_id
+				left join file_upload upload2 on upload2.file_id = a.material_file_id
 		]]>
 		<where>
 			1 = 1

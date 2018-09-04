@@ -15,7 +15,7 @@
 			var orderId = '${orderId}';
 			var agreementId = '${agreementId}';
 		</script>
-		<script type="text/javascript" src="<c:url value='/js/module/agreement/agreementEdit2.js?version=25'/>"></script>
+		<script type="text/javascript" src="<c:url value='/js/module/agreement/agreementEdit2.js?version=26'/>"></script>
 	</head>
 	<body>
 		<div id="mainDiv" ></div>
