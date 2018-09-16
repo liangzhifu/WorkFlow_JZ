@@ -215,6 +215,16 @@
 					#{userId,jdbcType=NUMERIC}
 		    	</foreach> 
 			</if>
+			<if test="@Ognl@isNotEmpty(orderTypeCode)">
+				<choose>
+					<when test='orderTypeCode == "1"'>
+						<![CDATA[ and EXISTS (select 1 from task_order_info toi where toi.order_id = a.order_id and toi.task_type_info_id = 5 and toi.task_info_value <> '') ]]>
+					</when>
+					<otherwise>
+						<![CDATA[ and EXISTS (select 1 from task_order_info toi where toi.order_id = a.order_id and toi.task_type_info_id = 7 and toi.task_info_value <> '') ]]>
+					</otherwise>
+				</choose>
+			</if>
 		</where>
 		order by c.TASK_INFO_VALUE desc
 	</select>
@@ -259,6 +269,16 @@
 				<foreach collection="permissionUsers" item="userId" index="index"  open="(" separator="," close=")">  
 					#{userId,jdbcType=NUMERIC}
 		    	</foreach> 
+			</if>
+			<if test="@Ognl@isNotEmpty(orderTypeCode)">
+				<choose>
+					<when test='orderTypeCode == "1"'>
+						<![CDATA[ and EXISTS (select 1 from task_order_info toi where toi.order_id = a.order_id and toi.task_type_info_id = 5 and toi.task_info_value <> '') ]]>
+					</when>
+					<otherwise>
+						<![CDATA[ and EXISTS (select 1 from task_order_info toi where toi.order_id = a.order_id and toi.task_type_info_id = 7 and toi.task_info_value <> '') ]]>
+					</otherwise>
+				</choose>
 			</if>
 		</where>
 	</select>

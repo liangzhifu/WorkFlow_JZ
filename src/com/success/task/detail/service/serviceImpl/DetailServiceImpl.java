@@ -462,6 +462,7 @@ public class DetailServiceImpl implements DetailService {
 		String productionLine = request.getParameter("productionLine");
 		String carType = request.getParameter("carType");
 		String mountingMat = request.getParameter("mountingMat");
+		String orderTypeCode = request.getParameter("orderTypeCode");
 		
 		if(orderStateCode != null && !"".equals(orderStateCode)){
 			query.setOrderStateCode(orderStateCode);
@@ -516,6 +517,10 @@ public class DetailServiceImpl implements DetailService {
 		
 		if(orgId != null && !"".equals(orgId)){
 			query.setOrgId(Integer.valueOf(orgId));
+		}
+
+		if(orderTypeCode != null && !"".equals(orderTypeCode)){
+			query.setOrderTypeCode(orderTypeCode);
 		}
 		
 		return query;

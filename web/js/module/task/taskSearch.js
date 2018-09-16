@@ -532,7 +532,8 @@ var taskSearch = (function() {
 	    		changeContent : Ext.getCmp('search_change_content').getValue(),
 	    		productionLine : Ext.getCmp('search_production_line').getValue(),
 	    		carType : Ext.getCmp('search_car_type').getValue(),
-	    		mountingMat : Ext.getCmp('search_mounting_mat').getValue()
+	    		mountingMat : Ext.getCmp('search_mounting_mat').getValue(),
+                orderTypeCode : Ext.getCmp('search_order_type_code').getValue()
 	        	} });
 	        
 //	        mainGrid.addListener('rowdblclick', rowdblclick);     
@@ -565,7 +566,8 @@ var taskSearch = (function() {
 	    		changeContent : Ext.getCmp('search_change_content').getValue(),
 	    		productionLine : Ext.getCmp('search_production_line').getValue(),
 	    		carType : Ext.getCmp('search_car_type').getValue(),
-	    		mountingMat : Ext.getCmp('search_mounting_mat').getValue()
+	    		mountingMat : Ext.getCmp('search_mounting_mat').getValue(),
+                orderTypeCode : Ext.getCmp('search_order_type_code').getValue()
             });//增加自定义参数
 	        return true;
 	    }
@@ -594,7 +596,8 @@ function doQry(){
 		changeContent : Ext.getCmp('search_change_content').getValue(),
 		productionLine : Ext.getCmp('search_production_line').getValue(),
 		carType : Ext.getCmp('search_car_type').getValue(),
-		mountingMat : Ext.getCmp('search_mounting_mat').getValue()
+		mountingMat : Ext.getCmp('search_mounting_mat').getValue(),
+        orderTypeCode : Ext.getCmp('search_order_type_code').getValue()
 	};
 	Ext.getCmp('mainDataGrid').getStore().load({ params: parms });
 }

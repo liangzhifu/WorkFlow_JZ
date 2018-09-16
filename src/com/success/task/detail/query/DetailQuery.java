@@ -40,6 +40,8 @@ public class DetailQuery {
 	
 	private String mountingMat;//安装席
 
+	private String orderTypeCode;//变更单类型
+
 	public String getPublishCode() {
 		return publishCode;
 	}
@@ -183,5 +185,12 @@ public class DetailQuery {
 	public void setChangeTimeEnd(String changeTimeEnd) {
 		this.changeTimeEnd = changeTimeEnd;
 	}
-	
+
+	public String getOrderTypeCode() {
+		return orderTypeCode;
+	}
+
+	public void setOrderTypeCode(String orderTypeCode) {
+		this.orderTypeCode = orderTypeCode;
+	}
 }
