@@ -122,12 +122,8 @@
                             </div>
                             <div class="col-md-3">
                                 <label  class="control-label" for="productNo"><span style="color:red;">*</span>品名：</label>
-                                <select id="productNo" name="productNo" class="form-control-order form-control clean chosen-select chosen" required="required">
-                                    <option value="">请选择</option>
-                                    <option ng-repeat="dpcoiConfigDate in rrProblemEdit.dpcoiConfigList | myFilter:5"
-                                            value="{{dpcoiConfigDate.configValue}}"
-                                            >{{dpcoiConfigDate.configValue}}</option>
-                                </select>
+                                <input class="form-control-order form-control clean" style="width: 60%" required="required"
+                                       id="productNo" name="productNo" ng-model="rrProblemEdit.rrProblem.productNo">
                             </div>
                             <div class="col-md-3">
                                 <label  class="control-label" for="badContent"><span style="color:red;">*</span>不良内容：</label>
@@ -430,5 +426,5 @@
     </div>
 </div>
 </body>
-<script src="/WorkFlow/js/module/dpcoi/rrProblemEdit.js?version=7"></script>
+<script src="/WorkFlow/js/module/dpcoi/rrProblemEdit.js?version=8"></script>
 </html>

@@ -468,10 +468,6 @@ rrProblemEditApp.controller("rrProblemEditController", function ($scope) {
         }
     });
 
-    $("#productNo").on('change', function(e, params) {
-
-    });
-
     $scope.showVehicle = function () {
         $.ajax({
             type : "POST",
@@ -506,15 +502,6 @@ rrProblemEditApp.controller("rrProblemEditController", function ($scope) {
                 if (result.success) {
                     $scope.rrProblemEdit.dpcoiConfigList = result.dpcoiConfigList;
                     $scope.$apply();
-                    $("#productNo").chosen({
-                        no_results_text : "没有找到结果！",//搜索无结果时显示的提示
-                        search_contains : true,   //关键字模糊搜索，设置为false，则只从开头开始匹配
-                        allow_single_deselect : true, //是否允许取消选择
-                        max_selected_options : 5,  //当select为多选时，最多选择个数
-                        placeholder_text_multiple : "请选择",
-                        max_shown_results : 5,
-                        width : "60%"
-                    });
                     $("#dpcoi4M").chosen({
                         no_results_text : "没有找到结果！",//搜索无结果时显示的提示
                         search_contains : true,   //关键字模糊搜索，设置为false，则只从开头开始匹配
@@ -572,8 +559,6 @@ rrProblemEditApp.controller("rrProblemEditController", function ($scope) {
                                     $("#dpcoi4M").trigger("chosen:updated");
                                     $("#vehicle option[value='"+$scope.rrProblemEdit.rrProblem.vehicle+"']").attr("selected","selected");
                                     $("#vehicle").trigger("chosen:updated");
-                                    $("#productNo option[value='"+$scope.rrProblemEdit.rrProblem.productNo+"']").attr("selected","selected");
-                                    $("#productNo").trigger("chosen:updated");
                                     $scope.$apply();
                                 }
                             }
