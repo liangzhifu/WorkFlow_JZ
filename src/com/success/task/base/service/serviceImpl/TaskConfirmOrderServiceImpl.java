@@ -295,7 +295,7 @@ public class TaskConfirmOrderServiceImpl implements TaskConfirmOrderService {
 	}
 
 	@Override
-	public void editConfirmTaskConfirmOrder(Integer confirmOrderId) throws ServiceException, Exception {
+	public void editConfirmTaskConfirmOrder(Integer confirmOrderId, User user) throws ServiceException, Exception {
 		// TODO Auto-generated method stub
 		TaskConfirmOrderQuery query = new TaskConfirmOrderQuery();
 		query.setConfirmOrderId(confirmOrderId);
@@ -357,6 +357,9 @@ public class TaskConfirmOrderServiceImpl implements TaskConfirmOrderService {
 		}
 		
 		TaskConfirmOrder newTaskConfirmOrder = new TaskConfirmOrder();
+		if ("accept2_confirm".equals(RunCode)) {
+			newTaskConfirmOrder.setConfirmUserId(user.getUserId());
+		}
 		newTaskConfirmOrder.setConfirmOrderId(confirmOrderId);
 		newTaskConfirmOrder.setConfirmOrderStateCode("10C");
 		newTaskConfirmOrder.setConfirmTime(new Date());

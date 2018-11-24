@@ -2,6 +2,7 @@ package com.success.task.base.service;
 
 import java.util.List;
 
+import com.success.sys.user.domain.User;
 import com.success.task.base.domain.TaskConfirmOrder;
 import com.success.task.base.query.TaskConfirmOrderQuery;
 import com.success.web.framework.exception.ServiceException;
@@ -20,7 +21,7 @@ public interface TaskConfirmOrderService {
 	
 	public void startTaskConfirmOrder(Integer orderId, Integer confirmUserSeq) throws ServiceException;
 	
-	public void editConfirmTaskConfirmOrder(Integer confirmOrderId) throws ServiceException, Exception;
+	public void editConfirmTaskConfirmOrder(Integer confirmOrderId, User user) throws ServiceException, Exception;
 	
 	public void editConfirmOrderUser(Integer orderId, Integer userId, String runCode) throws ServiceException;
 	

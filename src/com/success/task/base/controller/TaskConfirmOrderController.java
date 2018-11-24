@@ -8,6 +8,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.success.common.Constant;
+import com.success.sys.user.domain.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
@@ -36,8 +38,9 @@ public class TaskConfirmOrderController {
 	public void confirmTaskConfirmOrder(HttpServletRequest request,HttpServletResponse response, Map<String, Object> model){
 		Map<String, Object> map = new HashMap<String, Object>();
 		try{
+			User user = (User)request.getSession().getAttribute(Constant.STAFF_KEY);
 			Integer confirmOrderId =  ServletAPIUtil.getIntegerParameter("confirmOrderId", request);
-			this.taskConfirmOrderService.editConfirmTaskConfirmOrder(confirmOrderId);
+			this.taskConfirmOrderService.editConfirmTaskConfirmOrder(confirmOrderId, user);
 			map.put("success", true);
 		}catch(Exception e){
 			e.printStackTrace();

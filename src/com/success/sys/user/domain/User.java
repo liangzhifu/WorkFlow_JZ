@@ -32,6 +32,8 @@ public class User {
 	private String userMark;
 	//
 	private Integer deleteState;
+	// 是否审核人
+	private String isAudit;
 
 	public Integer getUserId() {
 		return userId;
@@ -169,5 +171,13 @@ public class User {
 
 	public void setEmail2(String email2) {
 		this.email2 = email2;
+	}
+
+	public String getIsAudit() {
+		return isAudit;
+	}
+
+	public void setIsAudit(String isAudit) {
+		this.isAudit = isAudit;
 	}
 }

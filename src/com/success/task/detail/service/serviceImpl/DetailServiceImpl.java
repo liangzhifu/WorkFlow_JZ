@@ -263,11 +263,12 @@ public class DetailServiceImpl implements DetailService {
 			}else {
 				if("accept2_confirm".equals(runCode)){
 					//审核组领导人
-					UserQuery userQuery2 = new UserQuery();
-					userQuery2.setIsHeader("1");
-					userQuery2.setOrgId("237");
-					User user2 = this.userDao.selectByQuery(userQuery2);
-					taskConfirmOrder.setConfirmUserId(user2.getUserId());
+					// 审核改为多人
+//					UserQuery userQuery2 = new UserQuery();
+//					userQuery2.setIsHeader("1");
+//					userQuery2.setOrgId("237");
+//					User user2 = this.userDao.selectByQuery(userQuery2);
+//					taskConfirmOrder.setConfirmUserId(user2.getUserId());
 				}else if("confirm_confirm".equals(runCode) || "quality2_confirm".equals(runCode)){
 					
 				}else{

@@ -338,6 +338,7 @@ public class UserController {
 		user.setMobileTel(request.getParameter("mobileTel"));
 		user.setUserMark(request.getParameter("userMark"));	
 		user.setIsHeader(request.getParameter("isHeader"));
+		user.setIsAudit(request.getParameter("isAudit"));
 		user.setRrProblemPersionliable(request.getParameter("rrProblemPersionliable"));
 		user.setRrMinister(request.getParameter("rrMinister"));
 		return user;

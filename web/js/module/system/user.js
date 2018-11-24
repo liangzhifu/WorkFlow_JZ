@@ -22,6 +22,10 @@ var rrMinisterStore = new Ext.data.ArrayStore({
     fields : [ 'id', 'value' ],
     data : [ [ "1", "是" ], [ "0", "否" ] ]
 });
+var isAuditStore = new Ext.data.ArrayStore({
+    fields : [ 'id', 'value' ],
+    data : [ [ "1", "是" ], [ "0", "否" ] ]
+});
 var orgStore = new Ext.data.JsonStore({
 	remoteSort : true,
 	root : 'rows',
@@ -152,7 +156,7 @@ var userManger = (function() {
 		},
 
 		initUserListGrid : function() {
-			var queryUserListUrlFirst = queryUserListUrl + ""
+			var queryUserListUrlFirst = queryUserListUrl + "";
 			$("#userList").datagrid({
 				fit : true,
 				url : queryUserListUrlFirst,
@@ -217,6 +221,19 @@ var userManger = (function() {
                         }
                     }
 				}, {
+                    field : 'isAudit',
+                    title : '是否审核人',
+                    width : '20%',
+                    formatter: function(value, row, index){
+                        if(value=="0"){
+                            return "否";
+                        }else if(value=="1"){
+                            return "是";
+                        }else {
+                            return "";
+                        }
+                    }
+                }, {
                     field : 'rrProblemPersionliable',
                     title : 'RR问题责任人',
                     width : '20%',
@@ -734,6 +751,7 @@ function userFormPanel(action, id, parentId) {
 		var v_mobileTel = rows[0].mobileTel;
 		var v_userMark = rows[0].userMark;
 		var v_isHeader = rows[0].isHeader;
+        var v_isAudit = rows[0].isAudit;
         var v_rrProblemPersionliable = rows[0].rrProblemPersionliable;
         var v_rrMinister = rows[0].rrMinister;
 	}
@@ -864,6 +882,20 @@ function userFormPanel(action, id, parentId) {
 				// emptyText : '请选择',
 				anchor : '95%'
 			}, {
+                xtype : 'combo',
+                fieldLabel : '是否审核人',
+                hiddenName : 'isAudit',// 提交时后台获取的值
+                // id : 'isHeader',
+                allowBlank : true,
+                mode : 'local',
+                valueField : 'id',
+                displayField : 'value',
+                triggerAction : 'all',
+                store : isAuditStore,
+                value : v_isAudit,
+                // emptyText : '请选择',
+                anchor : '95%'
+            }, {
                 xtype : 'combo',
                 fieldLabel : 'RR问题点责任人',
                 hiddenName : 'rrProblemPersionliable',// 提交时后台获取的值

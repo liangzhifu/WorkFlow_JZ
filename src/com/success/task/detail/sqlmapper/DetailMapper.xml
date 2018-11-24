@@ -314,8 +314,17 @@
 					from task_confirm_order a
 					where a.CONFIRM_ORDER_STATE_CODE = '10B'
 					and a.RUN_TYPE = 'confirm'
+					and a.RUN_CODE <> 'accept2_confirm'
 					and a.DELETE_STATE = 0
 					and a.CONFIRM_USER_ID = #{userId,jdbcType=NUMERIC}
+					UNION
+					select order_id, 1 as agent_type, a.confirm_order_id as agent_id
+					from task_confirm_order a
+					where a.CONFIRM_ORDER_STATE_CODE = '10B'
+					and a.RUN_TYPE = 'confirm'
+					and a.RUN_CODE = 'accept2_confirm'
+					and a.DELETE_STATE = 0
+					and EXISTS (select 1 from sys_users where USER_ID = #{userId,jdbcType=NUMERIC} and isAudit = '1')
 					UNION
 					select DISTINCT ORDER_ID as ORDER_ID, 2 as agent_type, 0 as agent_id
 					from task_wo_order b, task_type_tache_user d 
@@ -382,8 +391,17 @@
 					from task_confirm_order a
 					where a.CONFIRM_ORDER_STATE_CODE = '10B'
 					and a.RUN_TYPE = 'confirm'
+					and a.RUN_CODE <> 'accept2_confirm'
 					and a.DELETE_STATE = 0
 					and a.CONFIRM_USER_ID = #{userId,jdbcType=NUMERIC}
+					UNION
+					select order_id, 1 as agent_type, a.confirm_order_id as agent_id
+					from task_confirm_order a
+					where a.CONFIRM_ORDER_STATE_CODE = '10B'
+					and a.RUN_TYPE = 'confirm'
+					and a.RUN_CODE = 'accept2_confirm'
+					and a.DELETE_STATE = 0
+					and EXISTS (select 1 from sys_users where USER_ID = #{userId,jdbcType=NUMERIC} and isAudit = '1')
 					UNION
 					select DISTINCT ORDER_ID as ORDER_ID, 2 as agent_type, 0 as agent_id
 					from task_wo_order b, task_type_tache_user d 

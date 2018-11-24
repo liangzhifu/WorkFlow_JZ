@@ -19,6 +19,7 @@
 		<result property="isHeader" column="isHeader" />
 		<result property="rrProblemPersionliable" column="rr_problem_persionliable" />
 		<result property="rrMinister" column="rr_minister" />
+		<result property="isAudit" column="isAudit" />
 	</resultMap>
 
 	<select id="selectUserByCode" resultMap="userResultMap"
@@ -71,7 +72,8 @@
 			(select org_name from sys_org org where org.org_id = s.org_id) as orgName,
 			s.isHeader,
 			s.rr_problem_persionliable,
-			s.rr_minister
+			s.rr_minister,
+			s.isAudit
 		from sys_users s
 		]]>
 		<where>
@@ -200,6 +202,7 @@
 			<if test="userMark != null">USER_MARK = #{userMark,jdbcType=VARCHAR},</if>
 			<if test="deleteState != null">DELETE_STATE = #{deleteState,jdbcType=VARCHAR},</if>
 			<if test="isHeader != null">ISHEADER = #{isHeader,jdbcType=VARCHAR},</if>
+			<if test="isAudit != null">isAudit = #{isAudit,jdbcType=VARCHAR},</if>
 			<if test="rrProblemPersionliable != null">rr_problem_persionliable = #{rrProblemPersionliable,jdbcType=VARCHAR},</if>
 			<if test="rrMinister != null">rr_minister = #{rrMinister,jdbcType=VARCHAR},</if>
 		</set>
